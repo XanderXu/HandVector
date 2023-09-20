@@ -26,6 +26,22 @@ struct ImmersiveView: View {
                 // Put skybox here.  See example in World project available at
                 // https://developer.apple.com/
             }
+        } update: { updateContent in
+            let handsCenterTransform = gestureModel.computeTransformOfUserPerformedHeartGesture()
+            if let handsCenter = handsCenterTransform {
+                let position = Pose3D(handsCenter)!.position
+                let rotation = Pose3D(handsCenter)!.rotation
+                
+            }
+        }
+        .task {
+            await gestureModel.start()
+        }
+        .task {
+            await gestureModel.publishHandTrackingUpdates()
+        }
+        .task {
+            await gestureModel.monitorSessionEvents()
         }
     }
 }
