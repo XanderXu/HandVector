@@ -69,6 +69,19 @@ class HeartGestureModel: ObservableObject, @unchecked Sendable {
         }
     }
   
+    func recordLeft() {
+        guard let leftSkeleton = latestHandTracking.left?.handSkeleton else { return }
+        let wrist = leftSkeleton.joint(.wrist)
+        
+        let thumb1 = leftSkeleton.joint(.thumbKnuckle)
+        let thumb2 = leftSkeleton.joint(.thumbIntermediateBase)
+        let thumb3 = leftSkeleton.joint(.thumbIntermediateTip)
+        let thumb4 = leftSkeleton.joint(.thumbTip)
+        
+        
+        
+        
+    }
     /// Computes a transform representing the heart gesture performed by the user.
     ///
     /// - Returns:
