@@ -16,6 +16,7 @@
 		6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FF2AB7418000B7B026 /* Preview Assets.xcassets */; };
 		6C36A4082AB74AD200B7B026 /* HeartGestureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A4072AB74AD200B7B026 /* HeartGestureModel.swift */; };
 		6C36A40A2AB74C6300B7B026 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A4092AB74C6300B7B026 /* Extensions.swift */; };
+		95ABDDF62ABD9988006C7B0E /* HandVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ABDDF52ABD9988006C7B0E /* HandVector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		6C36A4012AB7418000B7B026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C36A4072AB74AD200B7B026 /* HeartGestureModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeartGestureModel.swift; sourceTree = "<group>"; };
 		6C36A4092AB74C6300B7B026 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		95ABDDF52ABD9988006C7B0E /* HandVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				6C36A3F62AB7417F00B7B026 /* ContentView.swift */,
 				6C36A3F82AB7417F00B7B026 /* ImmersiveView.swift */,
 				6C36A4072AB74AD200B7B026 /* HeartGestureModel.swift */,
+				95ABDDF52ABD9988006C7B0E /* HandVector.swift */,
 				6C36A4092AB74C6300B7B026 /* Extensions.swift */,
 				6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */,
 				6C36A3FC2AB7418000B7B026 /* Assets.xcassets */,
@@ -172,6 +175,7 @@
 				6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */,
 				6C36A4082AB74AD200B7B026 /* HeartGestureModel.swift in Sources */,
 				6C36A3F92AB7417F00B7B026 /* ImmersiveView.swift in Sources */,
+				95ABDDF62ABD9988006C7B0E /* HandVector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
