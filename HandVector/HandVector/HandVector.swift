@@ -20,15 +20,22 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable {
         public let isFromTracked: Bool
         public let isToTracked: Bool
         public let vector: simd_float3
-
-        public lazy var normalizedVector: simd_float3 = {
-            if vector == .zero {
-                return .zero
-            }
-            return normalize(vector)
-        }()
+        public let normalizedVector: simd_float3
+        
         public var description: String {
             return "from: \(from), isFromTracked: \(isFromTracked),\nto: \(to), isToTracked: \(isToTracked), vector: \(vector)"
+        }
+        init(from: HandSkeleton.JointName, to: HandSkeleton.JointName, isFromTracked: Bool, isToTracked: Bool, vector: simd_float3) {
+            self.from = from
+            self.to = to
+            self.isFromTracked = isFromTracked
+            self.isToTracked = isToTracked
+            self.vector = vector
+            if vector == .zero {
+                self.normalizedVector = .zero
+            } else {
+                self.normalizedVector = normalize(vector)
+            }
         }
     }
     
@@ -44,6 +51,10 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable {
         return allVectors[named]!
     }
     
+    private init(chirality: HandAnchor.Chirality, allVectors: [HandSkeleton.JointName: VectorInfo]) {
+        self.chirality = chirality
+        self.allVectors = allVectors
+    }
     init?(handAnchor: HandAnchor) {
         guard let handSkeleton = handAnchor.handSkeleton else  {
             return nil
@@ -163,6 +174,28 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable {
         vectors[.wrist] = VectorInfo(from: .forearmArm, to: .wrist, isFromTracked: forearm2.isTracked, isToTracked: wrist.isTracked, vector: wrist.localPosition - forearm2.localPosition)
         
         return vectors
+    }
+    
+    func compare(_ vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+        var simility: Float = 0
+        HandSkeleton.JointName.allCases.forEach { name in
+            let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
+            simility += dv
+        }
+        if mirrorIfNeeded, chirality != vector.chirality {
+            simility *= -1
+        }
+        simility /= Float(HandSkeleton.JointName.allCases.count)
+        return simility
+    }
+    
+    func mirror() -> HandVector {
+        var infoNew: [HandSkeleton.JointName: VectorInfo] = [:]
+        for (name, info) in allVectors {
+            infoNew[name] = VectorInfo(from: info.from, to: info.to, isFromTracked: info.isFromTracked, isToTracked: info.isToTracked, vector: -info.vector)
+        }
+        let m = HandVector(chirality: chirality == .left ? .right : .left, allVectors: infoNew)
+        return m
     }
 }
 
