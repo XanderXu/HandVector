@@ -10,7 +10,8 @@ import RealityKit
 import RealityKitContent
 
 struct ImmersiveView: View {
-    @ObservedObject var gestureModel: HeartGestureModel
+    @Environment(ViewModel.self) private var model
+    
     var body: some View {
         RealityView { content in
             // Add the initial RealityKit content
@@ -27,22 +28,16 @@ struct ImmersiveView: View {
                 // https://developer.apple.com/
             }
         } update: { updateContent in
-            gestureModel.testHand()
-//            let handsCenterTransform = gestureModel.computeTransformOfUserPerformedHeartGesture()
-//            if let handsCenter = handsCenterTransform {
-//                let position = Pose3D(handsCenter)!.position
-//                let rotation = Pose3D(handsCenter)!.rotation
-//                
-//            }
+            
         }
         .task {
-            await gestureModel.start()
+            await model.start()
         }
         .task {
-            await gestureModel.publishHandTrackingUpdates()
+            await model.publishHandTrackingUpdates()
         }
         .task {
-            await gestureModel.monitorSessionEvents()
+            await model.monitorSessionEvents()
         }
     }
 }
