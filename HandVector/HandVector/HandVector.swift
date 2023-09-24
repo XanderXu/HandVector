@@ -13,97 +13,161 @@ import ARKit
 import Foundation
 import simd
 
-enum FingerType: Int, CaseIterable, Codable {
-    case wrist = 0
-    case thumb
-    case index
-    case middle
-    case ring
-    case little
-}
+public struct HandVector: CustomStringConvertible, @unchecked Sendable {
+    public struct VectorInfo: CustomStringConvertible, Equatable, @unchecked Sendable {
+        public let from: HandSkeleton.JointName
+        public let to: HandSkeleton.JointName
+        public let isFromTracked: Bool
+        public let isToTracked: Bool
+        public let vector: simd_float3
 
-struct HandVector: CustomStringConvertible, @unchecked Sendable {
+        public lazy var normalizedVector: simd_float3 = {
+            if vector == .zero {
+                return .zero
+            }
+            return normalize(vector)
+        }()
+        public var description: String {
+            return "from: \(from), isFromTracked: \(isFromTracked),\nto: \(to), isToTracked: \(isToTracked), vector: \(vector)"
+        }
+    }
     
-    public var chirality: HandAnchor.Chirality
+    public let chirality: HandAnchor.Chirality
     /// A textual representation of this Skeleton.
-    public var description: String// { get }
-
-    /// All joints of this skeleton.
-    public var allVectors: [FingerType: [simd_float3]]
-    
-    public func vector(_ named: HandSkeleton.JointName) -> simd_float3 {
-        return .zero
+    public var description: String {
+        return "chirality: \(chirality)\nallVectors: \(allVectors)"
     }
-    public func normalizedVector(_ named: HandSkeleton.JointName) -> simd_float3 {
-        return normalize(vector(named))
+    /// All joints of this skeleton.
+    public let allVectors: [HandSkeleton.JointName: VectorInfo]
+    
+    public func vector(to named: HandSkeleton.JointName) -> VectorInfo {
+        return allVectors[named]!
+    }
+    
+    init?(handAnchor: HandAnchor) {
+        guard let handSkeleton = handAnchor.handSkeleton else  {
+            return nil
+        }
+        self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton)
+    }
+    init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton) {
+        self.chirality = chirality
+        self.allVectors = Self.genetateVectors(from: handSkeleton)
+    }
+    
+    static func genetateVectors(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: VectorInfo] {
+        var vectors: [HandSkeleton.JointName: VectorInfo] = [:]
+        
+        let wrist = handSkeleton.joint(.wrist)
+        
+        let thumb1 = handSkeleton.joint(.thumbKnuckle)
+        let thumb2 = handSkeleton.joint(.thumbIntermediateBase)
+        let thumb3 = handSkeleton.joint(.thumbIntermediateTip)
+        let thumb4 = handSkeleton.joint(.thumbTip)
+        
+        let thumbKnuckle = VectorInfo(from: .wrist, to: .thumbKnuckle, isFromTracked: wrist.isTracked, isToTracked: thumb1.isTracked, vector: thumb1.localPosition - wrist.localPosition)
+        let thumbIntermediateBase = VectorInfo(from: .thumbKnuckle, to: .thumbIntermediateBase, isFromTracked: thumb1.isTracked, isToTracked: thumb2.isTracked, vector: thumb2.localPosition - thumb1.localPosition)
+        let thumbIntermediateTip = VectorInfo(from: .thumbIntermediateBase, to: .thumbIntermediateTip, isFromTracked: thumb2.isTracked, isToTracked: thumb3.isTracked, vector: thumb3.localPosition - thumb2.localPosition)
+        let thumbTip = VectorInfo(from: .thumbIntermediateTip, to: .thumbTip, isFromTracked: thumb3.isTracked, isToTracked: thumb4.isTracked, vector: thumb4.localPosition - thumb3.localPosition)
+        
+        vectors[.thumbKnuckle] = thumbKnuckle
+        vectors[.thumbIntermediateBase] = thumbIntermediateBase
+        vectors[.thumbIntermediateTip] = thumbIntermediateTip
+        vectors[.thumbTip] = thumbTip
+        
+        
+        let index1 = handSkeleton.joint(.indexFingerMetacarpal)
+        let index2 = handSkeleton.joint(.indexFingerKnuckle)
+        let index3 = handSkeleton.joint(.indexFingerIntermediateBase)
+        let index4 = handSkeleton.joint(.indexFingerIntermediateTip)
+        let index5 = handSkeleton.joint(.indexFingerTip)
+        
+        let indexFingerMetacarpal = VectorInfo(from: .wrist, to: .indexFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: index1.isTracked, vector: index1.localPosition - wrist.localPosition)
+        let indexFingerKnuckle = VectorInfo(from: .indexFingerMetacarpal, to: .indexFingerKnuckle, isFromTracked: index1.isTracked, isToTracked: index2.isTracked, vector: index2.localPosition - index1.localPosition)
+        let indexFingerIntermediateBase = VectorInfo(from: .indexFingerKnuckle, to: .indexFingerIntermediateBase, isFromTracked: index2.isTracked, isToTracked: index3.isTracked, vector: index3.localPosition - index2.localPosition)
+        let indexFingerIntermediateTip = VectorInfo(from: .indexFingerIntermediateBase, to: .indexFingerIntermediateTip, isFromTracked: index3.isTracked, isToTracked: index4.isTracked, vector: index4.localPosition - index3.localPosition)
+        let indexFingerTip = VectorInfo(from: .indexFingerIntermediateTip, to: .indexFingerTip, isFromTracked: index4.isTracked, isToTracked: index5.isTracked, vector: index5.localPosition - index4.localPosition)
+        
+        vectors[.indexFingerMetacarpal] = indexFingerMetacarpal
+        vectors[.indexFingerKnuckle] = indexFingerKnuckle
+        vectors[.indexFingerIntermediateBase] = indexFingerIntermediateBase
+        vectors[.indexFingerIntermediateTip] = indexFingerIntermediateTip
+        vectors[.indexFingerTip] = indexFingerTip
+        
+        
+        let middle1 = handSkeleton.joint(.middleFingerMetacarpal)
+        let middle2 = handSkeleton.joint(.middleFingerKnuckle)
+        let middle3 = handSkeleton.joint(.middleFingerIntermediateBase)
+        let middle4 = handSkeleton.joint(.middleFingerIntermediateTip)
+        let middle5 = handSkeleton.joint(.middleFingerTip)
+        
+        let middleFingerMetacarpal = VectorInfo(from: .wrist, to: .middleFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: middle1.isTracked, vector: middle1.localPosition - wrist.localPosition)
+        let middleFingerKnuckle = VectorInfo(from: .middleFingerMetacarpal, to: .middleFingerKnuckle, isFromTracked: middle1.isTracked, isToTracked: middle2.isTracked, vector: middle2.localPosition - middle1.localPosition)
+        let middleFingerIntermediateBase = VectorInfo(from: .middleFingerKnuckle, to: .middleFingerIntermediateBase, isFromTracked: middle2.isTracked, isToTracked: middle3.isTracked, vector: middle3.localPosition - middle2.localPosition)
+        let middleFingerIntermediateTip = VectorInfo(from: .middleFingerIntermediateBase, to: .middleFingerIntermediateTip, isFromTracked: middle3.isTracked, isToTracked: middle4.isTracked, vector: middle4.localPosition - middle3.localPosition)
+        let middleFingerTip = VectorInfo(from: .middleFingerIntermediateTip, to: .middleFingerTip, isFromTracked: middle4.isTracked, isToTracked: middle5.isTracked, vector: middle5.localPosition - middle4.localPosition)
+        
+        vectors[.middleFingerMetacarpal] = middleFingerMetacarpal
+        vectors[.middleFingerKnuckle] = middleFingerKnuckle
+        vectors[.middleFingerIntermediateBase] = middleFingerIntermediateBase
+        vectors[.middleFingerIntermediateTip] = middleFingerIntermediateTip
+        vectors[.middleFingerTip] = middleFingerTip
+        
+        
+        let ring1 = handSkeleton.joint(.ringFingerMetacarpal)
+        let ring2 = handSkeleton.joint(.ringFingerKnuckle)
+        let ring3 = handSkeleton.joint(.ringFingerIntermediateBase)
+        let ring4 = handSkeleton.joint(.ringFingerIntermediateTip)
+        let ring5 = handSkeleton.joint(.ringFingerTip)
+        
+        let ringFingerMetacarpal = VectorInfo(from: .wrist, to: .ringFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: ring1.isTracked, vector: ring1.localPosition - wrist.localPosition)
+        let ringFingerKnuckle = VectorInfo(from: .ringFingerMetacarpal, to: .ringFingerKnuckle, isFromTracked: ring1.isTracked, isToTracked: ring2.isTracked, vector: ring2.localPosition - ring1.localPosition)
+        let ringFingerIntermediateBase = VectorInfo(from: .ringFingerKnuckle, to: .ringFingerIntermediateBase, isFromTracked: ring2.isTracked, isToTracked: ring3.isTracked, vector: ring3.localPosition - ring2.localPosition)
+        let ringFingerIntermediateTip = VectorInfo(from: .ringFingerIntermediateBase, to: .ringFingerIntermediateTip, isFromTracked: ring3.isTracked, isToTracked: ring4.isTracked, vector: ring4.localPosition - ring3.localPosition)
+        let ringFingerTip = VectorInfo(from: .ringFingerIntermediateTip, to: .ringFingerTip, isFromTracked: ring4.isTracked, isToTracked: ring5.isTracked, vector: ring5.localPosition - ring4.localPosition)
+        
+        vectors[.ringFingerMetacarpal] = ringFingerMetacarpal
+        vectors[.ringFingerKnuckle] = ringFingerKnuckle
+        vectors[.ringFingerIntermediateBase] = ringFingerIntermediateBase
+        vectors[.ringFingerIntermediateTip] = ringFingerIntermediateTip
+        vectors[.ringFingerTip] = ringFingerTip
+        
+        
+        let little1 = handSkeleton.joint(.littleFingerMetacarpal)
+        let little2 = handSkeleton.joint(.littleFingerKnuckle)
+        let little3 = handSkeleton.joint(.littleFingerIntermediateBase)
+        let little4 = handSkeleton.joint(.littleFingerIntermediateTip)
+        let little5 = handSkeleton.joint(.littleFingerTip)
+        
+        let littleFingerMetacarpal = VectorInfo(from: .wrist, to: .littleFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: little1.isTracked, vector: little1.localPosition - wrist.localPosition)
+        let littleFingerKnuckle = VectorInfo(from: .littleFingerMetacarpal, to: .littleFingerKnuckle, isFromTracked: little1.isTracked, isToTracked: little2.isTracked, vector: little2.localPosition - little1.localPosition)
+        let littleFingerIntermediateBase = VectorInfo(from: .littleFingerKnuckle, to: .littleFingerIntermediateBase, isFromTracked: little2.isTracked, isToTracked: little3.isTracked, vector: little3.localPosition - little2.localPosition)
+        let littleFingerIntermediateTip = VectorInfo(from: .littleFingerIntermediateBase, to: .littleFingerIntermediateTip, isFromTracked: little3.isTracked, isToTracked: little4.isTracked, vector: little4.localPosition - little3.localPosition)
+        let littleFingerTip = VectorInfo(from: .littleFingerIntermediateTip, to: .littleFingerTip, isFromTracked: little4.isTracked, isToTracked: little5.isTracked, vector: little5.localPosition - little4.localPosition)
+        
+        vectors[.littleFingerMetacarpal] = littleFingerMetacarpal
+        vectors[.littleFingerKnuckle] = littleFingerKnuckle
+        vectors[.littleFingerIntermediateBase] = littleFingerIntermediateBase
+        vectors[.littleFingerIntermediateTip] = littleFingerIntermediateTip
+        vectors[.littleFingerTip] = littleFingerTip
+        
+        
+        let forearm1 = handSkeleton.joint(.forearmWrist)
+        let forearm2 = handSkeleton.joint(.forearmArm)
+        
+        let forearmWrist = VectorInfo(from: .forearmArm, to: .forearmWrist, isFromTracked: forearm2.isTracked, isToTracked: forearm1.isTracked, vector: forearm1.localPosition - forearm2.localPosition)
+        let forearmArm = VectorInfo(from: .forearmWrist, to: .forearmArm, isFromTracked: forearm1.isTracked, isToTracked: forearm2.isTracked, vector: forearm2.localPosition - forearm1.localPosition)
+        
+        vectors[.forearmWrist] = forearmWrist
+        vectors[.forearmArm] = forearmArm
+        vectors[.wrist] = VectorInfo(from: .forearmArm, to: .wrist, isFromTracked: forearm2.isTracked, isToTracked: wrist.isTracked, vector: wrist.localPosition - forearm2.localPosition)
+        
+        return vectors
     }
 }
 
-func recordJiontVector(_ handSkeleton: HandSkeleton) {
-   
-    let wrist = handSkeleton.joint(.wrist)
-    let wristPosition = wrist.anchorFromJointTransform.columns.3.xyz
-    
-    let thumb1 = handSkeleton.joint(.thumbKnuckle).anchorFromJointTransform.columns.3.xyz
-    let thumb2 = handSkeleton.joint(.thumbIntermediateBase).anchorFromJointTransform.columns.3.xyz
-    let thumb3 = handSkeleton.joint(.thumbIntermediateTip).anchorFromJointTransform.columns.3.xyz
-    let thumb4 = handSkeleton.joint(.thumbTip).anchorFromJointTransform.columns.3.xyz
-    
-    let thumbVector0 = normalize(thumb1 - wristPosition)
-    let thumbVector1 = normalize(thumb2 - thumb1)
-    let thumbVector2 = normalize(thumb3 - thumb2)
-    let thumbVector3 = normalize(thumb4 - thumb3)
-    let thumbVector4 = normalize(wristPosition - thumb4)
-    
-    let index1 = handSkeleton.joint(.indexFingerMetacarpal).anchorFromJointTransform.columns.3.xyz
-    let index2 = handSkeleton.joint(.indexFingerKnuckle).anchorFromJointTransform.columns.3.xyz
-    let index3 = handSkeleton.joint(.indexFingerIntermediateBase).anchorFromJointTransform.columns.3.xyz
-    let index4 = handSkeleton.joint(.indexFingerIntermediateTip).anchorFromJointTransform.columns.3.xyz
-    let index5 = handSkeleton.joint(.indexFingerTip).anchorFromJointTransform.columns.3.xyz
-    
-    let indexVector0 = normalize(index1 - wristPosition)
-    let indexVector1 = normalize(index2 - index1)
-    let indexVector2 = normalize(index3 - index2)
-    let indexVector3 = normalize(index4 - index3)
-    let indexVector4 = normalize(index5 - index4)
-    let indexVector5 = normalize(wristPosition - index5)
-    
-    let middle1 = handSkeleton.joint(.middleFingerMetacarpal).anchorFromJointTransform.columns.3.xyz
-    let middle2 = handSkeleton.joint(.middleFingerKnuckle).anchorFromJointTransform.columns.3.xyz
-    let middle3 = handSkeleton.joint(.middleFingerIntermediateBase).anchorFromJointTransform.columns.3.xyz
-    let middle4 = handSkeleton.joint(.middleFingerIntermediateTip).anchorFromJointTransform.columns.3.xyz
-    let middle5 = handSkeleton.joint(.middleFingerTip).anchorFromJointTransform.columns.3.xyz
-    
-    let middleVector0 = normalize(middle1 - wristPosition)
-    let middleVector1 = normalize(middle2 - middle1)
-    let middleVector2 = normalize(middle3 - middle2)
-    let middleVector3 = normalize(middle4 - middle3)
-    let middleVector4 = normalize(middle5 - middle4)
-    let middleVector5 = normalize(wristPosition - middle5)
-    
-    let ring1 = handSkeleton.joint(.ringFingerMetacarpal).anchorFromJointTransform.columns.3.xyz
-    let ring2 = handSkeleton.joint(.ringFingerKnuckle).anchorFromJointTransform.columns.3.xyz
-    let ring3 = handSkeleton.joint(.ringFingerIntermediateBase).anchorFromJointTransform.columns.3.xyz
-    let ring4 = handSkeleton.joint(.ringFingerIntermediateTip).anchorFromJointTransform.columns.3.xyz
-    let ring5 = handSkeleton.joint(.ringFingerTip).anchorFromJointTransform.columns.3.xyz
-    
-    let ringVector0 = normalize(ring1 - wristPosition)
-    let ringVector1 = normalize(ring2 - ring1)
-    let ringVector2 = normalize(ring3 - ring2)
-    let ringVector3 = normalize(ring4 - ring3)
-    let ringVector4 = normalize(ring5 - ring4)
-    let ringVector5 = normalize(wristPosition - ring5)
-    
-    let little1 = handSkeleton.joint(.littleFingerMetacarpal).anchorFromJointTransform.columns.3.xyz
-    let little2 = handSkeleton.joint(.littleFingerKnuckle).anchorFromJointTransform.columns.3.xyz
-    let little3 = handSkeleton.joint(.littleFingerIntermediateBase).anchorFromJointTransform.columns.3.xyz
-    let little4 = handSkeleton.joint(.littleFingerIntermediateTip).anchorFromJointTransform.columns.3.xyz
-    let little5 = handSkeleton.joint(.littleFingerTip).anchorFromJointTransform.columns.3.xyz
-    
-    let littleVector0 = normalize(little1 - wristPosition)
-    let littleVector1 = normalize(little2 - little1)
-    let littleVector2 = normalize(little3 - little2)
-    let littleVector3 = normalize(little4 - little3)
-    let littleVector4 = normalize(little5 - little4)
-    let littleVector5 = normalize(wristPosition - little5)
+fileprivate extension HandSkeleton.Joint {
+    var localPosition: simd_float3 {
+        return anchorFromJointTransform.columns.3.xyz
+    }
 }

@@ -27,12 +27,13 @@ struct ImmersiveView: View {
                 // https://developer.apple.com/
             }
         } update: { updateContent in
-            let handsCenterTransform = gestureModel.computeTransformOfUserPerformedHeartGesture()
-            if let handsCenter = handsCenterTransform {
-                let position = Pose3D(handsCenter)!.position
-                let rotation = Pose3D(handsCenter)!.rotation
-                
-            }
+            gestureModel.testHand()
+//            let handsCenterTransform = gestureModel.computeTransformOfUserPerformedHeartGesture()
+//            if let handsCenter = handsCenterTransform {
+//                let position = Pose3D(handsCenter)!.position
+//                let rotation = Pose3D(handsCenter)!.rotation
+//                
+//            }
         }
         .task {
             await gestureModel.start()

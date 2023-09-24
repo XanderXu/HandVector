@@ -69,7 +69,11 @@ class HeartGestureModel: ObservableObject, @unchecked Sendable {
         }
     }
   
-    
+    func testHand() {
+        let pose = HandSkeleton.neutralPose
+        let vector = HandVector(chirality: .left, handSkeleton: pose)
+        print(vector)
+    }
     /// Computes a transform representing the heart gesture performed by the user.
     ///
     /// - Returns:
