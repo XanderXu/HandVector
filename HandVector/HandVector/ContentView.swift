@@ -54,26 +54,32 @@ struct ContentView: View {
             .pickerStyle(.segmented)
             .frame(maxWidth: 300)
             .padding(.top, 20)
-            .disabled(!showImmersiveSpace && isStart)
+            .disabled((!showImmersiveSpace) || isStart)
             
             Toggle("Start!", isOn: $isStart)
                 .toggleStyle(.button)
                 .padding(.top, 20)
                 .disabled(!showImmersiveSpace)
 
-            
-            Text("倒计时： \(timeRemaining)")
-                .padding(.top, 20)
-                .onReceive(timer) { input in
-                    if !isStartTimer {return}
-                    if timeRemaining > 0 {
-                        timeRemaining -= 1
-                    } else {
-                        self.stopTimer()
-                        model.record()
+            if recordOrMatch == 0 {
+                Text("record count down： \(timeRemaining)")
+                    .padding(.top, 20)
+                    .onReceive(timer) { input in
+                        if !isStartTimer {return}
+                        if timeRemaining > 0 {
+                            timeRemaining -= 1
+                        } else {
+                            self.stopTimer()
+                            model.record()
+                        }
                     }
-                }
-                .disabled(!showImmersiveSpace)
+                    .disabled(!showImmersiveSpace)
+            } else {
+                Text("match rate： \(model.matchRate)")
+                    .padding(.top, 20)
+                    .disabled(!showImmersiveSpace)
+            }
+            
             
         }
         .padding()

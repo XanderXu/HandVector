@@ -19,6 +19,7 @@ class ViewModel: @unchecked Sendable {
     var handTracking = HandTrackingProvider()
     var latestHandTracking: HandsUpdates = .init(left: nil, right: nil)
     var recordedHand: HandVector?
+    var matchRate: Float = 0
     
     struct HandsUpdates {
         var left: HandAnchor?

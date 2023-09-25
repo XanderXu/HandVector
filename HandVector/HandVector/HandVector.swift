@@ -25,7 +25,7 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable {
         public var description: String {
             return "from: \(from), isFromTracked: \(isFromTracked),\nto: \(to), isToTracked: \(isToTracked), vector: \(vector)"
         }
-        init(from: HandSkeleton.JointName, to: HandSkeleton.JointName, isFromTracked: Bool, isToTracked: Bool, vector: simd_float3) {
+        public init(from: HandSkeleton.JointName, to: HandSkeleton.JointName, isFromTracked: Bool, isToTracked: Bool, vector: simd_float3) {
             self.from = from
             self.to = to
             self.isFromTracked = isFromTracked
