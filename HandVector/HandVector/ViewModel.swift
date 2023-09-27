@@ -18,8 +18,10 @@ class ViewModel: @unchecked Sendable {
     let session = ARKitSession()
     var handTracking = HandTrackingProvider()
     var latestHandTracking: HandsUpdates = .init(left: nil, right: nil)
-    var recordedHand: HandVector?
-    var matchRate: Float = 0
+    var recordedLeftHand: HandVector?
+    var recordedRightHand: HandVector?
+    var matchRateLeft: Float = 0
+    var matchRateRight: Float = 0
     
     struct HandsUpdates {
         var left: HandAnchor?
@@ -72,14 +74,19 @@ class ViewModel: @unchecked Sendable {
     }
   
     func record() {
-        let pose = HandSkeleton.neutralPose
-        recordedHand = HandVector(chirality: .left, handSkeleton: pose)
+        if let left = latestHandTracking.left?.handSkeleton {
+            recordedLeftHand = HandVector(chirality: .left, handSkeleton: left)
+        }
+        if let right = latestHandTracking.right?.handSkeleton {
+            recordedRightHand = HandVector(chirality: .right, handSkeleton: right)
+        }
     }
     
     func match() {
         let pose = HandSkeleton.neutralPose
         let vector = HandVector(chirality: .left, handSkeleton: pose)
-        let similary = recordedHand?.compare(vector) ?? 0
+        let similaryLeft = recordedLeftHand?.compare(vector) ?? 0
+        let similaryRight = recordedRightHand?.compare(vector) ?? 0
     }
     
 }
