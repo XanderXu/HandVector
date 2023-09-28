@@ -14,28 +14,51 @@ import Foundation
 import simd
 
 public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable, Codable {
+    public struct PositionInfo: CustomStringConvertible, @unchecked Sendable, Hashable, Codable {
+        public let name: HandSkeleton.JointName
+        public let isTracked: Bool
+        public let position: simd_float3
+        
+        public init(joint: HandSkeleton.Joint) {
+            self.name = joint.name
+            self.isTracked = joint.isTracked
+            self.position = joint.localPosition
+        }
+        public init(name: HandSkeleton.JointName, isTracked: Bool, position: simd_float3) {
+            self.name = name
+            self.isTracked = isTracked
+            self.position = position
+        }
+        public var description: String {
+            return "name: \(name), isTracked: \(isTracked), position: \(position)"
+        }
+        
+        public func mirror() -> PositionInfo {
+            return PositionInfo(name: name, isTracked: isTracked, position: -position)
+        }
+    }
     public struct VectorInfo: CustomStringConvertible, Hashable, @unchecked Sendable, Codable {
-        public let from: HandSkeleton.JointName
-        public let to: HandSkeleton.JointName
-        public let isFromTracked: Bool
-        public let isToTracked: Bool
+        public let from: PositionInfo
+        public let to: PositionInfo
         public let vector: simd_float3
         public let normalizedVector: simd_float3
         
         public var description: String {
-            return "from: \(from), isFromTracked: \(isFromTracked),\nto: \(to), isToTracked: \(isToTracked), vector: \(vector)"
+            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
         }
-        public init(from: HandSkeleton.JointName, to: HandSkeleton.JointName, isFromTracked: Bool, isToTracked: Bool, vector: simd_float3) {
+        public init(from: PositionInfo, to: PositionInfo) {
             self.from = from
             self.to = to
-            self.isFromTracked = isFromTracked
-            self.isToTracked = isToTracked
-            self.vector = vector
+            self.vector = to.position - from.position
             if vector == .zero {
                 self.normalizedVector = .zero
             } else {
                 self.normalizedVector = normalize(vector)
             }
+        }
+        
+        public func mirror() -> VectorInfo {
+            return VectorInfo(from: from.mirror(), to: to.mirror())
         }
     }
     
@@ -72,108 +95,74 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
         var vectors: [HandSkeleton.JointName: VectorInfo] = [:]
         
         let wrist = handSkeleton.joint(.wrist)
+        let forearmWrist = handSkeleton.joint(.forearmWrist)
+        let forearmArm = handSkeleton.joint(.forearmArm)
         
-        let thumb1 = handSkeleton.joint(.thumbKnuckle)
-        let thumb2 = handSkeleton.joint(.thumbIntermediateBase)
-        let thumb3 = handSkeleton.joint(.thumbIntermediateTip)
-        let thumb4 = handSkeleton.joint(.thumbTip)
+        vectors[.forearmWrist] = VectorInfo(from: PositionInfo(joint: forearmArm), to: PositionInfo(joint: forearmWrist))
+        vectors[.forearmArm] = VectorInfo(from: PositionInfo(joint: forearmWrist), to: PositionInfo(joint: forearmArm))
+        vectors[.wrist] = VectorInfo(from: PositionInfo(joint: forearmArm), to: PositionInfo(joint: wrist))
         
-        let thumbKnuckle = VectorInfo(from: .wrist, to: .thumbKnuckle, isFromTracked: wrist.isTracked, isToTracked: thumb1.isTracked, vector: thumb1.localPosition - wrist.localPosition)
-        let thumbIntermediateBase = VectorInfo(from: .thumbKnuckle, to: .thumbIntermediateBase, isFromTracked: thumb1.isTracked, isToTracked: thumb2.isTracked, vector: thumb2.localPosition - thumb1.localPosition)
-        let thumbIntermediateTip = VectorInfo(from: .thumbIntermediateBase, to: .thumbIntermediateTip, isFromTracked: thumb2.isTracked, isToTracked: thumb3.isTracked, vector: thumb3.localPosition - thumb2.localPosition)
-        let thumbTip = VectorInfo(from: .thumbIntermediateTip, to: .thumbTip, isFromTracked: thumb3.isTracked, isToTracked: thumb4.isTracked, vector: thumb4.localPosition - thumb3.localPosition)
+        let thumbKnuckle = handSkeleton.joint(.thumbKnuckle)
+        let thumbIntermediateBase = handSkeleton.joint(.thumbIntermediateBase)
+        let thumbIntermediateTip = handSkeleton.joint(.thumbIntermediateTip)
+        let thumbTip = handSkeleton.joint(.thumbTip)
         
-        vectors[.thumbKnuckle] = thumbKnuckle
-        vectors[.thumbIntermediateBase] = thumbIntermediateBase
-        vectors[.thumbIntermediateTip] = thumbIntermediateTip
-        vectors[.thumbTip] = thumbTip
+        vectors[.thumbKnuckle] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: thumbKnuckle))
+        vectors[.thumbIntermediateBase] = VectorInfo(from: PositionInfo(joint: thumbKnuckle), to: PositionInfo(joint: thumbIntermediateBase))
+        vectors[.thumbIntermediateTip] = VectorInfo(from: PositionInfo(joint: thumbIntermediateBase), to: PositionInfo(joint: thumbIntermediateTip))
+        vectors[.thumbTip] = VectorInfo(from: PositionInfo(joint: thumbIntermediateTip), to: PositionInfo(joint: thumbTip))
+
         
+        let indexFingerMetacarpal = handSkeleton.joint(.indexFingerMetacarpal)
+        let indexFingerKnuckle = handSkeleton.joint(.indexFingerKnuckle)
+        let indexFingerIntermediateBase = handSkeleton.joint(.indexFingerIntermediateBase)
+        let indexFingerIntermediateTip = handSkeleton.joint(.indexFingerIntermediateTip)
+        let indexFingerTip = handSkeleton.joint(.indexFingerTip)
         
-        let index1 = handSkeleton.joint(.indexFingerMetacarpal)
-        let index2 = handSkeleton.joint(.indexFingerKnuckle)
-        let index3 = handSkeleton.joint(.indexFingerIntermediateBase)
-        let index4 = handSkeleton.joint(.indexFingerIntermediateTip)
-        let index5 = handSkeleton.joint(.indexFingerTip)
-        
-        let indexFingerMetacarpal = VectorInfo(from: .wrist, to: .indexFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: index1.isTracked, vector: index1.localPosition - wrist.localPosition)
-        let indexFingerKnuckle = VectorInfo(from: .indexFingerMetacarpal, to: .indexFingerKnuckle, isFromTracked: index1.isTracked, isToTracked: index2.isTracked, vector: index2.localPosition - index1.localPosition)
-        let indexFingerIntermediateBase = VectorInfo(from: .indexFingerKnuckle, to: .indexFingerIntermediateBase, isFromTracked: index2.isTracked, isToTracked: index3.isTracked, vector: index3.localPosition - index2.localPosition)
-        let indexFingerIntermediateTip = VectorInfo(from: .indexFingerIntermediateBase, to: .indexFingerIntermediateTip, isFromTracked: index3.isTracked, isToTracked: index4.isTracked, vector: index4.localPosition - index3.localPosition)
-        let indexFingerTip = VectorInfo(from: .indexFingerIntermediateTip, to: .indexFingerTip, isFromTracked: index4.isTracked, isToTracked: index5.isTracked, vector: index5.localPosition - index4.localPosition)
-        
-        vectors[.indexFingerMetacarpal] = indexFingerMetacarpal
-        vectors[.indexFingerKnuckle] = indexFingerKnuckle
-        vectors[.indexFingerIntermediateBase] = indexFingerIntermediateBase
-        vectors[.indexFingerIntermediateTip] = indexFingerIntermediateTip
-        vectors[.indexFingerTip] = indexFingerTip
+        vectors[.indexFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: indexFingerMetacarpal))
+        vectors[.indexFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: indexFingerMetacarpal), to: PositionInfo(joint: indexFingerKnuckle))
+        vectors[.indexFingerIntermediateBase] = VectorInfo(from: PositionInfo(joint: indexFingerKnuckle), to: PositionInfo(joint: indexFingerIntermediateBase))
+        vectors[.indexFingerIntermediateTip] = VectorInfo(from: PositionInfo(joint: indexFingerIntermediateBase), to: PositionInfo(joint: indexFingerIntermediateTip))
+        vectors[.indexFingerTip] = VectorInfo(from: PositionInfo(joint: indexFingerIntermediateTip), to: PositionInfo(joint: indexFingerTip))
         
         
-        let middle1 = handSkeleton.joint(.middleFingerMetacarpal)
-        let middle2 = handSkeleton.joint(.middleFingerKnuckle)
-        let middle3 = handSkeleton.joint(.middleFingerIntermediateBase)
-        let middle4 = handSkeleton.joint(.middleFingerIntermediateTip)
-        let middle5 = handSkeleton.joint(.middleFingerTip)
+        let middleFingerMetacarpal = handSkeleton.joint(.middleFingerMetacarpal)
+        let middleFingerKnuckle = handSkeleton.joint(.middleFingerKnuckle)
+        let middleFingerIntermediateBase = handSkeleton.joint(.middleFingerIntermediateBase)
+        let middleFingerIntermediateTip = handSkeleton.joint(.middleFingerIntermediateTip)
+        let middleFingerTip = handSkeleton.joint(.middleFingerTip)
         
-        let middleFingerMetacarpal = VectorInfo(from: .wrist, to: .middleFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: middle1.isTracked, vector: middle1.localPosition - wrist.localPosition)
-        let middleFingerKnuckle = VectorInfo(from: .middleFingerMetacarpal, to: .middleFingerKnuckle, isFromTracked: middle1.isTracked, isToTracked: middle2.isTracked, vector: middle2.localPosition - middle1.localPosition)
-        let middleFingerIntermediateBase = VectorInfo(from: .middleFingerKnuckle, to: .middleFingerIntermediateBase, isFromTracked: middle2.isTracked, isToTracked: middle3.isTracked, vector: middle3.localPosition - middle2.localPosition)
-        let middleFingerIntermediateTip = VectorInfo(from: .middleFingerIntermediateBase, to: .middleFingerIntermediateTip, isFromTracked: middle3.isTracked, isToTracked: middle4.isTracked, vector: middle4.localPosition - middle3.localPosition)
-        let middleFingerTip = VectorInfo(from: .middleFingerIntermediateTip, to: .middleFingerTip, isFromTracked: middle4.isTracked, isToTracked: middle5.isTracked, vector: middle5.localPosition - middle4.localPosition)
-        
-        vectors[.middleFingerMetacarpal] = middleFingerMetacarpal
-        vectors[.middleFingerKnuckle] = middleFingerKnuckle
-        vectors[.middleFingerIntermediateBase] = middleFingerIntermediateBase
-        vectors[.middleFingerIntermediateTip] = middleFingerIntermediateTip
-        vectors[.middleFingerTip] = middleFingerTip
+        vectors[.middleFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: middleFingerMetacarpal))
+        vectors[.middleFingerKnuckle] = VectorInfo(from: PositionInfo(joint: middleFingerMetacarpal), to: PositionInfo(joint: middleFingerKnuckle))
+        vectors[.middleFingerIntermediateBase] = VectorInfo(from: PositionInfo(joint: middleFingerKnuckle), to: PositionInfo(joint: middleFingerIntermediateBase))
+        vectors[.middleFingerIntermediateTip] = VectorInfo(from: PositionInfo(joint: middleFingerIntermediateBase), to: PositionInfo(joint: middleFingerIntermediateTip))
+        vectors[.middleFingerTip] = VectorInfo(from: PositionInfo(joint: middleFingerIntermediateTip), to: PositionInfo(joint: middleFingerTip))
         
         
-        let ring1 = handSkeleton.joint(.ringFingerMetacarpal)
-        let ring2 = handSkeleton.joint(.ringFingerKnuckle)
-        let ring3 = handSkeleton.joint(.ringFingerIntermediateBase)
-        let ring4 = handSkeleton.joint(.ringFingerIntermediateTip)
-        let ring5 = handSkeleton.joint(.ringFingerTip)
+        let ringFingerMetacarpal = handSkeleton.joint(.ringFingerMetacarpal)
+        let ringFingerKnuckle = handSkeleton.joint(.ringFingerKnuckle)
+        let ringFingerIntermediateBase = handSkeleton.joint(.ringFingerIntermediateBase)
+        let ringFingerIntermediateTip = handSkeleton.joint(.ringFingerIntermediateTip)
+        let ringFingerTip = handSkeleton.joint(.ringFingerTip)
         
-        let ringFingerMetacarpal = VectorInfo(from: .wrist, to: .ringFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: ring1.isTracked, vector: ring1.localPosition - wrist.localPosition)
-        let ringFingerKnuckle = VectorInfo(from: .ringFingerMetacarpal, to: .ringFingerKnuckle, isFromTracked: ring1.isTracked, isToTracked: ring2.isTracked, vector: ring2.localPosition - ring1.localPosition)
-        let ringFingerIntermediateBase = VectorInfo(from: .ringFingerKnuckle, to: .ringFingerIntermediateBase, isFromTracked: ring2.isTracked, isToTracked: ring3.isTracked, vector: ring3.localPosition - ring2.localPosition)
-        let ringFingerIntermediateTip = VectorInfo(from: .ringFingerIntermediateBase, to: .ringFingerIntermediateTip, isFromTracked: ring3.isTracked, isToTracked: ring4.isTracked, vector: ring4.localPosition - ring3.localPosition)
-        let ringFingerTip = VectorInfo(from: .ringFingerIntermediateTip, to: .ringFingerTip, isFromTracked: ring4.isTracked, isToTracked: ring5.isTracked, vector: ring5.localPosition - ring4.localPosition)
-        
-        vectors[.ringFingerMetacarpal] = ringFingerMetacarpal
-        vectors[.ringFingerKnuckle] = ringFingerKnuckle
-        vectors[.ringFingerIntermediateBase] = ringFingerIntermediateBase
-        vectors[.ringFingerIntermediateTip] = ringFingerIntermediateTip
-        vectors[.ringFingerTip] = ringFingerTip
+        vectors[.ringFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: ringFingerMetacarpal))
+        vectors[.ringFingerKnuckle] = VectorInfo(from: PositionInfo(joint: ringFingerMetacarpal), to: PositionInfo(joint: ringFingerKnuckle))
+        vectors[.ringFingerIntermediateBase] = VectorInfo(from: PositionInfo(joint: ringFingerKnuckle), to: PositionInfo(joint: ringFingerIntermediateBase))
+        vectors[.ringFingerIntermediateTip] = VectorInfo(from: PositionInfo(joint: ringFingerIntermediateBase), to: PositionInfo(joint: ringFingerIntermediateTip))
+        vectors[.ringFingerTip] = VectorInfo(from: PositionInfo(joint: ringFingerIntermediateTip), to: PositionInfo(joint: ringFingerTip))
         
         
-        let little1 = handSkeleton.joint(.littleFingerMetacarpal)
-        let little2 = handSkeleton.joint(.littleFingerKnuckle)
-        let little3 = handSkeleton.joint(.littleFingerIntermediateBase)
-        let little4 = handSkeleton.joint(.littleFingerIntermediateTip)
-        let little5 = handSkeleton.joint(.littleFingerTip)
+        let littleFingerMetacarpal = handSkeleton.joint(.littleFingerMetacarpal)
+        let littleFingerKnuckle = handSkeleton.joint(.littleFingerKnuckle)
+        let littleFingerIntermediateBase = handSkeleton.joint(.littleFingerIntermediateBase)
+        let littleFingerIntermediateTip = handSkeleton.joint(.littleFingerIntermediateTip)
+        let littleFingerTip = handSkeleton.joint(.littleFingerTip)
         
-        let littleFingerMetacarpal = VectorInfo(from: .wrist, to: .littleFingerMetacarpal, isFromTracked: wrist.isTracked, isToTracked: little1.isTracked, vector: little1.localPosition - wrist.localPosition)
-        let littleFingerKnuckle = VectorInfo(from: .littleFingerMetacarpal, to: .littleFingerKnuckle, isFromTracked: little1.isTracked, isToTracked: little2.isTracked, vector: little2.localPosition - little1.localPosition)
-        let littleFingerIntermediateBase = VectorInfo(from: .littleFingerKnuckle, to: .littleFingerIntermediateBase, isFromTracked: little2.isTracked, isToTracked: little3.isTracked, vector: little3.localPosition - little2.localPosition)
-        let littleFingerIntermediateTip = VectorInfo(from: .littleFingerIntermediateBase, to: .littleFingerIntermediateTip, isFromTracked: little3.isTracked, isToTracked: little4.isTracked, vector: little4.localPosition - little3.localPosition)
-        let littleFingerTip = VectorInfo(from: .littleFingerIntermediateTip, to: .littleFingerTip, isFromTracked: little4.isTracked, isToTracked: little5.isTracked, vector: little5.localPosition - little4.localPosition)
-        
-        vectors[.littleFingerMetacarpal] = littleFingerMetacarpal
-        vectors[.littleFingerKnuckle] = littleFingerKnuckle
-        vectors[.littleFingerIntermediateBase] = littleFingerIntermediateBase
-        vectors[.littleFingerIntermediateTip] = littleFingerIntermediateTip
-        vectors[.littleFingerTip] = littleFingerTip
-        
-        
-        let forearm1 = handSkeleton.joint(.forearmWrist)
-        let forearm2 = handSkeleton.joint(.forearmArm)
-        
-        let forearmWrist = VectorInfo(from: .forearmArm, to: .forearmWrist, isFromTracked: forearm2.isTracked, isToTracked: forearm1.isTracked, vector: forearm1.localPosition - forearm2.localPosition)
-        let forearmArm = VectorInfo(from: .forearmWrist, to: .forearmArm, isFromTracked: forearm1.isTracked, isToTracked: forearm2.isTracked, vector: forearm2.localPosition - forearm1.localPosition)
-        
-        vectors[.forearmWrist] = forearmWrist
-        vectors[.forearmArm] = forearmArm
-        vectors[.wrist] = VectorInfo(from: .forearmArm, to: .wrist, isFromTracked: forearm2.isTracked, isToTracked: wrist.isTracked, vector: wrist.localPosition - forearm2.localPosition)
+        vectors[.littleFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: littleFingerMetacarpal))
+        vectors[.littleFingerKnuckle] = VectorInfo(from: PositionInfo(joint: littleFingerMetacarpal), to: PositionInfo(joint: littleFingerKnuckle))
+        vectors[.littleFingerIntermediateBase] = VectorInfo(from: PositionInfo(joint: littleFingerKnuckle), to: PositionInfo(joint: littleFingerIntermediateBase))
+        vectors[.littleFingerIntermediateTip] = VectorInfo(from: PositionInfo(joint: littleFingerIntermediateBase), to: PositionInfo(joint: littleFingerIntermediateTip))
+        vectors[.littleFingerTip] = VectorInfo(from: PositionInfo(joint: littleFingerIntermediateTip), to: PositionInfo(joint: littleFingerTip))
         
         return vectors
     }
@@ -194,7 +183,7 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
     func mirror() -> HandVector {
         var infoNew: [HandSkeleton.JointName: VectorInfo] = [:]
         for (name, info) in allVectors {
-            infoNew[name] = VectorInfo(from: info.from, to: info.to, isFromTracked: info.isFromTracked, isToTracked: info.isToTracked, vector: -info.vector)
+            infoNew[name] = info.mirror()
         }
         let m = HandVector(chirality: chirality == .left ? .right : .left, allVectors: infoNew)
         return m
