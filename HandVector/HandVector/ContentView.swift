@@ -75,7 +75,7 @@ struct ContentView: View {
                     }
                     .disabled(!showImmersiveSpace)
             } else {
-                Text("match rate： \(model.matchRate)")
+                Text("match rate Left： \(model.matchRateLeft)\nmatch rate Right： \(model.matchRateRight)")
                     .padding(.top, 20)
                     .disabled(!showImmersiveSpace)
             }
