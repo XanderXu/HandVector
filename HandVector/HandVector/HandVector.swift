@@ -74,24 +74,22 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
         return allVectors[named]!
     }
     
-    
-    
     private init(chirality: HandAnchor.Chirality, allVectors: [HandSkeleton.JointName: VectorInfo]) {
         self.chirality = chirality
         self.allVectors = allVectors
     }
-    init?(handAnchor: HandAnchor) {
+    public init?(handAnchor: HandAnchor) {
         guard let handSkeleton = handAnchor.handSkeleton else  {
             return nil
         }
         self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton)
     }
-    init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton) {
+    public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton) {
         self.chirality = chirality
         self.allVectors = Self.genetateVectors(from: handSkeleton)
     }
     
-    static func genetateVectors(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: VectorInfo] {
+    public static func genetateVectors(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: VectorInfo] {
         var vectors: [HandSkeleton.JointName: VectorInfo] = [:]
         
         let wrist = handSkeleton.joint(.wrist)
@@ -120,7 +118,7 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
         let indexFingerTip = handSkeleton.joint(.indexFingerTip)
         
         vectors[.indexFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: wrist), to: PositionInfo(joint: indexFingerMetacarpal))
-        vectors[.indexFingerMetacarpal] = VectorInfo(from: PositionInfo(joint: indexFingerMetacarpal), to: PositionInfo(joint: indexFingerKnuckle))
+        vectors[.indexFingerKnuckle] = VectorInfo(from: PositionInfo(joint: indexFingerMetacarpal), to: PositionInfo(joint: indexFingerKnuckle))
         vectors[.indexFingerIntermediateBase] = VectorInfo(from: PositionInfo(joint: indexFingerKnuckle), to: PositionInfo(joint: indexFingerIntermediateBase))
         vectors[.indexFingerIntermediateTip] = VectorInfo(from: PositionInfo(joint: indexFingerIntermediateBase), to: PositionInfo(joint: indexFingerIntermediateTip))
         vectors[.indexFingerTip] = VectorInfo(from: PositionInfo(joint: indexFingerIntermediateTip), to: PositionInfo(joint: indexFingerTip))
@@ -167,17 +165,71 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
         return vectors
     }
     
-    func compare(_ vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
-        var simility: Float = 0
+    
+}
+public extension HandVector {
+    enum FingerGroup: CaseIterable {
+        case thump
+        case indexFinger
+        case middleFinger
+        case ringFinger
+        case littleFinger
+        
+        var jointNames: [HandSkeleton.JointName] {
+            switch self {
+            case .thump:
+                return [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
+            case .indexFinger:
+                return [.indexFingerMetacarpal, .indexFingerKnuckle, .indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
+            case .middleFinger:
+                return [.middleFingerMetacarpal, .middleFingerKnuckle, .middleFingerIntermediateBase, .middleFingerIntermediateTip, .middleFingerTip]
+            case .ringFinger:
+                return [.ringFingerMetacarpal, .ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
+            case .littleFinger:
+                return [.littleFingerMetacarpal, .littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
+            }
+        }
+        static let keyWeight: Float = 1.0
+        static let normalWeight: Float = 0.8
+        static let insensitiveWeight: Float = 0.2
+    }
+    
+    func similarity(to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+        var similarity: Float = 0
         HandSkeleton.JointName.allCases.forEach { name in
             let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
-            simility += dv
+            similarity += dv
         }
         if mirrorIfNeeded, chirality != vector.chirality {
-            simility *= -1
+            similarity *= -1
         }
-        simility /= Float(HandSkeleton.JointName.allCases.count)
-        return simility
+        similarity /= Float(HandSkeleton.JointName.allCases.count)
+        return similarity
+    }
+    func similarity(of keyFingers: [FingerGroup] = FingerGroup.allCases, normalFingers: [FingerGroup] = [], insensitiveFingers: [FingerGroup] = [], to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+        var similarity: Float = 0
+        keyFingers.flatMap { $0.jointNames }.forEach { name in
+            let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
+            similarity += dv
+        }
+        
+        if mirrorIfNeeded, chirality != vector.chirality {
+            similarity *= -1
+        }
+//        similarity /= Float(fingerGroup.jointNames.count)
+        return similarity
+    }
+    func similarity(of fingerGroup: FingerGroup, to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+        var similarity: Float = 0
+        fingerGroup.jointNames.forEach { name in
+            let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
+            similarity += dv
+        }
+        if mirrorIfNeeded, chirality != vector.chirality {
+            similarity *= -1
+        }
+        similarity /= Float(fingerGroup.jointNames.count)
+        return similarity
     }
     
     func mirror() -> HandVector {
