@@ -168,7 +168,7 @@ public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable
     
 }
 public extension HandVector {
-    enum FingerGroup: CaseIterable {
+    enum JointOfFinger: CaseIterable {
         case thump
         case indexFinger
         case middleFinger
@@ -191,44 +191,60 @@ public extension HandVector {
         }
         static let keyWeight: Float = 1.0
         static let normalWeight: Float = 0.8
-        static let insensitiveWeight: Float = 0.2
+        static let insensitiveWeight: Float = 0.5
     }
     
     func similarity(to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
         var similarity: Float = 0
-        HandSkeleton.JointName.allCases.forEach { name in
+        similarity = HandSkeleton.JointName.allCases.map { name in
             let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
-            similarity += dv
-        }
+            return dv
+        }.reduce(similarity) { $0 + $1 }
         if mirrorIfNeeded, chirality != vector.chirality {
             similarity *= -1
         }
         similarity /= Float(HandSkeleton.JointName.allCases.count)
         return similarity
     }
-    func similarity(of keyFingers: [FingerGroup] = FingerGroup.allCases, normalFingers: [FingerGroup] = [], insensitiveFingers: [FingerGroup] = [], to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+    func similarity(of keyFingers: [JointOfFinger], normalFingers: [JointOfFinger] = [], insensitiveFingers: [JointOfFinger] = [], to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
         var similarity: Float = 0
-        keyFingers.flatMap { $0.jointNames }.forEach { name in
+        
+        let keyJoints = keyFingers.flatMap { $0.jointNames }
+        similarity = keyJoints.map { name in
             let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
-            similarity += dv
-        }
+            return dv * JointOfFinger.keyWeight
+        }.reduce(similarity) { $0 + $1 }
+        
+        let normalJoints = normalFingers.flatMap { $0.jointNames }
+        similarity = normalJoints.map { name in
+            let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
+            return dv * JointOfFinger.normalWeight
+        }.reduce(similarity) { $0 + $1 }
+        
+        let insensitiveJoints = insensitiveFingers.flatMap { $0.jointNames }
+        similarity = insensitiveJoints.map { name in
+            let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
+            return dv * JointOfFinger.insensitiveWeight
+        }.reduce(similarity) { $0 + $1 }
         
         if mirrorIfNeeded, chirality != vector.chirality {
             similarity *= -1
         }
-//        similarity /= Float(fingerGroup.jointNames.count)
+        let weights = Float(keyJoints.count) * JointOfFinger.keyWeight + Float(normalJoints.count) * JointOfFinger.normalWeight + Float(insensitiveJoints.count) * JointOfFinger.insensitiveWeight
+        similarity /= weights
+        
         return similarity
     }
-    func similarity(of fingerGroup: FingerGroup, to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+    func similarity(of finger: JointOfFinger, to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
         var similarity: Float = 0
-        fingerGroup.jointNames.forEach { name in
+        similarity = finger.jointNames.map { name in
             let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
-            similarity += dv
-        }
+            return dv
+        }.reduce(0) { $0 + $1 }
         if mirrorIfNeeded, chirality != vector.chirality {
             similarity *= -1
         }
-        similarity /= Float(fingerGroup.jointNames.count)
+        similarity /= Float(finger.jointNames.count)
         return similarity
     }
     
