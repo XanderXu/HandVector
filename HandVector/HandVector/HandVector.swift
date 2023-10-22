@@ -13,8 +13,8 @@ import ARKit
 import Foundation
 import simd
 
-public struct HandVector: CustomStringConvertible, @unchecked Sendable, Hashable, Codable {
-    public struct PositionInfo: CustomStringConvertible, @unchecked Sendable, Hashable, Codable {
+public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
+    public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
         public let name: HandSkeleton.JointName
         public let isTracked: Bool
         public let position: simd_float3

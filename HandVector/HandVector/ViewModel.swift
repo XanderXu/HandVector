@@ -85,8 +85,8 @@ class ViewModel: @unchecked Sendable {
     func match() {
         let pose = HandSkeleton.neutralPose
         let vector = HandVector(chirality: .left, handSkeleton: pose)
-        let similaryLeft = recordedLeftHand?.compare(vector) ?? 0
-        let similaryRight = recordedRightHand?.compare(vector) ?? 0
+        let similaryLeft = recordedLeftHand?.similarity(to: vector)
+        let similaryRight = recordedRightHand?.similarity(to: vector)
     }
     
 }
