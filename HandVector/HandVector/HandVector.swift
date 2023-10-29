@@ -33,7 +33,7 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
             return "name: \(name), isTracked: \(isTracked), position: \(position)"
         }
         
-        public func mirror() -> PositionInfo {
+        public func reverseChirality() -> PositionInfo {
             return PositionInfo(name: name, isTracked: isTracked, position: -position)
         }
     }
@@ -57,8 +57,8 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
             }
         }
         
-        public func mirror() -> VectorInfo {
-            return VectorInfo(from: from.mirror(), to: to.mirror())
+        public func reverseChirality() -> VectorInfo {
+            return VectorInfo(from: from.reverseChirality(), to: to.reverseChirality())
         }
     }
     
@@ -248,10 +248,10 @@ public extension HandVector {
         return similarity
     }
     
-    func mirror() -> HandVector {
+    func reverseChirality() -> HandVector {
         var infoNew: [HandSkeleton.JointName: VectorInfo] = [:]
         for (name, info) in allVectors {
-            infoNew[name] = info.mirror()
+            infoNew[name] = info.reverseChirality()
         }
         let m = HandVector(chirality: chirality == .left ? .right : .left, allVectors: infoNew)
         return m
