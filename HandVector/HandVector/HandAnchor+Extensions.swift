@@ -9,167 +9,150 @@ import Foundation
 import simd
 import ARKit
 
-extension HandAnchor.Chirality: Codable {
-    private var codingKeys: String {
+
+public extension HandSkeleton.JointName {
+    enum NameCodingKey: Codable, CodingKey {
+        case wrist
+
+        /// The thumb knuckle joint of a hand skeleton.
+        case thumbKnuckle
+
+        /// The thumb intermediate base joint of a hand skeleton.
+        case thumbIntermediateBase
+
+        /// The thumb intermediate tip joint of a hand skeleton.
+        case thumbIntermediateTip
+
+        /// The thumb tip joint of a hand skeleton.
+        case thumbTip
+
+        /// The index finger metacarpal joint of a hand skeleton.
+        case indexFingerMetacarpal
+
+        /// The index finger knuckle joint of a hand skeleton.
+        case indexFingerKnuckle
+
+        /// The index finger intermediate base joint of a hand skeleton.
+        case indexFingerIntermediateBase
+
+        /// The index finger intermediate tip joint of a hand skeleton.
+        case indexFingerIntermediateTip
+
+        /// The index finger tip joint of a hand skeleton.
+        case indexFingerTip
+
+        /// The middle finger metacarpal joint of a hand skeleton.
+        case middleFingerMetacarpal
+
+        /// The middle finger knuckle joint of a hand skeleton.
+        case middleFingerKnuckle
+
+        /// The middle finger intermediate base joint of a hand skeleton.
+        case middleFingerIntermediateBase
+
+        /// The middle finger intermediate tip joint of a hand skeleton.
+        case middleFingerIntermediateTip
+
+        /// The middle finger tip joint of a hand skeleton.
+        case middleFingerTip
+
+        /// The ring finger metacarpal joint of a hand skeleton.
+        case ringFingerMetacarpal
+
+        /// The ring finger knuckle joint of a hand skeleton.
+        case ringFingerKnuckle
+
+        /// The ring finger intermediate base joint of a hand skeleton.
+        case ringFingerIntermediateBase
+
+        /// The ring finger intermediate tip joint of a hand skeleton.
+        case ringFingerIntermediateTip
+
+        /// The ring finger tip joint of a hand skeleton.
+        case ringFingerTip
+
+        /// The little finger metacarpal joint of a hand skeleton.
+        case littleFingerMetacarpal
+
+        /// The little finger knuckle joint of a hand skeleton.
+        case littleFingerKnuckle
+
+        /// The little finger intermediate base joint of a hand skeleton.
+        case littleFingerIntermediateBase
+
+        /// The little finger intermediate tip joint of a hand skeleton.
+        case littleFingerIntermediateTip
+
+        /// The little finger tip joint of a hand skeleton.
+        case littleFingerTip
+
+        /// The wrist joint at the forearm of a hand skeleton.
+        case forearmWrist
+
+        /// The forearm joint of a hand skeleton.
+        case forearmArm
+        
+        case unknown
+    }
+    var codableName: NameCodingKey {
         switch self {
-        case .left:
-            return "left"
-        case .right:
-            return "right"
+        case .wrist:
+            return .wrist
+        case .thumbKnuckle:
+            return .thumbKnuckle
+        case .thumbIntermediateBase:
+            return .thumbIntermediateBase
+        case .thumbIntermediateTip:
+            return .thumbIntermediateTip
+        case .thumbTip:
+            return .thumbTip
+        case .indexFingerMetacarpal:
+            return .indexFingerMetacarpal
+        case .indexFingerKnuckle:
+            return .indexFingerKnuckle
+        case .indexFingerIntermediateBase:
+            return .indexFingerIntermediateBase
+        case .indexFingerIntermediateTip:
+            return .indexFingerIntermediateTip
+        case .indexFingerTip:
+            return .indexFingerTip
+        case .middleFingerMetacarpal:
+            return .middleFingerMetacarpal
+        case .middleFingerKnuckle:
+            return .middleFingerKnuckle
+        case .middleFingerIntermediateBase:
+            return .middleFingerIntermediateBase
+        case .middleFingerIntermediateTip:
+            return .middleFingerIntermediateTip
+        case .middleFingerTip:
+            return .middleFingerTip
+        case .ringFingerMetacarpal:
+            return .ringFingerMetacarpal
+        case .ringFingerKnuckle:
+            return .ringFingerKnuckle
+        case .ringFingerIntermediateBase:
+            return .ringFingerIntermediateBase
+        case .ringFingerIntermediateTip:
+            return .ringFingerIntermediateTip
+        case .ringFingerTip:
+            return .ringFingerTip
+        case .littleFingerMetacarpal:
+            return .littleFingerMetacarpal
+        case .littleFingerKnuckle:
+            return .littleFingerKnuckle
+        case .littleFingerIntermediateBase:
+            return .littleFingerIntermediateBase
+        case .littleFingerIntermediateTip:
+            return .littleFingerIntermediateTip
+        case .littleFingerTip:
+            return .littleFingerTip
+        case .forearmWrist:
+            return .forearmWrist
+        case .forearmArm:
+            return .forearmArm
+        @unknown default:
+            return .unknown
         }
-    }
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let nameStr = try container.decode(String.self)
-        switch nameStr {
-        case "left":
-            self = .left
-        case "right":
-            self = .right
-        default:
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unknown Chirality")
-        }
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.codingKeys)
     }
 }
 
-extension HandSkeleton.JointName: Codable {
-    private var codingKeys: String {
-        switch self {
-        case .wrist:
-            return "wrist"
-        case .thumbKnuckle:
-            return "thumbKnuckle"
-        case .thumbIntermediateBase:
-            return "thumbIntermediateBase"
-        case .thumbIntermediateTip:
-            return "thumbIntermediateTip"
-        case .thumbTip:
-            return "thumbTip"
-        case .indexFingerMetacarpal:
-            return "indexFingerMetacarpal"
-        case .indexFingerKnuckle:
-            return "indexFingerKnuckle"
-        case .indexFingerIntermediateBase:
-            return "indexFingerIntermediateBase"
-        case .indexFingerIntermediateTip:
-            return "indexFingerIntermediateTip"
-        case .indexFingerTip:
-            return "indexFingerTip"
-        case .middleFingerMetacarpal:
-            return "middleFingerMetacarpal"
-        case .middleFingerKnuckle:
-            return "middleFingerKnuckle"
-        case .middleFingerIntermediateBase:
-            return "middleFingerIntermediateBase"
-        case .middleFingerIntermediateTip:
-            return "middleFingerIntermediateTip"
-        case .middleFingerTip:
-            return "middleFingerTip"
-        case .ringFingerMetacarpal:
-            return "ringFingerMetacarpal"
-        case .ringFingerKnuckle:
-            return "ringFingerKnuckle"
-        case .ringFingerIntermediateBase:
-            return "ringFingerIntermediateBase"
-        case .ringFingerIntermediateTip:
-            return "ringFingerIntermediateTip"
-        case .ringFingerTip:
-            return "ringFingerTip"
-        case .littleFingerMetacarpal:
-            return "littleFingerMetacarpal"
-        case .littleFingerKnuckle:
-            return "littleFingerKnuckle"
-        case .littleFingerIntermediateBase:
-            return "littleFingerIntermediateBase"
-        case .littleFingerIntermediateTip:
-            return "littleFingerIntermediateTip"
-        case .littleFingerTip:
-            return "littleFingerTip"
-        case .forearmWrist:
-            return "forearmWrist"
-        case .forearmArm:
-            return "forearmArm"
-        @unknown default:
-            return self.description
-        }
-    }
-    private static func jointName(from codingKey: String) -> HandSkeleton.JointName? {
-        switch codingKey {
-        case "wrist":
-            return .wrist
-        case "thumbKnuckle":
-            return .thumbKnuckle
-        case "thumbIntermediateBase":
-            return .thumbIntermediateBase
-        case "thumbIntermediateTip":
-            return .thumbIntermediateTip
-        case "thumbTip":
-            return .thumbTip
-        case "indexFingerMetacarpal":
-            return .indexFingerMetacarpal
-        case "indexFingerKnuckle":
-            return .indexFingerKnuckle
-        case "indexFingerIntermediateBase":
-            return .indexFingerIntermediateBase
-        case "indexFingerIntermediateTip":
-            return .indexFingerIntermediateTip
-        case "indexFingerTip":
-            return .indexFingerTip
-        case "middleFingerMetacarpal":
-            return .middleFingerMetacarpal
-        case "middleFingerKnuckle":
-            return .middleFingerKnuckle
-        case "middleFingerIntermediateBase":
-            return .middleFingerIntermediateBase
-        case "middleFingerIntermediateTip":
-            return .middleFingerIntermediateTip
-        case "middleFingerTip":
-            return .middleFingerTip
-        case "ringFingerMetacarpal":
-            return .ringFingerMetacarpal
-        case "ringFingerKnuckle":
-            return .ringFingerKnuckle
-        case "ringFingerIntermediateBase":
-            return .ringFingerIntermediateBase
-        case "ringFingerIntermediateTip":
-            return .ringFingerIntermediateTip
-        case "ringFingerTip":
-            return .ringFingerTip
-        case "littleFingerMetacarpal":
-            return .littleFingerMetacarpal
-        case "littleFingerKnuckle":
-            return .littleFingerKnuckle
-        case "littleFingerIntermediateBase":
-            return .littleFingerIntermediateBase
-        case "littleFingerIntermediateTip":
-            return .littleFingerIntermediateTip
-        case "littleFingerTip":
-            return .littleFingerTip
-        case "forearmWrist":
-            return .forearmWrist
-        case "forearmArm":
-            return .forearmArm
-        default:
-            return nil
-        }
-    }
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let nameStr = try container.decode(String.self)
-        if let jn = Self.jointName(from: nameStr) {
-            self = jn
-        } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unknown JointName:\(nameStr)")
-        }
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.codingKeys)
-    }
-}

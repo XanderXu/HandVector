@@ -14,68 +14,20 @@ import Foundation
 import simd
 
 public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
-    public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
-        public let name: HandSkeleton.JointName
-        public let isTracked: Bool
-        public let position: simd_float3
-        
-        public init(joint: HandSkeleton.Joint) {
-            self.name = joint.name
-            self.isTracked = joint.isTracked
-            self.position = joint.localPosition
-        }
-        public init(name: HandSkeleton.JointName, isTracked: Bool, position: simd_float3) {
-            self.name = name
-            self.isTracked = isTracked
-            self.position = position
-        }
-        public var description: String {
-            return "name: \(name), isTracked: \(isTracked), position: \(position)"
-        }
-        
-        public func reverseChirality() -> PositionInfo {
-            return PositionInfo(name: name, isTracked: isTracked, position: -position)
-        }
-    }
-    public struct VectorInfo: CustomStringConvertible, Hashable, @unchecked Sendable, Codable {
-        public let from: PositionInfo
-        public let to: PositionInfo
-        public let vector: simd_float3
-        public let normalizedVector: simd_float3
-        
-        public var description: String {
-            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
-        }
-        public init(from: PositionInfo, to: PositionInfo) {
-            self.from = from
-            self.to = to
-            self.vector = to.position - from.position
-            if vector == .zero {
-                self.normalizedVector = .zero
-            } else {
-                self.normalizedVector = normalize(vector)
-            }
-        }
-        
-        public func reverseChirality() -> VectorInfo {
-            return VectorInfo(from: from.reverseChirality(), to: to.reverseChirality())
-        }
-    }
-    
-    public let chirality: HandAnchor.Chirality
+    public let chirality: Chirality
     /// A textual representation of this HandVector.
+    /// All vectors of this skeleton.
+    public let allVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
+    
+    public func vector(to named: HandSkeleton.JointName) -> VectorInfo {
+        return allVectors[named.codableName]!
+    }
     public var description: String {
         return "chirality: \(chirality)\nallVectors: \(allVectors)"
     }
-    /// All vectors of this skeleton.
-    public let allVectors: [HandSkeleton.JointName: VectorInfo]
     
-    public func vector(to named: HandSkeleton.JointName) -> VectorInfo {
-        return allVectors[named]!
-    }
-    
-    private init(chirality: HandAnchor.Chirality, allVectors: [HandSkeleton.JointName: VectorInfo]) {
-        self.chirality = chirality
+    private init(chirality: HandAnchor.Chirality, allVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]) {
+        self.chirality = chirality == .left ? .left : .right
         self.allVectors = allVectors
     }
     public init?(handAnchor: HandAnchor) {
@@ -85,12 +37,12 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
         self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton)
     }
     public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton) {
-        self.chirality = chirality
+        self.chirality = chirality == .left ? .left : .right
         self.allVectors = Self.genetateVectors(from: handSkeleton)
     }
     
-    public static func genetateVectors(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: VectorInfo] {
-        var vectors: [HandSkeleton.JointName: VectorInfo] = [:]
+    public static func genetateVectors(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName.NameCodingKey: VectorInfo] {
+        var vectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo] = [:]
         
         let wrist = handSkeleton.joint(.wrist)
         let forearmWrist = handSkeleton.joint(.forearmWrist)
@@ -168,6 +120,58 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
     
 }
 public extension HandVector {
+    struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
+        public let name: HandSkeleton.JointName.NameCodingKey
+        public let isTracked: Bool
+        public let position: simd_float3
+        
+        public init(joint: HandSkeleton.Joint) {
+            self.name = joint.name.codableName
+            self.isTracked = joint.isTracked
+            self.position = joint.localPosition
+        }
+        public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, position: simd_float3) {
+            self.name = name
+            self.isTracked = isTracked
+            self.position = position
+        }
+        public var description: String {
+            return "name: \(name), isTracked: \(isTracked), position: \(position)"
+        }
+        
+        public func reverseChirality() -> PositionInfo {
+            return PositionInfo(name: name, isTracked: isTracked, position: -position)
+        }
+    }
+    struct VectorInfo: CustomStringConvertible, Hashable, @unchecked Sendable, Codable {
+        public let from: PositionInfo
+        public let to: PositionInfo
+        public let vector: simd_float3
+        public let normalizedVector: simd_float3
+        
+        public var description: String {
+            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
+        }
+        public init(from: PositionInfo, to: PositionInfo) {
+            self.from = from
+            self.to = to
+            self.vector = to.position - from.position
+            if vector == .zero {
+                self.normalizedVector = .zero
+            } else {
+                self.normalizedVector = normalize(vector)
+            }
+        }
+        
+        public func reverseChirality() -> VectorInfo {
+            return VectorInfo(from: from.reverseChirality(), to: to.reverseChirality())
+        }
+    }
+    enum Chirality: Codable, Sendable {
+        case left
+        case right
+    }
+    
     enum JointOfFinger: CaseIterable {
         case thump
         case indexFinger
@@ -190,7 +194,7 @@ public extension HandVector {
             }
         }
         static let keyWeight: Float = 1.0
-        static let normalWeight: Float = 0.8
+        static let regularWeight: Float = 0.8
         static let insensitiveWeight: Float = 0.5
     }
     
@@ -206,7 +210,7 @@ public extension HandVector {
         similarity /= Float(HandSkeleton.JointName.allCases.count)
         return similarity
     }
-    func similarity(of keyFingers: [JointOfFinger], normalFingers: [JointOfFinger] = [], insensitiveFingers: [JointOfFinger] = [], to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
+    func similarity(of keyFingers: [JointOfFinger], regularFingers: [JointOfFinger] = [], insensitiveFingers: [JointOfFinger] = [], to vector: HandVector, mirrorIfNeeded: Bool = true) -> Float {
         var similarity: Float = 0
         
         let keyJoints = keyFingers.flatMap { $0.jointNames }
@@ -215,10 +219,10 @@ public extension HandVector {
             return dv * JointOfFinger.keyWeight
         }.reduce(similarity) { $0 + $1 }
         
-        let normalJoints = normalFingers.flatMap { $0.jointNames }
-        similarity = normalJoints.map { name in
+        let regularJoints = regularFingers.flatMap { $0.jointNames }
+        similarity = regularJoints.map { name in
             let dv = dot(vector.vector(to: name).normalizedVector, self.vector(to: name).normalizedVector)
-            return dv * JointOfFinger.normalWeight
+            return dv * JointOfFinger.regularWeight
         }.reduce(similarity) { $0 + $1 }
         
         let insensitiveJoints = insensitiveFingers.flatMap { $0.jointNames }
@@ -230,7 +234,7 @@ public extension HandVector {
         if mirrorIfNeeded, chirality != vector.chirality {
             similarity *= -1
         }
-        let weights = Float(keyJoints.count) * JointOfFinger.keyWeight + Float(normalJoints.count) * JointOfFinger.normalWeight + Float(insensitiveJoints.count) * JointOfFinger.insensitiveWeight
+        let weights = Float(keyJoints.count) * JointOfFinger.keyWeight + Float(regularJoints.count) * JointOfFinger.regularWeight + Float(insensitiveJoints.count) * JointOfFinger.insensitiveWeight
         similarity /= weights
         
         return similarity
@@ -249,7 +253,7 @@ public extension HandVector {
     }
     
     func reverseChirality() -> HandVector {
-        var infoNew: [HandSkeleton.JointName: VectorInfo] = [:]
+        var infoNew: [HandSkeleton.JointName.NameCodingKey: VectorInfo] = [:]
         for (name, info) in allVectors {
             infoNew[name] = info.reverseChirality()
         }
