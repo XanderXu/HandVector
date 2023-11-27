@@ -9,7 +9,20 @@ import Foundation
 import simd
 import ARKit
 
-
+public extension HandAnchor.Chirality {
+    enum NameCodingKey: Codable, CodingKey {
+        case right
+        case left
+    }
+    var codableName: NameCodingKey {
+        switch self {
+        case .right:
+            return .right
+        case .left:
+            return .left
+        }
+    }
+}
 public extension HandSkeleton.JointName {
     enum NameCodingKey: Codable, CodingKey {
         case wrist

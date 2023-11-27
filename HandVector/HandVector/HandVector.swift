@@ -14,7 +14,7 @@ import Foundation
 import simd
 
 public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
-    public let chirality: Chirality
+    public let chirality: HandAnchor.Chirality.NameCodingKey
     /// A textual representation of this HandVector.
     /// All vectors of this skeleton.
     public let allVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
@@ -27,7 +27,7 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
     }
     
     private init(chirality: HandAnchor.Chirality, allVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]) {
-        self.chirality = chirality == .left ? .left : .right
+        self.chirality = chirality.codableName
         self.allVectors = allVectors
     }
     public init?(handAnchor: HandAnchor) {
@@ -37,7 +37,7 @@ public struct HandVector: CustomStringConvertible, Sendable, Hashable, Codable {
         self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton)
     }
     public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton) {
-        self.chirality = chirality == .left ? .left : .right
+        self.chirality = chirality.codableName
         self.allVectors = Self.genetateVectors(from: handSkeleton)
     }
     
@@ -166,10 +166,6 @@ public extension HandVector {
         public func reverseChirality() -> VectorInfo {
             return VectorInfo(from: from.reverseChirality(), to: to.reverseChirality())
         }
-    }
-    enum Chirality: Codable, Sendable {
-        case left
-        case right
     }
     
     enum JointOfFinger: CaseIterable {
