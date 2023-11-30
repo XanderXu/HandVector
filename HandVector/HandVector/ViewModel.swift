@@ -23,6 +23,8 @@ class ViewModel: @unchecked Sendable {
     var matchRateLeft: Float = 0
     var matchRateRight: Float = 0
     
+    var isContinuousMatching = false
+    
     struct HandsUpdates {
         var left: HandAnchor?
         var right: HandAnchor?
@@ -51,9 +53,19 @@ class ViewModel: @unchecked Sendable {
                 // Update left hand info.
                 if anchor.chirality == .left {
                     latestHandTracking.left = anchor
+                    if isContinuousMatching {
+                        let vector = HandVector(chirality: .left, handSkeleton: anchor.handSkeleton!)
+                        matchRateLeft = recordedLeftHand?.similarity(to: vector) ?? 0
+                    }
                 } else if anchor.chirality == .right { // Update right hand info.
                     latestHandTracking.right = anchor
+                    if isContinuousMatching {
+                        let vector = HandVector(chirality: .right, handSkeleton: anchor.handSkeleton!)
+                        matchRateRight = recordedLeftHand?.similarity(to: vector, mirrorIfNeeded: true) ?? 0
+                    }
                 }
+                
+                
             default:
                 break
             }
@@ -82,11 +94,22 @@ class ViewModel: @unchecked Sendable {
         }
     }
     
-    func match() {
+    func matchTest() {
         let pose = HandSkeleton.neutralPose
         let vector = HandVector(chirality: .left, handSkeleton: pose)
         let similaryLeft = recordedLeftHand?.similarity(to: vector)
         let similaryRight = recordedRightHand?.similarity(to: vector)
     }
     
+    
+    func matchOnce() {
+        if let left = latestHandTracking.left?.handSkeleton {
+            let vector = HandVector(chirality: .left, handSkeleton: left)
+            matchRateLeft = recordedLeftHand?.similarity(to: vector) ?? 0
+        }
+        if let right = latestHandTracking.right?.handSkeleton {
+            let vector = HandVector(chirality: .right, handSkeleton: right)
+            matchRateRight = recordedRightHand?.similarity(to: vector) ?? 0
+        }
+    }
 }

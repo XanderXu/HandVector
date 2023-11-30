@@ -110,10 +110,10 @@ struct ContentView: View {
                     self.startTimer()
                 } else {
                     //match
-                    model.match()
+                    model.isContinuousMatching = newValue
                 }
             } else {
-                
+                model.isContinuousMatching = newValue
             }
         }
     }
