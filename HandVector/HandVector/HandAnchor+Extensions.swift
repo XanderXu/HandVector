@@ -10,9 +10,13 @@ import simd
 import ARKit
 
 public extension HandAnchor.Chirality {
-    enum NameCodingKey: Codable, CodingKey {
+    enum NameCodingKey: String, Codable, CodingKey, CustomStringConvertible {
         case right
         case left
+        
+        public var description: String {
+            return self.rawValue
+        }
     }
     var codableName: NameCodingKey {
         switch self {
@@ -24,7 +28,7 @@ public extension HandAnchor.Chirality {
     }
 }
 public extension HandSkeleton.JointName {
-    enum NameCodingKey: Codable, CodingKey {
+    enum NameCodingKey: String, Codable, CodingKey, CustomStringConvertible {
         case wrist
 
         /// The thumb knuckle joint of a hand skeleton.
@@ -106,6 +110,10 @@ public extension HandSkeleton.JointName {
         case forearmArm
         
         case unknown
+        
+        public var description: String {
+            return self.rawValue
+        }
     }
     var codableName: NameCodingKey {
         switch self {

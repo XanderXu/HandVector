@@ -61,7 +61,7 @@ class ViewModel: @unchecked Sendable {
                     latestHandTracking.right = anchor
                     if isContinuousMatching {
                         let vector = HandVector(chirality: .right, handSkeleton: anchor.handSkeleton!)
-                        matchRateRight = recordedLeftHand?.similarity(to: vector, mirrorIfNeeded: true) ?? 0
+                        matchRateRight = recordedRightHand?.similarity(to: vector) ?? 0
                     }
                 }
                 
@@ -92,13 +92,20 @@ class ViewModel: @unchecked Sendable {
         if let right = latestHandTracking.right?.handSkeleton {
             recordedRightHand = HandVector(chirality: .right, handSkeleton: right)
         }
+        saveRecordJson()
     }
     
-    func matchTest() {
-        let pose = HandSkeleton.neutralPose
-        let vector = HandVector(chirality: .left, handSkeleton: pose)
-        let similaryLeft = recordedLeftHand?.similarity(to: vector)
-        let similaryRight = recordedRightHand?.similarity(to: vector)
+    func saveRecordJson() {
+        if let left = recordedLeftHand {
+            debugPrint(left.toJson()!)
+//            let newLeft: HandVector? = left.toJson()?.toModel()
+//            debugPrint(newLeft)
+        }
+        if let right = recordedRightHand {
+            debugPrint(right.toJson()!)
+//            let newRight: HandVector? = right.toJson()?.toModel()
+//            debugPrint(newRight)
+        }
     }
     
     

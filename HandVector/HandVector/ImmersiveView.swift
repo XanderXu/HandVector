@@ -28,14 +28,7 @@ struct ImmersiveView: View {
                 // https://developer.apple.com/
             }
         } update: { updateContent in
-            if let l0 = model.recordedLeftHand {
-                let l = model.matchRateLeft
-                debugPrint(l)
-            }
-            if let r0 = model.recordedRightHand {
-                let r = model.matchRateRight
-                debugPrint(r)
-            }
+            
         }
         .task {
             await model.start()

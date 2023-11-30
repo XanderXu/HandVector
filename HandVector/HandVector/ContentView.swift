@@ -24,7 +24,7 @@ struct ContentView: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var recordOrMatch = 0
     @State private var isStart = false
-
+    
     // 开始计时方法
     func startTimer() {
         timeRemaining = 5
