@@ -9,35 +9,63 @@
 /* Begin PBXBuildFile section */
 		6C36A3F32AB7417F00B7B026 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 6C36A3F22AB7417F00B7B026 /* RealityKitContent */; };
 		6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */; };
-		6C36A3F72AB7417F00B7B026 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F62AB7417F00B7B026 /* ContentView.swift */; };
-		6C36A3F92AB7417F00B7B026 /* ImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F82AB7417F00B7B026 /* ImmersiveView.swift */; };
 		6C36A3FB2AB7417F00B7B026 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */; };
 		6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FC2AB7418000B7B026 /* Assets.xcassets */; };
 		6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FF2AB7418000B7B026 /* Preview Assets.xcassets */; };
-		6C36A4082AB74AD200B7B026 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A4072AB74AD200B7B026 /* ViewModel.swift */; };
-		6C36A40A2AB74C6300B7B026 /* Entity+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A4092AB74C6300B7B026 /* Entity+Extensions.swift */; };
-		6CF0415F2B18509B00A17D8E /* Codable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF0415E2B18509B00A17D8E /* Codable+Extensions.swift */; };
-		6CF041652B18611800A17D8E /* HandVectorJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF041642B18611800A17D8E /* HandVectorJson.swift */; };
-		9540FAE42AC55BDD001717D8 /* HandAnchor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9540FAE32AC55BDD001717D8 /* HandAnchor+Extensions.swift */; };
-		95ABDDF62ABD9988006C7B0E /* HandVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ABDDF52ABD9988006C7B0E /* HandVector.swift */; };
+		952000972B848DC6006B1EAE /* GuideImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000962B848DC6006B1EAE /* GuideImmersiveView.swift */; };
+		952000AC2B848DCE006B1EAE /* HandVectorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000992B848DCE006B1EAE /* HandVectorMatcher.swift */; };
+		952000AD2B848DCE006B1EAE /* HandEmojiJson1.json in Resources */ = {isa = PBXBuildFile; fileRef = 9520009B2B848DCE006B1EAE /* HandEmojiJson1.json */; };
+		952000AE2B848DCE006B1EAE /* HandEmojiJsonOk.json in Resources */ = {isa = PBXBuildFile; fileRef = 9520009C2B848DCE006B1EAE /* HandEmojiJsonOk.json */; };
+		952000AF2B848DCE006B1EAE /* HandEmojiParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520009D2B848DCE006B1EAE /* HandEmojiParameter.swift */; };
+		952000B02B848DCE006B1EAE /* HandEmojiJsonFist.json in Resources */ = {isa = PBXBuildFile; fileRef = 9520009E2B848DCE006B1EAE /* HandEmojiJsonFist.json */; };
+		952000B12B848DCE006B1EAE /* HandEmojiJson5.json in Resources */ = {isa = PBXBuildFile; fileRef = 9520009F2B848DCE006B1EAE /* HandEmojiJson5.json */; };
+		952000B22B848DCE006B1EAE /* HandEmojiJsonTips.json in Resources */ = {isa = PBXBuildFile; fileRef = 952000A02B848DCE006B1EAE /* HandEmojiJsonTips.json */; };
+		952000B32B848DCE006B1EAE /* HandEmojiTotalJson.json in Resources */ = {isa = PBXBuildFile; fileRef = 952000A12B848DCE006B1EAE /* HandEmojiTotalJson.json */; };
+		952000B42B848DCE006B1EAE /* HandEmojiJson2.json in Resources */ = {isa = PBXBuildFile; fileRef = 952000A22B848DCE006B1EAE /* HandEmojiJson2.json */; };
+		952000B52B848DCE006B1EAE /* HandsUpdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000A32B848DCE006B1EAE /* HandsUpdates.swift */; };
+		952000B62B848DCE006B1EAE /* VisionSimHands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000A42B848DCE006B1EAE /* VisionSimHands.swift */; };
+		952000B72B848DCE006B1EAE /* BonjourSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000A62B848DCE006B1EAE /* BonjourSession.swift */; };
+		952000B82B848DCE006B1EAE /* ProgressWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000A72B848DCE006B1EAE /* ProgressWatcher.swift */; };
+		952000B92B848DCE006B1EAE /* MCPeerID+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000A92B848DCE006B1EAE /* MCPeerID+Extensions.swift */; };
+		952000BA2B848DCE006B1EAE /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 952000AA2B848DCE006B1EAE /* readme.md */; };
+		952000BB2B848DCE006B1EAE /* Peer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000AB2B848DCE006B1EAE /* Peer.swift */; };
+		952000CA2B848DE1006B1EAE /* Guide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000C12B848DE1006B1EAE /* Guide.swift */; };
+		952000D42B848E6C006B1EAE /* Codable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000D12B848E6C006B1EAE /* Codable+Extensions.swift */; };
+		952000D52B848E6C006B1EAE /* HandAnchor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000D22B848E6C006B1EAE /* HandAnchor+Extensions.swift */; };
+		952000D62B848E6C006B1EAE /* Entity+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000D32B848E6C006B1EAE /* Entity+Extensions.swift */; };
+		952000D82B848E96006B1EAE /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000D72B848E96006B1EAE /* ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6C36A3ED2AB7417F00B7B026 /* HandVector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HandVector.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HandVectorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C36A3F12AB7417F00B7B026 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVectorApp.swift; sourceTree = "<group>"; };
-		6C36A3F62AB7417F00B7B026 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		6C36A3F82AB7417F00B7B026 /* ImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveView.swift; sourceTree = "<group>"; };
 		6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		6C36A3FC2AB7418000B7B026 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6C36A3FF2AB7418000B7B026 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6C36A4012AB7418000B7B026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6C36A4072AB74AD200B7B026 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		6C36A4092AB74C6300B7B026 /* Entity+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Entity+Extensions.swift"; sourceTree = "<group>"; };
-		6CF0415E2B18509B00A17D8E /* Codable+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codable+Extensions.swift"; sourceTree = "<group>"; };
-		6CF041642B18611800A17D8E /* HandVectorJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVectorJson.swift; sourceTree = "<group>"; };
-		9540FAE32AC55BDD001717D8 /* HandAnchor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HandAnchor+Extensions.swift"; sourceTree = "<group>"; };
-		95ABDDF52ABD9988006C7B0E /* HandVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVector.swift; sourceTree = "<group>"; };
+		952000962B848DC6006B1EAE /* GuideImmersiveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuideImmersiveView.swift; sourceTree = "<group>"; };
+		952000992B848DCE006B1EAE /* HandVectorMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandVectorMatcher.swift; sourceTree = "<group>"; };
+		9520009B2B848DCE006B1EAE /* HandEmojiJson1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJson1.json; sourceTree = "<group>"; };
+		9520009C2B848DCE006B1EAE /* HandEmojiJsonOk.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonOk.json; sourceTree = "<group>"; };
+		9520009D2B848DCE006B1EAE /* HandEmojiParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandEmojiParameter.swift; sourceTree = "<group>"; };
+		9520009E2B848DCE006B1EAE /* HandEmojiJsonFist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonFist.json; sourceTree = "<group>"; };
+		9520009F2B848DCE006B1EAE /* HandEmojiJson5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJson5.json; sourceTree = "<group>"; };
+		952000A02B848DCE006B1EAE /* HandEmojiJsonTips.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonTips.json; sourceTree = "<group>"; };
+		952000A12B848DCE006B1EAE /* HandEmojiTotalJson.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiTotalJson.json; sourceTree = "<group>"; };
+		952000A22B848DCE006B1EAE /* HandEmojiJson2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJson2.json; sourceTree = "<group>"; };
+		952000A32B848DCE006B1EAE /* HandsUpdates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandsUpdates.swift; sourceTree = "<group>"; };
+		952000A42B848DCE006B1EAE /* VisionSimHands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisionSimHands.swift; sourceTree = "<group>"; };
+		952000A62B848DCE006B1EAE /* BonjourSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BonjourSession.swift; sourceTree = "<group>"; };
+		952000A72B848DCE006B1EAE /* ProgressWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressWatcher.swift; sourceTree = "<group>"; };
+		952000A92B848DCE006B1EAE /* MCPeerID+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MCPeerID+Extensions.swift"; sourceTree = "<group>"; };
+		952000AA2B848DCE006B1EAE /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		952000AB2B848DCE006B1EAE /* Peer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peer.swift; sourceTree = "<group>"; };
+		952000C12B848DE1006B1EAE /* Guide.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Guide.swift; sourceTree = "<group>"; };
+		952000D12B848E6C006B1EAE /* Codable+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Codable+Extensions.swift"; sourceTree = "<group>"; };
+		952000D22B848E6C006B1EAE /* HandAnchor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HandAnchor+Extensions.swift"; sourceTree = "<group>"; };
+		952000D32B848E6C006B1EAE /* Entity+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Entity+Extensions.swift"; sourceTree = "<group>"; };
+		952000D72B848E96006B1EAE /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +83,7 @@
 		6C36A3E42AB7417F00B7B026 = {
 			isa = PBXGroup;
 			children = (
-				6C36A3EF2AB7417F00B7B026 /* HandVector */,
+				6C36A3EF2AB7417F00B7B026 /* HandVectorDemo */,
 				6C36A3F02AB7417F00B7B026 /* Packages */,
 				6C36A3EE2AB7417F00B7B026 /* Products */,
 			);
@@ -64,29 +92,26 @@
 		6C36A3EE2AB7417F00B7B026 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6C36A3ED2AB7417F00B7B026 /* HandVector.app */,
+				6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6C36A3EF2AB7417F00B7B026 /* HandVector */ = {
+		6C36A3EF2AB7417F00B7B026 /* HandVectorDemo */ = {
 			isa = PBXGroup;
 			children = (
 				6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */,
-				6C36A3F62AB7417F00B7B026 /* ContentView.swift */,
-				6C36A3F82AB7417F00B7B026 /* ImmersiveView.swift */,
-				6C36A4072AB74AD200B7B026 /* ViewModel.swift */,
-				95ABDDF52ABD9988006C7B0E /* HandVector.swift */,
-				9540FAE32AC55BDD001717D8 /* HandAnchor+Extensions.swift */,
-				6C36A4092AB74C6300B7B026 /* Entity+Extensions.swift */,
-				6CF0415E2B18509B00A17D8E /* Codable+Extensions.swift */,
-				6CF041642B18611800A17D8E /* HandVectorJson.swift */,
+				952000D72B848E96006B1EAE /* ViewModel.swift */,
+				952000D02B848E6C006B1EAE /* Extensions */,
+				952000CF2B848E12006B1EAE /* RealityViews */,
+				952000BC2B848DE1006B1EAE /* Views */,
+				952000982B848DCE006B1EAE /* Hand */,
 				6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */,
 				6C36A3FC2AB7418000B7B026 /* Assets.xcassets */,
 				6C36A4012AB7418000B7B026 /* Info.plist */,
 				6C36A3FE2AB7418000B7B026 /* Preview Content */,
 			);
-			path = HandVector;
+			path = HandVectorDemo;
 			sourceTree = "<group>";
 		};
 		6C36A3F02AB7417F00B7B026 /* Packages */ = {
@@ -105,12 +130,85 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		952000982B848DCE006B1EAE /* Hand */ = {
+			isa = PBXGroup;
+			children = (
+				952000992B848DCE006B1EAE /* HandVectorMatcher.swift */,
+				9520009A2B848DCE006B1EAE /* HandEmoji */,
+				952000A32B848DCE006B1EAE /* HandsUpdates.swift */,
+				952000A42B848DCE006B1EAE /* VisionSimHands.swift */,
+				952000A52B848DCE006B1EAE /* Bonjour */,
+			);
+			path = Hand;
+			sourceTree = "<group>";
+		};
+		9520009A2B848DCE006B1EAE /* HandEmoji */ = {
+			isa = PBXGroup;
+			children = (
+				9520009B2B848DCE006B1EAE /* HandEmojiJson1.json */,
+				9520009C2B848DCE006B1EAE /* HandEmojiJsonOk.json */,
+				9520009D2B848DCE006B1EAE /* HandEmojiParameter.swift */,
+				9520009E2B848DCE006B1EAE /* HandEmojiJsonFist.json */,
+				9520009F2B848DCE006B1EAE /* HandEmojiJson5.json */,
+				952000A02B848DCE006B1EAE /* HandEmojiJsonTips.json */,
+				952000A12B848DCE006B1EAE /* HandEmojiTotalJson.json */,
+				952000A22B848DCE006B1EAE /* HandEmojiJson2.json */,
+			);
+			path = HandEmoji;
+			sourceTree = "<group>";
+		};
+		952000A52B848DCE006B1EAE /* Bonjour */ = {
+			isa = PBXGroup;
+			children = (
+				952000A62B848DCE006B1EAE /* BonjourSession.swift */,
+				952000A72B848DCE006B1EAE /* ProgressWatcher.swift */,
+				952000A82B848DCE006B1EAE /* Extensions */,
+				952000AA2B848DCE006B1EAE /* readme.md */,
+				952000AB2B848DCE006B1EAE /* Peer.swift */,
+			);
+			path = Bonjour;
+			sourceTree = "<group>";
+		};
+		952000A82B848DCE006B1EAE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				952000A92B848DCE006B1EAE /* MCPeerID+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		952000BC2B848DE1006B1EAE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				952000C12B848DE1006B1EAE /* Guide.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		952000CF2B848E12006B1EAE /* RealityViews */ = {
+			isa = PBXGroup;
+			children = (
+				952000962B848DC6006B1EAE /* GuideImmersiveView.swift */,
+			);
+			path = RealityViews;
+			sourceTree = "<group>";
+		};
+		952000D02B848E6C006B1EAE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				952000D12B848E6C006B1EAE /* Codable+Extensions.swift */,
+				952000D22B848E6C006B1EAE /* HandAnchor+Extensions.swift */,
+				952000D32B848E6C006B1EAE /* Entity+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6C36A3EC2AB7417F00B7B026 /* HandVector */ = {
+		6C36A3EC2AB7417F00B7B026 /* HandVectorDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6C36A4042AB7418000B7B026 /* Build configuration list for PBXNativeTarget "HandVector" */;
+			buildConfigurationList = 6C36A4042AB7418000B7B026 /* Build configuration list for PBXNativeTarget "HandVectorDemo" */;
 			buildPhases = (
 				6C36A3E92AB7417F00B7B026 /* Sources */,
 				6C36A3EA2AB7417F00B7B026 /* Frameworks */,
@@ -120,12 +218,12 @@
 			);
 			dependencies = (
 			);
-			name = HandVector;
+			name = HandVectorDemo;
 			packageProductDependencies = (
 				6C36A3F22AB7417F00B7B026 /* RealityKitContent */,
 			);
 			productName = HandVector;
-			productReference = 6C36A3ED2AB7417F00B7B026 /* HandVector.app */;
+			productReference = 6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -143,7 +241,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6C36A3E82AB7417F00B7B026 /* Build configuration list for PBXProject "HandVector" */;
+			buildConfigurationList = 6C36A3E82AB7417F00B7B026 /* Build configuration list for PBXProject "HandVectorDemo" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -156,7 +254,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6C36A3EC2AB7417F00B7B026 /* HandVector */,
+				6C36A3EC2AB7417F00B7B026 /* HandVectorDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -166,9 +264,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				952000BA2B848DCE006B1EAE /* readme.md in Resources */,
+				952000B12B848DCE006B1EAE /* HandEmojiJson5.json in Resources */,
 				6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */,
+				952000B42B848DCE006B1EAE /* HandEmojiJson2.json in Resources */,
+				952000B32B848DCE006B1EAE /* HandEmojiTotalJson.json in Resources */,
+				952000B02B848DCE006B1EAE /* HandEmojiJsonFist.json in Resources */,
+				952000AE2B848DCE006B1EAE /* HandEmojiJsonOk.json in Resources */,
+				952000AD2B848DCE006B1EAE /* HandEmojiJson1.json in Resources */,
 				6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */,
 				6C36A3FB2AB7417F00B7B026 /* ImageBasedLighting.skybox in Resources */,
+				952000B22B848DCE006B1EAE /* HandEmojiJsonTips.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,15 +285,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CF0415F2B18509B00A17D8E /* Codable+Extensions.swift in Sources */,
-				6C36A40A2AB74C6300B7B026 /* Entity+Extensions.swift in Sources */,
-				9540FAE42AC55BDD001717D8 /* HandAnchor+Extensions.swift in Sources */,
-				6C36A3F72AB7417F00B7B026 /* ContentView.swift in Sources */,
+				952000D42B848E6C006B1EAE /* Codable+Extensions.swift in Sources */,
 				6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */,
-				6C36A4082AB74AD200B7B026 /* ViewModel.swift in Sources */,
-				6C36A3F92AB7417F00B7B026 /* ImmersiveView.swift in Sources */,
-				95ABDDF62ABD9988006C7B0E /* HandVector.swift in Sources */,
-				6CF041652B18611800A17D8E /* HandVectorJson.swift in Sources */,
+				952000AC2B848DCE006B1EAE /* HandVectorMatcher.swift in Sources */,
+				952000B92B848DCE006B1EAE /* MCPeerID+Extensions.swift in Sources */,
+				952000D62B848E6C006B1EAE /* Entity+Extensions.swift in Sources */,
+				952000972B848DC6006B1EAE /* GuideImmersiveView.swift in Sources */,
+				952000B82B848DCE006B1EAE /* ProgressWatcher.swift in Sources */,
+				952000B52B848DCE006B1EAE /* HandsUpdates.swift in Sources */,
+				952000B62B848DCE006B1EAE /* VisionSimHands.swift in Sources */,
+				952000AF2B848DCE006B1EAE /* HandEmojiParameter.swift in Sources */,
+				952000D82B848E96006B1EAE /* ViewModel.swift in Sources */,
+				952000D52B848E6C006B1EAE /* HandAnchor+Extensions.swift in Sources */,
+				952000B72B848DCE006B1EAE /* BonjourSession.swift in Sources */,
+				952000CA2B848DE1006B1EAE /* Guide.swift in Sources */,
+				952000BB2B848DCE006B1EAE /* Peer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,7 +480,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6C36A3E82AB7417F00B7B026 /* Build configuration list for PBXProject "HandVector" */ = {
+		6C36A3E82AB7417F00B7B026 /* Build configuration list for PBXProject "HandVectorDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6C36A4022AB7418000B7B026 /* Debug */,
@@ -377,7 +489,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6C36A4042AB7418000B7B026 /* Build configuration list for PBXNativeTarget "HandVector" */ = {
+		6C36A4042AB7418000B7B026 /* Build configuration list for PBXNativeTarget "HandVectorDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6C36A4052AB7418000B7B026 /* Debug */,

@@ -12,12 +12,12 @@ struct HandVectorApp: App {
     @State private var model = ViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Guide()
                 .environment(model)
         }
 
         ImmersiveSpace(id: "ImmersiveSpace") {
-            ImmersiveView()
+            GuideImmersiveView()
                 .environment(model)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)

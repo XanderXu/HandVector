@@ -125,12 +125,6 @@ extension Entity {
     }
 }
 
-extension Comparable {
-    func clamped(to limits: ClosedRange<Self>) -> Self {
-        min(max(self, limits.lowerBound), limits.upperBound)
-    }
-}
-
 extension SIMD4 {
     var xyz: SIMD3<Scalar> {
         self[SIMD3(0, 1, 2)]
