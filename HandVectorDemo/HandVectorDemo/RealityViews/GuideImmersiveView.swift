@@ -11,16 +11,12 @@ import RealityKit
 struct GuideImmersiveView: View {
     @Environment(ViewModel.self) private var model
     @State private var subscriptions = [EventSubscription]()
-    private let anchorHead = AnchorEntity(.head)
     var body: some View {
         RealityView { content in
-            anchorHead.anchoring.trackingMode = .once
-            content.add(anchorHead)
             
             let entity = Entity()
             entity.name = "GameRoot"
             model.rootEntity = entity
-            anchorHead.addChild(entity)
             
             model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
             guard let okVector = model.handEmojiDict["👌"]?.convertToHandVector(), let leftOKVector = okVector.left else { return }

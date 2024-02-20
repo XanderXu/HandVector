@@ -10,6 +10,9 @@ import SwiftUI
 struct Guide: View {
     @Environment(ViewModel.self) private var model
     
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    
     var body: some View {
         @Bindable var model = model
         VStack(spacing: 10) {
@@ -57,7 +60,19 @@ struct Guide: View {
         }
         .padding(.horizontal, 150)
         .frame(width: 400)
+        .onChange(of: model.showGuideImmersiveSpace) { _, newValue in
+            Task {
+                if newValue {
+                    await openImmersiveSpace(id: "ImmersiveSpace")
+                } else {
+                    await dismissImmersiveSpace()
+                    model.leftScore = 0
+                    model.rightScore = 0
+                }
+            }
+        }
     }
+    
 }
 
 #Preview {
