@@ -9,6 +9,7 @@
 import ARKit
 import SwiftUI
 import RealityKit
+//import HandVector
 
 /// A model that contains up-to-date hand coordinate information.
 @Observable
@@ -18,7 +19,7 @@ class ViewModel: @unchecked Sendable {
     var isHandSkeletonVisible = false
     var rootEntity: Entity?
     
-    var latestHandTracking: HandsUpdates = .init(left: nil, right: nil)
+    var latestHandTracking: HandVector = .init(left: nil, right: nil)
     var handEmojiDict: [String: HandEmojiParameter] = [:]
     var simHandProvider = SimulatorHandTrackingProvider()
     

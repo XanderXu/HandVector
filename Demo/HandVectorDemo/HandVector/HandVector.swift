@@ -9,7 +9,7 @@ import RealityKit
 import ARKit
 
 //手部关节模型
-class HandsUpdates {
+class HandVector {
     var left: Entity?
     var right: Entity?
     
@@ -168,9 +168,9 @@ class HandsUpdates {
     }
 }
 
-extension HandsUpdates {
+extension HandVector {
     static let simHandPositionY: Float = 1.4
-    static func generateHandsUpdates(para:HandEmojiParameter, offset: simd_float3 = .init(0, simHandPositionY, -0.5)) -> HandsUpdates {
+    static func generateHandsUpdates(para:HandEmojiParameter, offset: simd_float3 = .init(0, simHandPositionY, -0.5)) -> HandVector {
         let left = Entity()
         left.name = "leftHand"
         left.position = .init(x: -0.2, y: 0, z: 0) + offset
@@ -221,7 +221,7 @@ extension HandsUpdates {
         let leftVector = HandVectorMatcher(chirality: .left, allPositions: leftPositions, transform: .init(1))
         let rightVector = HandVectorMatcher(chirality: .right, allPositions: rightPositions, transform: .init(1))
         
-        return HandsUpdates(left: left,right: right, leftHandVector: leftVector, rightHandVector: rightVector)
+        return HandVector(left: left,right: right, leftHandVector: leftVector, rightHandVector: rightVector)
     }
     
     func updateFakeHandUpDown() {
@@ -231,7 +231,7 @@ extension HandsUpdates {
         let offset = sin(time*3) * moveRange
         let offset2 = sin(time*4) * moveRange
         
-        left.position = .init(left.position.x, HandsUpdates.simHandPositionY + Float(offset), left.position.z)
-        right.position = .init(right.position.x, HandsUpdates.simHandPositionY + Float(offset2), right.position.z)
+        left.position = .init(left.position.x, Self.simHandPositionY + Float(offset), left.position.z)
+        right.position = .init(right.position.x, Self.simHandPositionY + Float(offset2), right.position.z)
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RealityKit
+//import HandVector
 
 struct GuideImmersiveView: View {
     @Environment(ViewModel.self) private var model
