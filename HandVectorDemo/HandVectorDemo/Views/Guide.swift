@@ -14,7 +14,6 @@ struct Guide: View {
         @Bindable var model = model
         VStack(spacing: 10) {
             HStack(alignment: .top) {
-                
                 Spacer()
                 VStack {
                     Text("👌")
@@ -57,7 +56,7 @@ struct Guide: View {
             .frame(width: 280)
         }
         .padding(.horizontal, 150)
-        .frame(width: 634)
+        .frame(width: 400)
     }
 }
 

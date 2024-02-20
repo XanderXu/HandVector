@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C36A3F32AB7417F00B7B026 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 6C36A3F22AB7417F00B7B026 /* RealityKitContent */; };
 		6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */; };
 		6C36A3FB2AB7417F00B7B026 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */; };
 		6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FC2AB7418000B7B026 /* Assets.xcassets */; };
@@ -38,7 +37,6 @@
 
 /* Begin PBXFileReference section */
 		6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HandVectorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6C36A3F12AB7417F00B7B026 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVectorApp.swift; sourceTree = "<group>"; };
 		6C36A3FA2AB7417F00B7B026 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		6C36A3FC2AB7418000B7B026 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -73,7 +71,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C36A3F32AB7417F00B7B026 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,7 +114,6 @@
 		6C36A3F02AB7417F00B7B026 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				6C36A3F12AB7417F00B7B026 /* RealityKitContent */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -220,7 +216,6 @@
 			);
 			name = HandVectorDemo;
 			packageProductDependencies = (
-				6C36A3F22AB7417F00B7B026 /* RealityKitContent */,
 			);
 			productName = HandVector;
 			productReference = 6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */;
@@ -432,7 +427,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"HandVector/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"HandVectorDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 67UBXXU7S9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -442,7 +437,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.reality.HandVector;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reality.HandVectorDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -458,7 +453,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"HandVector/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"HandVectorDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 67UBXXU7S9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -468,7 +463,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.reality.HandVector;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reality.HandVectorDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -499,13 +494,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		6C36A3F22AB7417F00B7B026 /* RealityKitContent */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RealityKitContent;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6C36A3E52AB7417F00B7B026 /* Project object */;
 }

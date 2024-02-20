@@ -80,7 +80,7 @@ class HandsUpdates {
                 hand.addChild(modelEntity)
                 
                 let collisionEntity = Entity()
-                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: .init(group: GameCollisionGroup.handCollisionGroup, mask: GameCollisionGroup.emojiCardCollisionGroup)))
+                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
                 collisionEntity.transform.matrix = joint.anchorFromJointTransform
                 collisionEntity.name = joint.name.codableName.rawValue + "-collision"
                 hand.addChild(collisionEntity)
@@ -147,7 +147,7 @@ class HandsUpdates {
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: .init(group: GameCollisionGroup.handCollisionGroup, mask: GameCollisionGroup.emojiCardCollisionGroup)))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
             collisionEntity.position = positionInfo.position
             collisionEntity.name = positionInfo.name.rawValue + "-collision"
             hand.addChild(collisionEntity)
@@ -192,7 +192,7 @@ extension HandsUpdates {
             left.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: .init(group: GameCollisionGroup.handCollisionGroup, mask: GameCollisionGroup.emojiCardCollisionGroup)))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
             collisionEntity.transform = joint.transform
             collisionEntity.name = joint.name.rawValue + "-collision"
             left.addChild(collisionEntity)
@@ -210,7 +210,7 @@ extension HandsUpdates {
             right.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: .init(group: GameCollisionGroup.handCollisionGroup, mask: GameCollisionGroup.emojiCardCollisionGroup)))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
             collisionEntity.transform = joint.transform
             collisionEntity.name = joint.name.rawValue + "-collision"
             right.addChild(collisionEntity)

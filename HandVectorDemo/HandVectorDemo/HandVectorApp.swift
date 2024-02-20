@@ -15,6 +15,7 @@ struct HandVectorApp: App {
             Guide()
                 .environment(model)
         }
+        .windowStyle(.automatic)
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             GuideImmersiveView()

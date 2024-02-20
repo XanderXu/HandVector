@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "bonjour",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/eugenebokhan/Bonjour.git",
+      "state" : {
+        "revision" : "4e2912cddb3dcc8ec48370851ba0eb19f1a3e6af",
+        "version" : "2.1.0"
+      }
+    }
+  ],
+  "version" : 2
+}
