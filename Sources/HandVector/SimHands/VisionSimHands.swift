@@ -7,17 +7,17 @@
 
 import Foundation
 import RealityKit
+#if canImport(ARKit)
 import ARKit
 
 
-
-struct SimHand: Codable {
-    let landmarks: [[Landmark]]
-    let worldLandmarks: [[Landmark]]
-    let handednesses: [[Handedness]]
+public struct SimHand: Codable {
+    public let landmarks: [[Landmark]]
+    public let worldLandmarks: [[Landmark]]
+    public let handednesses: [[Handedness]]
     
     // MARK: - Handedness
-    struct Handedness: Codable {
+    public struct Handedness: Codable {
         let score: Double
         let index: Int
         let categoryName: String
@@ -25,7 +25,7 @@ struct SimHand: Codable {
     }
 
     // MARK: - Landmark
-    struct Landmark: Codable {
+    public struct Landmark: Codable {
         let x: Double
         let y: Double
         let z: Double
@@ -169,13 +169,20 @@ struct SimHand: Codable {
     }
 }
 
+
+@available(visionOS 1.0, *)
+@available(macOS, unavailable)
+@available(iOS, unavailable)
 @Observable
-class SimulatorHandTrackingProvider {
+public class SimulatorHandTrackingProvider {
     private let bonjour = BonjourSession(configuration: .default)
     private var task: Task<(), Error>?
-    var simdHandHandler: ((SimHand) -> Void)?
+    public var simdHandHandler: ((SimHand) -> Void)?
+    public init() {
+        
+    }
     
-    var simHands: AsyncStream<SimHand> {
+    public var simHands: AsyncStream<SimHand> {
         AsyncStream { continuation in
             ///  配置一个终止回调，以了解你的流的生命周期。
             continuation.onTermination = {@Sendable [weak self] status in
@@ -213,3 +220,4 @@ class SimulatorHandTrackingProvider {
     }
     
 }
+#endif

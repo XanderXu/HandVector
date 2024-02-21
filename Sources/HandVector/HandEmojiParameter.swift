@@ -6,28 +6,29 @@
 //
 
 import RealityFoundation
+#if canImport(ARKit)
 import ARKit
 import simd
 
 //🫶🤲👐🙌👏🙏
 //👍👎👊✊🤛🤜🫷🫸🤞✌️🫰🤟🤘👌🤌🤏🫳🫴👈👉👆👇☝️✋🤚🖐️🖖👋🤙🫲🫱🖕✍️🫵
 //todo:👍👎🫷🫸🤞🤟🤘🤏🫳🫴🖐️🖖👋🤙🖕
-struct HandEmojiParameter: Codable {
-    struct JointInfo: Codable {
-        let position: simd_float3
-        let name: HandSkeleton.JointName.NameCodingKey
+public struct HandEmojiParameter: Codable {
+    public struct JointInfo: Codable {
+        public let position: simd_float3
+        public let name: HandSkeleton.JointName.NameCodingKey
         
-        var transform: Transform {
+        public var transform: Transform {
             .init(translation: position)
         }
     }
-    let emoji: String
-    let left: [JointInfo]?
-    let right: [JointInfo]?
-    let handsDistanceLimit: Float?
+    public let emoji: String
+    public let left: [JointInfo]?
+    public let right: [JointInfo]?
+    public let handsDistanceLimit: Float?
     
     
-    static func generateParameters(fileName: String?) -> HandEmojiParameter? {
+    public static func generateParameters(fileName: String?) -> HandEmojiParameter? {
         guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
@@ -37,8 +38,8 @@ struct HandEmojiParameter: Codable {
         }
         return nil
     }
-    static func generateParametersDict(fileName: String?) -> [String: HandEmojiParameter]? {
-        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+    public static func generateParametersDict(fileName: String?, bundle: Bundle) -> [String: HandEmojiParameter]? {
+        guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
             return jsonStr.toModel([String: HandEmojiParameter].self)
@@ -48,7 +49,7 @@ struct HandEmojiParameter: Codable {
         return nil
     }
     
-    func convertToHandVector() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
+    public func convertToHandVector() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
         if let left {
             var allPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
@@ -70,4 +71,4 @@ struct HandEmojiParameter: Codable {
 }
 
 
-
+#endif

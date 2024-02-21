@@ -5,9 +5,10 @@
 //  Created by 许同学 on 2024/1/2.
 //
 
-import ARKit
 import Foundation
 import simd
+#if canImport(ARKit)
+import ARKit
 
 public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, Codable {
     public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
@@ -144,7 +145,7 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, C
 }
 
 public extension HandVectorMatcher {
-    init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo], transform: simd_float4x4) {
+    public init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo], transform: simd_float4x4) {
         if allPositions.count >= HandSkeleton.JointName.allCases.count {
             self.chirality = chirality.codableName
             self.allPositions = allPositions
@@ -154,13 +155,13 @@ public extension HandVectorMatcher {
             return nil
         }
     }
-    init?(handAnchor: HandAnchor) {
+    public init?(handAnchor: HandAnchor) {
         guard let handSkeleton = handAnchor.handSkeleton else  {
             return nil
         }
         self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton, transform: handAnchor.originFromAnchorTransform)
     }
-    init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
+    public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
         self.chirality = chirality.codableName
         self.allPositions = Self.genetatePositions(from: handSkeleton)
         self.transform = transform
@@ -268,7 +269,7 @@ public extension HandVectorMatcher {
         static let insensitiveWeight: Float = 0.5
     }
     
-    func similarity(to vector: HandVectorMatcher) -> Float {
+    public func similarity(to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
         similarity = HandSkeleton.JointName.allCases.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
@@ -278,7 +279,7 @@ public extension HandVectorMatcher {
         similarity /= Float(HandSkeleton.JointName.allCases.count)
         return similarity
     }
-    func similarity(of keyFingers: Set<JointOfFinger>, regularFingers: Set<JointOfFinger> = [], insensitiveFingers: Set<JointOfFinger> = [], to vector: HandVectorMatcher) -> Float {
+    public func similarity(of keyFingers: Set<JointOfFinger>, regularFingers: Set<JointOfFinger> = [], insensitiveFingers: Set<JointOfFinger> = [], to vector: HandVectorMatcher) -> Float {
         if !keyFingers.intersection(regularFingers).intersection(insensitiveFingers).isEmpty {
             print("fingers repeat!")
         }
@@ -307,7 +308,7 @@ public extension HandVectorMatcher {
         
         return similarity
     }
-    func similarity(of finger: JointOfFinger, to vector: HandVectorMatcher) -> Float {
+    public func similarity(of finger: JointOfFinger, to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
         similarity = finger.jointNames.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
@@ -318,7 +319,7 @@ public extension HandVectorMatcher {
         return similarity
     }
     
-    func reversedChirality() -> HandVectorMatcher {
+    public func reversedChirality() -> HandVectorMatcher {
         var infoNew: [HandSkeleton.JointName.NameCodingKey: PositionInfo] = [:]
         for (name, info) in allPositions {
             infoNew[name] = info.reversedChirality()
@@ -334,3 +335,4 @@ fileprivate extension HandSkeleton.Joint {
     }
 }
 
+#endif

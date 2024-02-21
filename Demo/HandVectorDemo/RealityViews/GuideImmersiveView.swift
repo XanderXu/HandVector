@@ -7,7 +7,7 @@
 
 import SwiftUI
 import RealityKit
-//import HandVector
+import HandVector
 
 struct GuideImmersiveView: View {
     @Environment(ViewModel.self) private var model
@@ -19,7 +19,7 @@ struct GuideImmersiveView: View {
             entity.name = "GameRoot"
             model.rootEntity = entity
             
-            model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
+            model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson", bundle:handAssetsBundle)!
             guard let okVector = model.handEmojiDict["👌"]?.convertToHandVector(), let leftOKVector = okVector.left else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
