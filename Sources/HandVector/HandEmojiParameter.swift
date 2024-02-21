@@ -13,11 +13,15 @@ import simd
 //🫶🤲👐🙌👏🙏
 //👍👎👊✊🤛🤜🫷🫸🤞✌️🫰🤟🤘👌🤌🤏🫳🫴👈👉👆👇☝️✋🤚🖐️🖖👋🤙🫲🫱🖕✍️🫵
 //todo:👍👎🫷🫸🤞🤟🤘🤏🫳🫴🖐️🖖👋🤙🖕
+@available(visionOS 1.0, *)
+@available(macOS, unavailable)
+@available(iOS, unavailable)
 public struct HandEmojiParameter: Codable {
     public struct JointInfo: Codable {
         public let position: simd_float3
         public let name: HandSkeleton.JointName.NameCodingKey
         
+        @available(iOS 13.0, *)
         public var transform: Transform {
             .init(translation: position)
         }

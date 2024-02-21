@@ -9,16 +9,13 @@ import SwiftUI
 import RealityKit
 
 @available(visionOS 1.0, *)
-@available(macOS, unavailable)
-@available(iOS, unavailable)
+@available(macOS 10.15, iOS 13.0, *)
 extension Entity {
     /// Property for getting or setting an entity's `modelComponent`.
-    @available(macOS 10.15, iOS 13.0, *)
     var modelComponent: ModelComponent? {
         get { components[ModelComponent.self] }
         set { components[ModelComponent.self] = newValue }
     }
-    @available(macOS 10.15, iOS 13.0, *)
     var descendentsWithModelComponent: [Entity] {
         var descendents = [Entity]()
         
@@ -33,10 +30,8 @@ extension Entity {
 }
 
 @available(visionOS 1.0, *)
-@available(macOS, unavailable)
-@available(iOS, unavailable)
+@available(macOS 10.15, iOS 13.0, *)
 extension Entity {
-    @available(macOS 10.15, iOS 13.0, *)
     subscript(parentMatching targetName: String) -> Entity? {
         if name.contains(targetName) {
             return self
@@ -48,7 +43,6 @@ extension Entity {
         
         return nextParent[parentMatching: targetName]
     }
-    @available(macOS 10.15, iOS 13.0, *)
     func getParent(nameBeginsWith name: String) -> Entity? {
         if self.name.hasPrefix(name) {
             return self
@@ -59,7 +53,6 @@ extension Entity {
         
         return nextParent.getParent(nameBeginsWith: name)
     }
-    @available(macOS 10.15, iOS 13.0, *)
     func getParent(withName name: String) -> Entity? {
         if self.name == name {
             return self
@@ -70,7 +63,6 @@ extension Entity {
         
         return nextParent.getParent(withName: name)
     }
-    @available(macOS 10.15, iOS 13.0, *)
     subscript(descendentMatching targetName: String) -> Entity? {
         if name.contains(targetName) {
             return self
@@ -86,7 +78,6 @@ extension Entity {
         
         return match
     }
-    @available(macOS 10.15, iOS 13.0, *)
     func getSelfOrDescendent(withName name: String) -> Entity? {
         if self.name == name {
             return self
@@ -101,7 +92,6 @@ extension Entity {
         
         return match
     }
-    @available(macOS 10.15, iOS 13.0, *)
     func forward(relativeTo referenceEntity: Entity?) -> SIMD3<Float> {
         normalize(convert(direction: SIMD3<Float>(0, 0, +1), to: referenceEntity))
     }

@@ -12,7 +12,7 @@ import ARKit
 
 
 public extension HandAnchor.Chirality {
-    public enum NameCodingKey: String, Codable, CodingKey {
+    enum NameCodingKey: String, Codable, CodingKey {
         case right
         case left
         
@@ -20,7 +20,7 @@ public extension HandAnchor.Chirality {
             return self.rawValue
         }
     }
-    public var codableName: NameCodingKey {
+    var codableName: NameCodingKey {
         switch self {
         case .right:
             return .right
@@ -30,7 +30,7 @@ public extension HandAnchor.Chirality {
     }
 }
 public extension HandSkeleton.JointName {
-    public enum NameCodingKey: String, Codable, CodingKey, CaseIterable {
+    enum NameCodingKey: String, Codable, CodingKey, CaseIterable {
         case wrist
 
         /// The thumb knuckle joint of a hand skeleton.
@@ -117,7 +117,7 @@ public extension HandSkeleton.JointName {
             return self.rawValue
         }
     }
-    public var codableName: NameCodingKey {
+    var codableName: NameCodingKey {
         switch self {
         case .wrist:
             return .wrist
