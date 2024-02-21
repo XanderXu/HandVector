@@ -32,8 +32,8 @@ public struct HandEmojiParameter: Codable {
     public let handsDistanceLimit: Float?
     
     
-    public static func generateParameters(fileName: String?) -> HandEmojiParameter? {
-        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+    public static func generateParameters(fileName: String?, bundle: Bundle? = Bundle.main) -> HandEmojiParameter? {
+        guard let path = bundle?.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
             return jsonStr.toModel(HandEmojiParameter.self)
@@ -42,8 +42,8 @@ public struct HandEmojiParameter: Codable {
         }
         return nil
     }
-    public static func generateParametersDict(fileName: String?, bundle: Bundle) -> [String: HandEmojiParameter]? {
-        guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
+    public static func generateParametersDict(fileName: String?, bundle: Bundle? = Bundle.main) -> [String: HandEmojiParameter]? {
+        guard let path = bundle?.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
             return jsonStr.toModel([String: HandEmojiParameter].self)
