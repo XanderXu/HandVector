@@ -18,6 +18,7 @@ struct GuideImmersiveView: View {
             let entity = Entity()
             entity.name = "GameRoot"
             model.rootEntity = entity
+            content.add(entity)
             
             model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
             guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }

@@ -21,19 +21,14 @@ class ViewModel: @unchecked Sendable {
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
     var handEmojiDict: [String: HandEmojiParameter] = [:]
-    var simHandProvider = SimulatorHandTrackingProvider()
     
     var leftScore: Int = 0
     var rightScore: Int = 0
+    
     private let session = ARKitSession()
     private var handTracking = HandTrackingProvider()
-    
-    
-    
+    private var simHandProvider = SimulatorHandTrackingProvider()
 
-    
-    var score = 0
-    
     func clear() {
         rootEntity?.children.removeAll()
         latestHandTracking.left?.removeFromParent()
@@ -46,7 +41,6 @@ class ViewModel: @unchecked Sendable {
         
         leftScore = 0
         rightScore = 0
-        score = 0
         
         clear()
     }
