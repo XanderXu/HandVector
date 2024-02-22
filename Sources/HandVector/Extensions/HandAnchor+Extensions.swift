@@ -7,7 +7,6 @@
 
 import Foundation
 import simd
-#if canImport(ARKit)
 import ARKit
 
 
@@ -179,4 +178,3 @@ public extension HandSkeleton.JointName {
     }
 }
 
-#endif

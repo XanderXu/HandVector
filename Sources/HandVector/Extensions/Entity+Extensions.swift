@@ -8,8 +8,6 @@ Extensions and utilities.
 import SwiftUI
 import RealityKit
 
-@available(visionOS 1.0, *)
-@available(macOS 10.15, iOS 13.0, *)
 extension Entity {
     /// Property for getting or setting an entity's `modelComponent`.
     var modelComponent: ModelComponent? {
@@ -29,8 +27,6 @@ extension Entity {
     }
 }
 
-@available(visionOS 1.0, *)
-@available(macOS 10.15, iOS 13.0, *)
 extension Entity {
     subscript(parentMatching targetName: String) -> Entity? {
         if name.contains(targetName) {

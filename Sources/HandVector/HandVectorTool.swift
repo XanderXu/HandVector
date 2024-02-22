@@ -6,7 +6,6 @@
 //
 
 import RealityKit
-#if canImport(ARKit)
 import ARKit
 
 //手部关节模型
@@ -167,64 +166,9 @@ public class HandVectorTool {
         }
         
     }
-}
-
-extension HandVectorTool {
-    public static let simHandPositionY: Float = 1.4
-    public static func generateHandsUpdates(para:HandEmojiParameter, offset: simd_float3 = .init(0, simHandPositionY, -0.5)) -> HandVectorTool {
-        let left = Entity()
-        left.name = "leftHand"
-        left.position = .init(x: -0.2, y: 0, z: 0) + offset
-        
-        let right = Entity()
-        right.name = "rightHand"
-        right.position = .init(x: 0.2, y: 0, z: 0) + offset
-        
-        let wm = SimpleMaterial(color: .white, isMetallic: false)
-        let rm = SimpleMaterial(color: .red, isMetallic: false)
-        
-        var leftPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
-        para.left?.forEach({ joint in
-            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
-            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = joint.transform
-            modelEntity.name = joint.name.rawValue + "-model"
-            modelEntity.isEnabled = true
-            left.addChild(modelEntity)
-            
-            let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = joint.transform
-            collisionEntity.name = joint.name.rawValue + "-collision"
-            left.addChild(collisionEntity)
-            
-            leftPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
-        })
-        
-        var rightPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
-        para.right?.forEach({ joint in
-            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
-            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = joint.transform
-            modelEntity.name = joint.name.rawValue + "-model"
-            modelEntity.isEnabled = true
-            right.addChild(modelEntity)
-            
-            let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = joint.transform
-            collisionEntity.name = joint.name.rawValue + "-collision"
-            right.addChild(collisionEntity)
-            
-            rightPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
-        })
-        
-        let leftVector = HandVectorMatcher(chirality: .left, allPositions: leftPositions, transform: .init(1))
-        let rightVector = HandVectorMatcher(chirality: .right, allPositions: rightPositions, transform: .init(1))
-        
-        return HandVectorTool(left: left,right: right, leftHandVector: leftVector, rightHandVector: rightVector)
-    }
     
+    public static let simHandPositionY: Float = 1.4
 }
 
-#endif
+
+

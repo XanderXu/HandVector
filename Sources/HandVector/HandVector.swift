@@ -7,4 +7,4 @@
 
 import Foundation
 
-public let handAssetsBundle = Bundle.module
+//public let handAssetsBundle = Bundle.module

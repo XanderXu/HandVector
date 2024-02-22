@@ -19,8 +19,8 @@ struct GuideImmersiveView: View {
             entity.name = "GameRoot"
             model.rootEntity = entity
             
-            model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson", bundle:handAssetsBundle)!
-            guard let okVector = model.handEmojiDict["👌"]?.convertToHandVector(), let leftOKVector = okVector.left else { return }
+            model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
+            guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 let leftScore = model.latestHandTracking.leftHandVector?.similarity(to: leftOKVector) ?? 0

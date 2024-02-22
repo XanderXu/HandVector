@@ -7,7 +7,6 @@
 
 import Foundation
 import simd
-#if canImport(ARKit)
 import ARKit
 
 public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, Codable {
@@ -335,4 +334,3 @@ fileprivate extension HandSkeleton.Joint {
     }
 }
 
-#endif
