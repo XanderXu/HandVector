@@ -20,33 +20,44 @@
 
 ## Usage
 
-### Hello World
+### Match hand gesture
 
-The first example is the simplest way to use the `Splitflap` component. Here how to display this "Hello" text:
+`HandVector` allows you to track your hands, and calculate the similarity of current gesture to another recorded hand gesture:
 
 ```swift
 import HandVector
 
-let splitflapView        = Splitflap(frame: CGRect(x: 0, y: 0, width: 370, height: 53))
-splitflapView.datasource = self
+//load recorded hand gesture from json file
+model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
+guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
 
-// Set the text to display by animating the flaps
-splitflapView.setText("Hello", animated: true)
-
-// MARK: - Splitflap DataSource Methods
-
-// Defines the number of flaps that will be used to display the text
-func numberOfFlapsInSplitflap(_ splitflap: Splitflap) -> Int {
-  return 5
+//update current handTracking from HandTrackingProvider
+for await update in handTracking.anchorUpdates {
+    switch update.event {
+    case .added:
+        ...
+    case .updated:
+        let anchor = update.anchor
+        guard anchor.isTracked else { continue }
+        await latestHandTracking.updateHand(from: anchor)
+    case .removed:
+        ...
+    }
 }
 
+
+//calculate the similarity
+let leftScore = model.latestHandTracking.leftHandVector?.similarity(to: leftOKVector) ?? 0
+model.leftScore = Int(abs(leftScore) * 100)
+let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOKVector) ?? 0
+model.rightScore = Int(abs(rightScore) * 100)
 ```
 
 ### Test on simulator
 
-`HandVector` allows you to customize each flap individually by providing a `splitflap:builderForFlapAtIndex:` delegate method:
+`HandVector` allows you to test hand tracking on visionOS simulator:
 
-![Theming](http://yannickloriot.com/resources/splitflap-theming.gif)
+
 
 
 
