@@ -1,3 +1,7 @@
+# SPM defaults
+.swiftpm/
+*.xcuserstate
+
 .DS_Store
 /.build
 /Packages
