@@ -1,11 +1,13 @@
 <p align="center">
-  <img src="http://yannickloriot.com/resources/splitflap-logo.gif" alt="Splitflap">
+    <img src="Resources/HandVectorLogo.png" alt="HandVector Logo" title="HandVector" />
 </p>
 <p align="center">
   <a href="https://github.com/apple/swift-package-manager"><img alt="Swift Package Manager compatible" src="https://img.shields.io/badge/SPM-%E2%9C%93-brightgreen.svg?style=flat"/></a>
-  <img src="https://img.shields.io/badge/Swift-5.9-orange.svg" alt="Swift 5.9" />
-  <img src="https://img.shields.io/badge/Platforms-visionOS-yellowgreen?style=flat-square" alt="Swift 5.9" />
+  <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9" />
+  <img src="https://img.shields.io/badge/Platforms-visionOS-brightgreen?style=flat-square" alt="Swift 5.9" />
 </p>
+
+[中文版](./README_CN.md)
 
 **HandVector** is a tool to calculate the similarity of hand gestures in visionOS, and with a macOS tool to test hand tracking in visionOS simulator.
 
@@ -20,6 +22,10 @@
 - Swift 5.9+
 
 ## Usage
+
+Your can run demo in package to see how to use it, and also can try an Vision Pro App: [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901)  in App Store to see how it works.
+
+![](./Resources/handVectorDemo.gif)
 
 ### Match hand gesture
 
@@ -54,15 +60,26 @@ let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOK
 model.rightScore = Int(abs(rightScore) * 100)
 ```
 
-the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand.
+the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand, and `0` means not matched.
 
 ### Test on simulator
 
-`HandVector` allows you to test hand tracking on visionOS simulator:
+The test method of`HandVector`  is inspired by  [VisionOS Simulator hands](https://github.com/BenLumenDigital/VisionOS-SimHands),  it allow you to test hand tracking on visionOS simulator:
 
+It uses 2 things:
 
+1. A macOS helper app, with a bonjour service
+2. A Swift class for your VisionOS project which connects to the bonjour service (already in this package, and already turn JSON data to hand gestures)
 
+#### macOS Helper App
 
+The helper app uses Google MediaPipes for 3D hand tracking. This is a very basic setup - it uses a WKWebView to run the Google sample code, and that passed the hand data as JSON into native Swift.
+
+The Swift code then spits out the JSON over a Bonjour service.
+
+> If hand tracking can't start for a long time(Start button still can't be pressed), please check your network to google MediaPipes.
+
+![](./Resources/handVectorTest.gif)
 
 ### And many more...
 
@@ -74,24 +91,15 @@ To go further, take a look at the documentation and the demo project.
 
 #### Swift Package Manager
 
-You can use [The Swift Package Manager](https://swift.org/package-manager) to install `Splitflap` by adding the proper description to your `Package.swift` file:
-```swift
-import PackageDescription
+To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
-let package = Package(
-    name: "YOUR_PROJECT_NAME",
-    targets: [],
-    dependencies: [
-        .Package(url: "https://github.com/XanderXu/HandVector.git", versions: "0.1.0" ..< Version.max)
-    ]
-)
 ```
-
-Note that the [Swift Package Manager](https://swift.org/package-manager) is still in early design and development, for more information checkout its [GitHub Page](https://github.com/apple/swift-package-manager).
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.1.0"))
+```
 
 #### Manually
 
-[Download](https://github.com/XanderXu/HandVector/archive/master.zip) the project and copy the `HandVector` folder into your project to use it in.
+[Download](https://github.com/XanderXu/HandVector/archive/master.zip) the project and copy the `HandVector` folder into your project to use it.
 
 ## Contribution
 
@@ -99,28 +107,15 @@ Contributions are welcomed and encouraged *♡*.
 
 ## Contact
 
-Xander-API 搬运工
+Xander: API 搬运工
+
+* [https://twitter.com/XanderARKit](https://twitter.com/XanderARKit)
+* [https://github.com/XanderXu](https://github.com/XanderXu)
+
  - [https://juejin.cn/user/2629687543092056](https://juejin.cn/user/2629687543092056)
- - [https://twitter.com/XanderARKit](https://twitter.com/XanderARKit)
 
-## License (MIT)
+   
 
-Copyright (c) 2015-present
+## License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+HandVector is released under an MIT license. See [LICENSE](./LICENSE) for more information.
