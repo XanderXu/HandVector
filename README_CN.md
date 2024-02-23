@@ -4,10 +4,9 @@
 <p align="center">
   <a href="https://github.com/apple/swift-package-manager"><img alt="Swift Package Manager compatible" src="https://img.shields.io/badge/SPM-%E2%9C%93-brightgreen.svg?style=flat"/></a>
   <img src="https://img.shields.io/badge/Swift-5.9-orange.svg" alt="Swift 5.9" />
-  <img src="https://img.shields.io/badge/Platforms-visionOS-yellowgreen?style=flat-square" alt="Swift 5.9" />
 </p>
 
-**HandVector** is a tool to calculate the similarity of hand gestures in visionOS, and with a macOS tool to test hand tracking in visionOS simulator.
+***HandVector*** is a simple to use component to present changeable alphanumeric text like often used as a public transport timetable in airports or railway stations or with some flip clocks.
 
 <p align="center">
     <a href="#requirements">Requirements</a> • <a href="#usage">Usage</a> • <a href="#installation">Installation</a> • <a href="#contribution">Contribution</a> • <a href="#contact">Contact</a> • <a href="#license-mit">License</a>
@@ -23,7 +22,7 @@
 
 ### Match hand gesture
 
-`HandVector` allows you to track your hands, and calculate the similarity between your current hand to another recorded hand gesture:
+`HandVector` allows you to track your hands, and calculate the similarity of current gesture to another recorded hand gesture:
 
 ```swift
 import HandVector
@@ -53,8 +52,6 @@ model.leftScore = Int(abs(leftScore) * 100)
 let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOKVector) ?? 0
 model.rightScore = Int(abs(rightScore) * 100)
 ```
-
-the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand.
 
 ### Test on simulator
 
@@ -91,7 +88,7 @@ Note that the [Swift Package Manager](https://swift.org/package-manager) is stil
 
 #### Manually
 
-[Download](https://github.com/XanderXu/HandVector/archive/master.zip) the project and copy the `HandVector` folder into your project to use it in.
+[Download](https://github.com/YannickL/Splitflap/archive/master.zip) the project and copy the `HandVector` folder into your project to use it in.
 
 ## Contribution
 
