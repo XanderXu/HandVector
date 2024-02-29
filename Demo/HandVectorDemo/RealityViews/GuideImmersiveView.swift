@@ -29,10 +29,10 @@ struct GuideImmersiveView: View {
                 let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOKVector) ?? 0
                 model.rightScore = Int(abs(rightScore) * 100)
             }))
-#if targetEnvironment(simulator)
+//#if targetEnvironment(simulator)
             model.isHandSkeletonVisible = true
             model.latestHandTracking.isSkeletonVisible = true
-#endif
+//#endif
         } update: { content in
             
             

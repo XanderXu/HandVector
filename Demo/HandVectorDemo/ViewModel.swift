@@ -60,8 +60,9 @@ class ViewModel: @unchecked Sendable {
     func publishHandTrackingUpdates() async {
         for await update in handTracking.anchorUpdates {
             switch update.event {
-            case .added:
+            case .added, .updated:
                 let anchor = update.anchor
+                guard anchor.isTracked else { continue }
                 await latestHandTracking.updateHand(from: anchor)
                 if let left = latestHandTracking.left {
                     await rootEntity?.addChild(left)
@@ -69,11 +70,6 @@ class ViewModel: @unchecked Sendable {
                 if let right = latestHandTracking.right {
                     await rootEntity?.addChild(right)
                 }
-            case .updated:
-                let anchor = update.anchor
-                // Publish updates only if the hand and the relevant joints are tracked.
-                guard anchor.isTracked else { continue }
-                await latestHandTracking.updateHand(from: anchor)
             case .removed:
                 let anchor = update.anchor
                 latestHandTracking.removeHand(from: anchor)
