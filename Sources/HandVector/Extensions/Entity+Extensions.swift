@@ -10,11 +10,11 @@ import RealityKit
 
 extension Entity {
     /// Property for getting or setting an entity's `modelComponent`.
-    var modelComponent: ModelComponent? {
+    public var modelComponent: ModelComponent? {
         get { components[ModelComponent.self] }
         set { components[ModelComponent.self] = newValue }
     }
-    var descendentsWithModelComponent: [Entity] {
+    public var descendentsWithModelComponent: [Entity] {
         var descendents = [Entity]()
         
         for child in children {
@@ -28,7 +28,7 @@ extension Entity {
 }
 
 extension Entity {
-    subscript(parentMatching targetName: String) -> Entity? {
+    public subscript(parentMatching targetName: String) -> Entity? {
         if name.contains(targetName) {
             return self
         }
@@ -39,7 +39,7 @@ extension Entity {
         
         return nextParent[parentMatching: targetName]
     }
-    func getParent(nameBeginsWith name: String) -> Entity? {
+    public func getParent(nameBeginsWith name: String) -> Entity? {
         if self.name.hasPrefix(name) {
             return self
         }
@@ -49,7 +49,7 @@ extension Entity {
         
         return nextParent.getParent(nameBeginsWith: name)
     }
-    func getParent(withName name: String) -> Entity? {
+    public func getParent(withName name: String) -> Entity? {
         if self.name == name {
             return self
         }
@@ -59,7 +59,7 @@ extension Entity {
         
         return nextParent.getParent(withName: name)
     }
-    subscript(descendentMatching targetName: String) -> Entity? {
+    public subscript(descendentMatching targetName: String) -> Entity? {
         if name.contains(targetName) {
             return self
         }
@@ -74,7 +74,7 @@ extension Entity {
         
         return match
     }
-    func getSelfOrDescendent(withName name: String) -> Entity? {
+    public func getSelfOrDescendent(withName name: String) -> Entity? {
         if self.name == name {
             return self
         }
@@ -88,17 +88,17 @@ extension Entity {
         
         return match
     }
-    func forward(relativeTo referenceEntity: Entity?) -> SIMD3<Float> {
+    public func forward(relativeTo referenceEntity: Entity?) -> SIMD3<Float> {
         normalize(convert(direction: SIMD3<Float>(0, 0, +1), to: referenceEntity))
     }
     
-    var forward: SIMD3<Float> {
+    public var forward: SIMD3<Float> {
         forward(relativeTo: nil)
     }
 }
 
 extension SIMD4 {
-    var xyz: SIMD3<Scalar> {
+    public var xyz: SIMD3<Scalar> {
         self[SIMD3(0, 1, 2)]
     }
 }
