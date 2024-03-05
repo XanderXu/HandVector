@@ -264,14 +264,14 @@ public extension HandVectorMatcher {
             }
         }
         
-        public static let allFingers: [JointOfFinger] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-        public static let allFingersAndWrist: [JointOfFinger] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
         
     }
+    public static let allFingers: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+    public static let allFingersAndWrist: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
     
     func similarity(to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
-        let jointNames = JointOfFinger.allFingersAndWrist.map { $0.jointNames }.flatMap{$0}
+        let jointNames = HandVectorMatcher.allFingersAndWrist.map { $0.jointNames }.flatMap{$0}
         similarity = jointNames.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
             return dv
