@@ -264,8 +264,8 @@ public extension HandVectorMatcher {
             }
         }
         
-        public static let allFingers: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-        public static let allFingersAndWrist: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
+        public static let allFingers: [JointOfFinger] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+        public static let allFingersAndWrist: [JointOfFinger] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
         
     }
     
@@ -281,7 +281,7 @@ public extension HandVectorMatcher {
         return similarity
     }
     
-    func similarity(of fingers: [JointOfFinger], to vector: HandVectorMatcher) -> Float {
+    func similarity(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
         let jointNames = fingers.map { $0.jointNames }.flatMap{$0}
         similarity = jointNames.map { name in
