@@ -239,7 +239,7 @@ public extension HandVectorMatcher {
 }
 
 public extension HandVectorMatcher {
-    enum JointOfFinger: CaseIterable {
+    public enum JointOfFinger: CaseIterable {
         case thump
         case indexFinger
         case middleFinger
@@ -247,7 +247,7 @@ public extension HandVectorMatcher {
         case littleFinger
         case wristOnly
         
-        var jointNames: [HandSkeleton.JointName] {
+        public var jointNames: [HandSkeleton.JointName] {
             switch self {
             case .thump:
                 return [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
@@ -264,8 +264,8 @@ public extension HandVectorMatcher {
             }
         }
         
-        static let allFingers: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-        static let allFingersAndWrist: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
+        public static let allFingers: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+        public static let allFingersAndWrist: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
         
     }
     
