@@ -35,18 +35,18 @@ public class HandVectorTool {
         }
     }
     @MainActor
-    public func updateHand(from handAnchor: HandAnchor) async {
+    public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
         if handAnchor.chirality == .left {
             leftHandVector = HandVectorMatcher(handAnchor: handAnchor)
             if left == nil {
-                left = generateHandEntity(from: handAnchor)
+                left = generateHandEntity(from: handAnchor, filter: filter)
             } else {
                 updateHandEntity(from: handAnchor, to: left!)
             }
         } else if handAnchor.chirality == .right { // Update right hand info.
             rightHandVector = HandVectorMatcher(handAnchor: handAnchor)
             if right == nil {
-                right = generateHandEntity(from: handAnchor)
+                right = generateHandEntity(from: handAnchor, filter: filter)
             } else {
                 updateHandEntity(from: handAnchor, to: right!)
             }
@@ -64,7 +64,7 @@ public class HandVectorTool {
         }
     }
     
-    private func generateHandEntity(from handAnchor: HandAnchor) -> Entity {
+    private func generateHandEntity(from handAnchor: HandAnchor, filter: CollisionFilter = .default) -> Entity {
         let hand = Entity()
         hand.name = handAnchor.chirality == .left ? "leftHand" : "rightHand"
         hand.transform.matrix = handAnchor.originFromAnchorTransform
@@ -80,7 +80,7 @@ public class HandVectorTool {
                 hand.addChild(modelEntity)
                 
                 let collisionEntity = Entity()
-                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
+                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
                 collisionEntity.transform.matrix = joint.anchorFromJointTransform
                 collisionEntity.name = joint.name.codableName.rawValue + "-collision"
                 hand.addChild(collisionEntity)
@@ -103,12 +103,12 @@ public class HandVectorTool {
     }
     
     @MainActor
-    public func updateHand(from simHand: SimHand) async {
+    public func updateHand(from simHand: SimHand, filter: CollisionFilter = .default) async {
         let handVectors = simHand.convertToHandVector(offset: .init(0, Self.simHandPositionY, -0.2))
         leftHandVector = handVectors.left
         if let leftHandVector {
             if left == nil {
-                left = generateHandEntity(from: leftHandVector)
+                left = generateHandEntity(from: leftHandVector, filter: filter)
             } else {
                 left?.isEnabled = true
                 updateHandEntity(from: leftHandVector, to: left!)
@@ -121,7 +121,7 @@ public class HandVectorTool {
         rightHandVector = handVectors.right
         if let rightHandVector {
             if right == nil {
-                right = generateHandEntity(from: rightHandVector)
+                right = generateHandEntity(from: rightHandVector, filter: filter)
             } else {
                 right?.isEnabled = true
                 updateHandEntity(from: rightHandVector, to: right!)
@@ -131,7 +131,7 @@ public class HandVectorTool {
         }
     }
     
-    private func generateHandEntity(from handVector: HandVectorMatcher) -> Entity {
+    private func generateHandEntity(from handVector: HandVectorMatcher, filter: CollisionFilter = .default) -> Entity {
         let hand = Entity()
         hand.name = handVector.chirality == .left ? "leftHand" : "rightHand"
         hand.transform.matrix = handVector.transform
@@ -147,7 +147,7 @@ public class HandVectorTool {
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
             collisionEntity.position = positionInfo.position
             collisionEntity.name = positionInfo.name.rawValue + "-collision"
             hand.addChild(collisionEntity)

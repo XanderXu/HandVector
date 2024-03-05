@@ -245,7 +245,7 @@ public extension HandVectorMatcher {
         case middleFinger
         case ringFinger
         case littleFinger
-        case wrist
+        case wristOnly
         
         var jointNames: [HandSkeleton.JointName] {
             switch self {
@@ -259,62 +259,37 @@ public extension HandVectorMatcher {
                 return [.ringFingerMetacarpal, .ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
             case .littleFinger:
                 return [.littleFingerMetacarpal, .littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
-            case .wrist:
-                return [.wrist, .forearmWrist, .forearmArm]
+            case .wristOnly:
+                return [.wrist]
             }
         }
-        static let keyWeight: Float = 1.0
-        static let regularWeight: Float = 0.8
-        static let insensitiveWeight: Float = 0.5
+        
+        static let allFingers: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+        static let allFingersAndWrist: [Self] = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
+        
     }
     
     func similarity(to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
-        similarity = HandSkeleton.JointName.allCases.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
-            return dv
-        }.reduce(similarity) { $0 + $1 }
-        
-        similarity /= Float(HandSkeleton.JointName.allCases.count)
-        return similarity
-    }
-    func similarity(of keyFingers: Set<JointOfFinger>, regularFingers: Set<JointOfFinger> = [], insensitiveFingers: Set<JointOfFinger> = [], to vector: HandVectorMatcher) -> Float {
-        if !keyFingers.intersection(regularFingers).intersection(insensitiveFingers).isEmpty {
-            print("fingers repeat!")
-        }
-        var similarity: Float = 0
-        
-        let keyJoints = keyFingers.flatMap { $0.jointNames }
-        similarity = keyJoints.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
-            return dv * JointOfFinger.keyWeight
-        }.reduce(similarity) { $0 + $1 }
-        
-        let regularJoints = regularFingers.flatMap { $0.jointNames }
-        similarity = regularJoints.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
-            return dv * JointOfFinger.regularWeight
-        }.reduce(similarity) { $0 + $1 }
-        
-        let insensitiveJoints = insensitiveFingers.flatMap { $0.jointNames }
-        similarity = insensitiveJoints.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
-            return dv * JointOfFinger.insensitiveWeight
-        }.reduce(similarity) { $0 + $1 }
-        
-        let weights = Float(keyJoints.count) * JointOfFinger.keyWeight + Float(regularJoints.count) * JointOfFinger.regularWeight + Float(insensitiveJoints.count) * JointOfFinger.insensitiveWeight
-        similarity /= weights
-        
-        return similarity
-    }
-    func similarity(of finger: JointOfFinger, to vector: HandVectorMatcher) -> Float {
-        var similarity: Float = 0
-        similarity = finger.jointNames.map { name in
+        let jointNames = JointOfFinger.allFingersAndWrist.map { $0.jointNames }.flatMap{$0}
+        similarity = jointNames.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
             return dv
         }.reduce(0) { $0 + $1 }
         
-        similarity /= Float(finger.jointNames.count)
+        similarity /= Float(jointNames.count)
+        return similarity
+    }
+    
+    func similarity(of fingers: [JointOfFinger], to vector: HandVectorMatcher) -> Float {
+        var similarity: Float = 0
+        let jointNames = fingers.map { $0.jointNames }.flatMap{$0}
+        similarity = jointNames.map { name in
+            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
+            return dv
+        }.reduce(0) { $0 + $1 }
+        
+        similarity /= Float(jointNames.count)
         return similarity
     }
     
