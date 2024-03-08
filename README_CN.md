@@ -9,7 +9,7 @@
 
 [English](./README.md)
 
-**HandVector** 是一个在 vsionOS 上计算手势相似度的工具，还带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
+**HandVector** 使用**余弦相似度**算法，在 vsionOS 上计算不同手势之间的相似度，还带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
 
 <p align="center">
     <a href="#requirements">环境要求</a> • <a href="#usage">用法</a> • <a href="#installation">安装</a> • <a href="#contribution">贡献</a> • <a href="#contact">联系方式</a> • <a href="#license-mit">许可证</a>
@@ -42,9 +42,7 @@ guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), 
 //从 HandTrackingProvider 中获取当前手势，并更新
 for await update in handTracking.anchorUpdates {
     switch update.event {
-    case .added:
-        ...
-    case .updated:
+    case .added, .updated:
         let anchor = update.anchor
         guard anchor.isTracked else { continue }
         await latestHandTracking.updateHand(from: anchor)

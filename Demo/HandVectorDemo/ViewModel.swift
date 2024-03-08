@@ -16,7 +16,6 @@ import HandVector
 class ViewModel: @unchecked Sendable {
     var showGuideImmersiveSpace = false
     
-    var isHandSkeletonVisible = false
     var rootEntity: Entity?
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)

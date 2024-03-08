@@ -9,7 +9,7 @@
 
 [中文版](./README_CN.md)
 
-**HandVector** is a tool to calculate the similarity of hand gestures in visionOS, and with a macOS tool to test hand tracking in visionOS simulator.
+**HandVector** uses **Cosine Similarity** Algorithm to calculate the similarity of hand gestures in visionOS, and with a macOS tool to test hand tracking in visionOS simulator.
 
 <p align="center">
     <a href="#requirements">Requirements</a> • <a href="#usage">Usage</a> • <a href="#installation">Installation</a> • <a href="#contribution">Contribution</a> • <a href="#contact">Contact</a> • <a href="#license-mit">License</a>
@@ -41,9 +41,7 @@ guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), 
 //update current handTracking from HandTrackingProvider
 for await update in handTracking.anchorUpdates {
     switch update.event {
-    case .added:
-        ...
-    case .updated:
+    case .added, .updated:
         let anchor = update.anchor
         guard anchor.isTracked else { continue }
         await latestHandTracking.updateHand(from: anchor)
@@ -61,6 +59,8 @@ model.rightScore = Int(abs(rightScore) * 100)
 ```
 
 the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand, and `0` means not matched.
+
+
 
 ### Test on simulator
 
