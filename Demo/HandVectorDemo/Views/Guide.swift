@@ -15,7 +15,12 @@ struct Guide: View {
     
     var body: some View {
         @Bindable var model = model
-        VStack(spacing: 10) {
+        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
+            Toggle("Test with my real hands", isOn: $model.showGuideImmersiveSpace)
+                .toggleStyle(ButtonToggleStyle())
+                .padding(.vertical, 30)
+                .font(.system(size: 16, weight: .bold))
+            
             HStack(alignment: .top) {
                 Spacer()
                 VStack {
@@ -51,14 +56,11 @@ struct Guide: View {
                         .accessibilityHidden(true)
                 }
                 
-                Toggle("Test with my real hands", isOn: $model.showGuideImmersiveSpace)
-                    .toggleStyle(ButtonToggleStyle())
-                    .padding(.vertical, 30)
+                
             }
             .font(.system(size: 16, weight: .bold))
             .frame(width: 280)
         }
-        .padding(.horizontal, 150)
         .frame(width: 400)
         .onChange(of: model.showGuideImmersiveSpace) { _, newValue in
             Task {
