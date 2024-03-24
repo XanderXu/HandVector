@@ -21,6 +21,7 @@
 		6CD819FD2B8767FD009FF2CB /* HandEmojiParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD819FC2B8767FD009FF2CB /* HandEmojiParameter.swift */; };
 		6CD8751F2BA6A5CA008BED5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CD8751D2BA6A5CA008BED5D /* Localizable.strings */; };
 		6CD875272BA6A683008BED5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CD875262BA6A683008BED5D /* Localizable.strings */; };
+		6CD8756B2BAFDBEC008BED5D /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD8756A2BAFDBEC008BED5D /* HandVector */; };
 		952000972B848DC6006B1EAE /* GuideImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000962B848DC6006B1EAE /* GuideImmersiveView.swift */; };
 		952000CA2B848DE1006B1EAE /* Guide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000C12B848DE1006B1EAE /* Guide.swift */; };
 		952000D82B848E96006B1EAE /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952000D72B848E96006B1EAE /* ViewModel.swift */; };
@@ -53,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CD8756B2BAFDBEC008BED5D /* HandVector in Frameworks */,
 				6C7138C92B862AEE004E7F8B /* HandVector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -183,6 +185,7 @@
 			name = HandVectorDemo;
 			packageProductDependencies = (
 				6C7138C82B862AEE004E7F8B /* HandVector */,
+				6CD8756A2BAFDBEC008BED5D /* HandVector */,
 			);
 			productName = HandVector;
 			productReference = 6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */;
@@ -214,7 +217,7 @@
 			);
 			mainGroup = 6C36A3E42AB7417F00B7B026;
 			packageReferences = (
-				6C7138C72B862AEE004E7F8B /* XCLocalSwiftPackageReference ".." */,
+				6CD875692BAFDBEC008BED5D /* XCLocalSwiftPackageReference "../HandVector" */,
 			);
 			productRefGroup = 6C36A3EE2AB7417F00B7B026 /* Products */;
 			projectDirPath = "";
@@ -476,14 +479,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6C7138C72B862AEE004E7F8B /* XCLocalSwiftPackageReference ".." */ = {
+		6CD875692BAFDBEC008BED5D /* XCLocalSwiftPackageReference "../HandVector" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
+			relativePath = ../HandVector;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		6C7138C82B862AEE004E7F8B /* HandVector */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HandVector;
+		};
+		6CD8756A2BAFDBEC008BED5D /* HandVector */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HandVector;
 		};
