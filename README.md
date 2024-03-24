@@ -94,7 +94,7 @@ To go further, take a look at the documentation and the demo project.
 To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
 ```
-.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.1.0"))
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.2.0"))
 ```
 
 #### Manually

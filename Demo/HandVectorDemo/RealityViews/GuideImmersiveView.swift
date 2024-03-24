@@ -30,6 +30,7 @@ struct GuideImmersiveView: View {
                 model.rightScore = Int(abs(rightScore) * 100)
             }))
 //#if targetEnvironment(simulator)
+            model.isHandSkeletonVisible = true
             model.latestHandTracking.isSkeletonVisible = true
 //#endif
         } update: { content in

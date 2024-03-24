@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  HandVectorDemo
+
+  Created by 许同学 on 2024/3/17.
+  
+*/
+"Test with my real hands" = "用我自己的双手测试";
+"Try to make the same gesture,\nyou can use left or right hand" = "试着做出相同的手势\n左手或右手都可以";
+"left score:%lld" = "左手得分:%lld";
+"right score:%lld" = "右手得分:%lld";
