@@ -268,10 +268,14 @@ public extension HandVectorMatcher {
     }
     public static let allFingers: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
     public static let allFingersAndWrist: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
-    
+    /// Fingers and wrist
     func similarity(to vector: HandVectorMatcher) -> Float {
+        return similarity(of: HandVectorMatcher.allFingersAndWrist, to: vector)
+    }
+    /// Fingers your selected
+    func similarity(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
-        let jointNames = HandVectorMatcher.allFingersAndWrist.map { $0.jointNames }.flatMap{$0}
+        let jointNames = fingers.flatMap { $0.jointNames }
         similarity = jointNames.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
             return dv
@@ -281,16 +285,26 @@ public extension HandVectorMatcher {
         return similarity
     }
     
-    func similarity(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> Float {
-        var similarity: Float = 0
-        let jointNames = fingers.map { $0.jointNames }.flatMap{$0}
-        similarity = jointNames.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
-            return dv
-        }.reduce(0) { $0 + $1 }
+    func similarities(to vector: HandVectorMatcher) -> (average: Float, each: [JointOfFinger: Float]) {
+        return similarities(of: HandVectorMatcher.allFingersAndWrist, to: vector)
+    }
+    func similarities(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> (average: Float, each: [JointOfFinger: Float]) {
+        let fingerTotal = fingers.reduce(into: [JointOfFinger: Float]()) { partialResult, finger in
+            let fingerResult = finger.jointNames.reduce(into: Float.zero) { partialResult, name in
+                let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
+                partialResult += dv
+            }
+            partialResult[finger] = fingerResult
+        }
+        let fingerScore = fingerTotal.reduce(into: [JointOfFinger: Float]()) { partialResult, ele in
+            partialResult[ele.key]  = ele.value / Float(ele.key.jointNames.count)
+        }
         
-        similarity /= Float(jointNames.count)
-        return similarity
+        let jointTotal = fingerTotal.reduce(into: Float.zero) { partialResult, element in
+            partialResult += element.value
+        }
+        let jointCount = fingers.flatMap { $0.jointNames }.count
+        return (average: jointTotal / Float(jointCount), each: fingerScore)
     }
     
     func reversedChirality() -> HandVectorMatcher {
