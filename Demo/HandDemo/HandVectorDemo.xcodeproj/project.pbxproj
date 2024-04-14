@@ -18,18 +18,12 @@
 		6C7138C92B862AEE004E7F8B /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C7138C82B862AEE004E7F8B /* HandVector */; };
 		6CB144CA2BCB807400CEB043 /* HandVectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144C92BCB807400CEB043 /* HandVectorView.swift */; };
 		6CB144CC2BCB887400CEB043 /* HandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144CB2BCB887400CEB043 /* HandViewModel.swift */; };
-		6CB144CE2BCB88AF00CEB043 /* ModuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144CD2BCB88AF00CEB043 /* ModuleViewModel.swift */; };
 		6CB144D02BCBADC400CEB043 /* Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144CF2BCBADC400CEB043 /* Module.swift */; };
 		6CB144D22BCBB30800CEB043 /* MatchBuildinImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144D12BCBB30800CEB043 /* MatchBuildinImmersiveView.swift */; };
 		6CB144D42BCBB31600CEB043 /* MatchBuildin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144D32BCBB31600CEB043 /* MatchBuildin.swift */; };
 		6CB144D62BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144D52BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift */; };
 		6CB144DC2BCBBDEB00CEB043 /* RecordAndMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144DB2BCBBDEB00CEB043 /* RecordAndMatch.swift */; };
-		6CD819F12B876673009FF2CB /* HandEmojiJsonFist.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819EA2B876673009FF2CB /* HandEmojiJsonFist.json */; };
 		6CD819F22B876673009FF2CB /* HandEmojiTotalJson.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819EB2B876673009FF2CB /* HandEmojiTotalJson.json */; };
-		6CD819F32B876673009FF2CB /* HandEmojiJsonTips.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819EC2B876673009FF2CB /* HandEmojiJsonTips.json */; };
-		6CD819F52B876673009FF2CB /* HandEmojiJson5.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819EE2B876673009FF2CB /* HandEmojiJson5.json */; };
-		6CD819F62B876673009FF2CB /* HandEmojiJson2.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819EF2B876673009FF2CB /* HandEmojiJson2.json */; };
-		6CD819F72B876673009FF2CB /* HandEmojiJsonOk.json in Resources */ = {isa = PBXBuildFile; fileRef = 6CD819F02B876673009FF2CB /* HandEmojiJsonOk.json */; };
 		6CD819FB2B87673F009FF2CB /* HandEmojiParameter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD819FA2B87673F009FF2CB /* HandEmojiParameter+Extension.swift */; };
 		6CD819FD2B8767FD009FF2CB /* HandEmojiParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD819FC2B8767FD009FF2CB /* HandEmojiParameter.swift */; };
 		6CD8751F2BA6A5CA008BED5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CD8751D2BA6A5CA008BED5D /* Localizable.strings */; };
@@ -46,21 +40,14 @@
 		6C36A4012AB7418000B7B026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6CB144C92BCB807400CEB043 /* HandVectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVectorView.swift; sourceTree = "<group>"; };
 		6CB144CB2BCB887400CEB043 /* HandViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandViewModel.swift; sourceTree = "<group>"; };
-		6CB144CD2BCB88AF00CEB043 /* ModuleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleViewModel.swift; sourceTree = "<group>"; };
 		6CB144CF2BCBADC400CEB043 /* Module.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Module.swift; sourceTree = "<group>"; };
 		6CB144D12BCBB30800CEB043 /* MatchBuildinImmersiveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchBuildinImmersiveView.swift; sourceTree = "<group>"; };
 		6CB144D32BCBB31600CEB043 /* MatchBuildin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchBuildin.swift; sourceTree = "<group>"; };
 		6CB144D52BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordAndMatchImmersiveView.swift; sourceTree = "<group>"; };
 		6CB144DB2BCBBDEB00CEB043 /* RecordAndMatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordAndMatch.swift; sourceTree = "<group>"; };
-		6CD819EA2B876673009FF2CB /* HandEmojiJsonFist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonFist.json; sourceTree = "<group>"; };
 		6CD819EB2B876673009FF2CB /* HandEmojiTotalJson.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiTotalJson.json; sourceTree = "<group>"; };
-		6CD819EC2B876673009FF2CB /* HandEmojiJsonTips.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonTips.json; sourceTree = "<group>"; };
-		6CD819EE2B876673009FF2CB /* HandEmojiJson5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJson5.json; sourceTree = "<group>"; };
-		6CD819EF2B876673009FF2CB /* HandEmojiJson2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJson2.json; sourceTree = "<group>"; };
-		6CD819F02B876673009FF2CB /* HandEmojiJsonOk.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HandEmojiJsonOk.json; sourceTree = "<group>"; };
 		6CD819FA2B87673F009FF2CB /* HandEmojiParameter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HandEmojiParameter+Extension.swift"; sourceTree = "<group>"; };
 		6CD819FC2B8767FD009FF2CB /* HandEmojiParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandEmojiParameter.swift; sourceTree = "<group>"; };
-		6CD81A002B8768C3009FF2CB /* HandEmojiJson1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = HandEmojiJson1.json; sourceTree = "<group>"; };
 		6CD8751E2BA6A5CA008BED5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6CD875252BA6A683008BED5D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,7 +97,7 @@
 				6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */,
 				6CB144CF2BCBADC400CEB043 /* Module.swift */,
 				6CB144C92BCB807400CEB043 /* HandVectorView.swift */,
-				6CB144CD2BCB88AF00CEB043 /* ModuleViewModel.swift */,
+				6CB144CB2BCB887400CEB043 /* HandViewModel.swift */,
 				952000CF2B848E12006B1EAE /* RealityViews */,
 				952000BC2B848DE1006B1EAE /* Views */,
 				6C36A3FC2AB7418000B7B026 /* Assets.xcassets */,
@@ -141,22 +128,8 @@
 				6CD819FC2B8767FD009FF2CB /* HandEmojiParameter.swift */,
 				6CD819EB2B876673009FF2CB /* HandEmojiTotalJson.json */,
 				6CD819FA2B87673F009FF2CB /* HandEmojiParameter+Extension.swift */,
-				6CD81A012B87691E009FF2CB /* EmojiJsonBackup */,
 			);
 			path = HandExampleJson;
-			sourceTree = "<group>";
-		};
-		6CD81A012B87691E009FF2CB /* EmojiJsonBackup */ = {
-			isa = PBXGroup;
-			children = (
-				6CD81A002B8768C3009FF2CB /* HandEmojiJson1.json */,
-				6CD819EF2B876673009FF2CB /* HandEmojiJson2.json */,
-				6CD819EE2B876673009FF2CB /* HandEmojiJson5.json */,
-				6CD819EA2B876673009FF2CB /* HandEmojiJsonFist.json */,
-				6CD819F02B876673009FF2CB /* HandEmojiJsonOk.json */,
-				6CD819EC2B876673009FF2CB /* HandEmojiJsonTips.json */,
-			);
-			path = EmojiJsonBackup;
 			sourceTree = "<group>";
 		};
 		6CD8751B2BA6A577008BED5D /* en.lproj */ = {
@@ -187,7 +160,6 @@
 		952000CF2B848E12006B1EAE /* RealityViews */ = {
 			isa = PBXGroup;
 			children = (
-				6CB144CB2BCB887400CEB043 /* HandViewModel.swift */,
 				6CB144D12BCBB30800CEB043 /* MatchBuildinImmersiveView.swift */,
 				6CB144D52BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift */,
 			);
@@ -266,15 +238,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CD819F52B876673009FF2CB /* HandEmojiJson5.json in Resources */,
-				6CD819F32B876673009FF2CB /* HandEmojiJsonTips.json in Resources */,
 				6CD819F22B876673009FF2CB /* HandEmojiTotalJson.json in Resources */,
 				6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */,
 				6CD8751F2BA6A5CA008BED5D /* Localizable.strings in Resources */,
 				6CD875272BA6A683008BED5D /* Localizable.strings in Resources */,
-				6CD819F12B876673009FF2CB /* HandEmojiJsonFist.json in Resources */,
-				6CD819F72B876673009FF2CB /* HandEmojiJsonOk.json in Resources */,
-				6CD819F62B876673009FF2CB /* HandEmojiJson2.json in Resources */,
 				6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,7 +259,6 @@
 				6CD819FD2B8767FD009FF2CB /* HandEmojiParameter.swift in Sources */,
 				6CB144D22BCBB30800CEB043 /* MatchBuildinImmersiveView.swift in Sources */,
 				6CB144D02BCBADC400CEB043 /* Module.swift in Sources */,
-				6CB144CE2BCB88AF00CEB043 /* ModuleViewModel.swift in Sources */,
 				6CB144D42BCBB31600CEB043 /* MatchBuildin.swift in Sources */,
 				6CB144CA2BCB807400CEB043 /* HandVectorView.swift in Sources */,
 				6CB144CC2BCB887400CEB043 /* HandViewModel.swift in Sources */,

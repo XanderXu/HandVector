@@ -55,7 +55,7 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, C
             try container.encode(self.position, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
         }
     }
-    public struct VectorInfo: CustomStringConvertible, Hashable, Sendable, Codable {
+    struct VectorInfo: CustomStringConvertible, Hashable, Sendable, Codable {
         public let from: HandSkeleton.JointName.NameCodingKey
         public let to: HandSkeleton.JointName.NameCodingKey
         public let vector: simd_float3
@@ -95,15 +95,12 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, C
     public let transform: simd_float4x4
     
     private let internalVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
-    private(set) lazy var allVectors: [VectorInfo] = {
-        return Array(internalVectors.values)
-    }()
+    private func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
+        return internalVectors[named.codableName]!
+    }
     
     public var description: String {
-        return "chirality: \(chirality)\nallVectors: \(allPositions)"
-    }
-    public func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
-        return internalVectors[named.codableName]!
+        return "chirality: \(chirality)\nallPositions: \(allPositions)"
     }
     
     
@@ -129,8 +126,7 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, C
         self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HandVectorMatcher.CodingKeys.chirality)
         self.allPositions = try container.decode([HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo].self, forKey: HandVectorMatcher.CodingKeys.allPositions)
         self.transform = try simd_float4x4(container.decodeIfPresent([SIMD4<Float>].self, forKey: HandVectorMatcher.CodingKeys.transform) ?? [.init(x: 1, y: 0, z: 0, w: 0), .init(x: 0, y: 1, z: 0, w: 0), .init(x: 0, y: 0, z: 1, w: 0), .init(x: 0, y: 0, z: 0, w: 1)])
-        self.internalVectors = Self.genetateVoctors(from: allPositions)
-        
+        self.internalVectors = Self.genetateVectors(from: allPositions)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -149,7 +145,7 @@ public extension HandVectorMatcher {
             self.chirality = chirality.codableName
             self.allPositions = allPositions
             self.transform = transform
-            self.internalVectors = Self.genetateVoctors(from: allPositions)
+            self.internalVectors = Self.genetateVectors(from: allPositions)
         } else {
             return nil
         }
@@ -164,9 +160,9 @@ public extension HandVectorMatcher {
         self.chirality = chirality.codableName
         self.allPositions = Self.genetatePositions(from: handSkeleton)
         self.transform = transform
-        self.internalVectors = Self.genetateVoctors(from: allPositions)
+        self.internalVectors = Self.genetateVectors(from: allPositions)
     }
-    private static func genetateVoctors(from positions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]) -> [HandSkeleton.JointName.NameCodingKey: VectorInfo] {
+    private static func genetateVectors(from positions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]) -> [HandSkeleton.JointName.NameCodingKey: VectorInfo] {
         var vectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo] = [:]
         
         let wrist = positions[.wrist]!

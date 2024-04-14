@@ -9,9 +9,6 @@ import RealityFoundation
 import ARKit
 import HandVector
 
-//🫶🤲👐🙌👏🙏
-//👍👎👊✊🤛🤜🫷🫸🤞✌️🫰🤟🤘👌🤌🤏🫳🫴👈👉👆👇☝️✋🤚🖐️🖖👋🤙🫲🫱🖕✍️🫵
-//todo:👍👎🫷🫸🤞🤟🤘🤏🫳🫴🖐️🖖👋🤙🖕
 struct HandEmojiParameter: Codable {
     struct JointInfo: Codable {
         let position: simd_float3
@@ -24,8 +21,20 @@ struct HandEmojiParameter: Codable {
     let emoji: String
     let left: [JointInfo]?
     let right: [JointInfo]?
-    let handsDistanceLimit: Float?
     
+    static func generateParameters(emoji: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> HandEmojiParameter? {
+        if leftHandVector == nil, rightHandVector == nil {
+            return nil
+        }
+        let left = leftHandVector?.allPositions.map { (key, value) in
+            JointInfo(position: value.position, name: key)
+        }
+        
+        let right = rightHandVector?.allPositions.map { (key, value) in
+            JointInfo(position: value.position, name: key)
+        }
+        return HandEmojiParameter(emoji: emoji, left: left, right: right)
+    }
     
     static func generateParameters(fileName: String?) -> HandEmojiParameter? {
         guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}

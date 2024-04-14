@@ -20,12 +20,13 @@ struct RecordAndMatchImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            //优先使用左手模板
-            guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
             
-            let targetLeft = targetVector.left ?? targetVector.right
-            let targetRight = targetVector.right ?? targetVector.left
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
+                guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
+                
+                let targetLeft = targetVector.left ?? targetVector.right
+                let targetRight = targetVector.right ?? targetVector.left
+                
                 let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
                 model.leftScore = Int(abs(leftScore) * 100)
                 let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0

@@ -40,10 +40,10 @@ struct RecordAndMatch: View {
                 Text("Read to record")
                     .font(.system(size: 16, weight: .bold))
             }
-            .disabled(countDown > 0 || !model.turnOnImmersiveSpace)
+            .disabled(countDown > -1 || !model.turnOnImmersiveSpace)
 
             
-            Text(verbatim: "\(countDown < 0 ? 3 : countDown)")
+            Text(verbatim: countDown < 0 ? "..." : "\(countDown)")
                 .animation(.none, value: progressValue)
                 .font(.system(size: 64))
                 .bold()
@@ -64,17 +64,26 @@ struct RecordAndMatch: View {
         }
         .frame(width: 400)
         .onReceive(timer) { _ in
+            if !model.turnOnImmersiveSpace {
+                return
+            }
             if countDown > 0 {
                 countDown -= 1
             } else if countDown == 0 {
                 countDown = -1
                 switch recordIndex {
                 case 0:
-                    break
+                    let para = HandEmojiParameter.generateParameters(emoji: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
+                    model.recordHand = para
+                    let json = para?.toJson()
                 case 1:
-                    break
+                    let para = HandEmojiParameter.generateParameters(emoji: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
+                    model.recordHand = para
+                    let json = para?.toJson()
                 case 2:
-                    break
+                    let para = HandEmojiParameter.generateParameters(emoji: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
+                    model.recordHand = para
+                    let json = para?.toJson()
                 default:
                     break
                 }
