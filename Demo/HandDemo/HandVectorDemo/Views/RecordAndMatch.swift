@@ -76,8 +76,19 @@ struct RecordAndMatch: View {
                     VStack {
                         ScrollView {
                             Text(verbatim: jsonString ?? "")
+                                .padding(20)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIPasteboard.general.string = jsonString
+                                    }) {
+                                        Text("Copy")
+                                        Image(systemName: "doc.on.doc")
+                                    }
+                                }
+                                .onLongPressGesture { // Add Long Press Gesture
+                                    UIPasteboard.general.string = jsonString // Copy to the clipboard
+                                }
                         }
-                        .padding(20)
                         
                         Button("OK", role: .cancel) {
                             showJsonSheet = false
