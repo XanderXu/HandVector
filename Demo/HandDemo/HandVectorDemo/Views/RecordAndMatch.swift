@@ -40,6 +40,7 @@ struct RecordAndMatch: View {
                 Text("Read to record")
                     .font(.system(size: 16, weight: .bold))
             }
+            .disabled(countDown > 0 || !model.turnOnImmersiveSpace)
 
             
             Text(verbatim: "\(countDown < 0 ? 3 : countDown)")

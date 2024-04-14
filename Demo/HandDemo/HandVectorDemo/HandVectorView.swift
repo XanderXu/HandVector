@@ -20,10 +20,13 @@ struct HandVectorView: View {
                 Button(action: {
                     selectedModule = module
                 }, label: {
-                    Text(module.rawValue)
+                    Text(module.name)
                 })
-//                .buttonStyle((module == selectedModule) ? .borderedProminent : .borderless)
-//                .buttonStyle(.borderless)
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 8)
+                        .background(Color.clear)
+                        .foregroundColor((module == selectedModule) ? Color.teal.opacity(0.3) : .clear)
+                )
                 
             }
             .navigationTitle("Hand Vector Demo")
