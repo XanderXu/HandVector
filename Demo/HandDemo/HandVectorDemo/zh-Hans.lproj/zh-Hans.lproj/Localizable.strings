@@ -18,5 +18,5 @@
 "Left Hand" = "左手";
 "Right Hand" = "右手";
 "Both Hands" = "双手";
-"Read to record" = "准备开始录制";
+"Ready to record" = "准备开始录制";
 "check recorded json string" = "查看录制好的 json 字符串";

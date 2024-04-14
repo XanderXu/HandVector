@@ -23,7 +23,7 @@ struct RecordAndMatch: View {
     
     var body: some View {
         @Bindable var model = model
-        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             Toggle("Start hand tracking", isOn: $model.turnOnImmersiveSpace)
                 .toggleStyle(ButtonToggleStyle())
                 .font(.system(size: 16, weight: .bold))
@@ -41,7 +41,7 @@ struct RecordAndMatch: View {
                 Button {
                     countDown = 3
                 } label: {
-                    Text("Read to record")
+                    Text("Ready to record")
                         .font(.system(size: 16, weight: .bold))
                 }
                 .disabled(countDown > -1 || !model.turnOnImmersiveSpace)
@@ -82,8 +82,9 @@ struct RecordAndMatch: View {
                         Button("OK", role: .cancel) {
                             showJsonSheet = false
                         }
+                        .padding(.bottom, 20)
                     }
-                    .frame(height: 600)
+                    .frame(minHeight: 600)
                 }
                 
             }
@@ -116,6 +117,11 @@ struct RecordAndMatch: View {
                     break
                 }
                 
+            }
+        }
+        .onAppear {
+            if let para = model.recordHand {
+                jsonString = para.toJson()
             }
         }
     }
