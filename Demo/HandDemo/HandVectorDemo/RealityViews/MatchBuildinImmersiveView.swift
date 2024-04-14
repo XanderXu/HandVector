@@ -1,5 +1,5 @@
 //
-//  GuideImmersiveView.swift
+//  MatchBuildinImmersiveView.swift
 //  FingerDance
 //
 //  Created by 许同学 on 2024/1/8.
@@ -9,8 +9,8 @@ import SwiftUI
 import RealityKit
 import HandVector
 
-struct GuideImmersiveView: View {
-    @Environment(ViewModel.self) private var model
+struct MatchBuildinImmersiveView: View {
+    @Environment(HandViewModel.self) private var model
     @State private var subscriptions = [EventSubscription]()
     var body: some View {
         RealityView { content in
@@ -20,7 +20,6 @@ struct GuideImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
             guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
@@ -55,5 +54,5 @@ struct GuideImmersiveView: View {
 }
 
 #Preview {
-    GuideImmersiveView()
+    MatchBuildinImmersiveView()
 }

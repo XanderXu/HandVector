@@ -9,17 +9,18 @@ import SwiftUI
 
 @main
 struct HandVectorApp: App {
-    @State private var model = ViewModel()
+    @State private var model = HandViewModel()
     var body: some Scene {
         WindowGroup {
-            Guide()
+            HandVectorView()
                 .environment(model)
 //                .environment(\.locale, .init(identifier: "en"))
         }
-        .windowStyle(.automatic)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 0.75, height: 0.5, depth: 0.5, in: .meters)
 
-        ImmersiveSpace(id: "ImmersiveSpace") {
-            GuideImmersiveView()
+        ImmersiveSpace(id: Module.matchBuildin.immersiveId) {
+            MatchBuildinImmersiveView()
                 .environment(model)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)

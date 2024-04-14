@@ -1,5 +1,5 @@
 //
-//  ViewModel.swift
+//  HandViewModel.swift
 //  Demo
 //
 //  Created by 许同学 on 2023/12/5.
@@ -13,13 +13,14 @@ import HandVector
 
 /// A model that contains up-to-date hand coordinate information.
 @Observable
-class ViewModel: @unchecked Sendable {
-    var showGuideImmersiveSpace = false
+class HandViewModel: @unchecked Sendable {
+    var turnOnImmersiveSpace = false
     
     var rootEntity: Entity?
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
     var handEmojiDict: [String: HandEmojiParameter] = [:]
+    var recordHand: HandEmojiParameter?
     
     var leftScore: Int = 0
     var rightScore: Int = 0
@@ -28,6 +29,9 @@ class ViewModel: @unchecked Sendable {
     private var handTracking = HandTrackingProvider()
     private var simHandProvider = SimulatorHandTrackingProvider()
 
+    init() {
+        self.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
+    }
     func clear() {
         rootEntity?.children.removeAll()
         latestHandTracking.left?.removeFromParent()
