@@ -17,20 +17,16 @@ struct MatchBuildin: View {
                 .toggleStyle(ButtonToggleStyle())
                 .font(.system(size: 16, weight: .bold))
             
-            HStack(alignment: .top) {
-                Spacer()
-                VStack {
-                    Text("👌")
-                        .font(.system(size: 100))
-                        .frame(width: 480)
-                    Text("Try to make the same gesture,\nyou can use left or right hand")
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 20, weight: .bold))
-                        .frame(width: 480)
-                }
-                .padding(.leading, 0)
-                .padding(.trailing, 60)
+            VStack {
+                Text("👌")
+                    .font(.system(size: 100))
+                    .frame(width: 480)
+                Text("Try to make the same gesture,\nyou can use left or right hand")
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 20, weight: .bold))
+                    .frame(width: 480)
             }
+            
             
             Group {
                 HStack {

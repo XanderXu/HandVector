@@ -29,28 +29,32 @@ struct RecordAndMatch: View {
                 .font(.system(size: 16, weight: .bold))
                 .padding(.bottom, 20)
             
-            
-            Picker("Choose Left or Right hand to recrod", selection: $recordIndex) {
-                Text("Left Hand").tag(0)
-                Text("Right Hand").tag(1)
-                Text("Both Hands").tag(2)
-            }
-            .pickerStyle(.segmented)
-            .padding(.bottom, 20)
-            
-            Button {
-                countDown = 3
-            } label: {
-                Text("Read to record")
-                    .font(.system(size: 16, weight: .bold))
-            }
-            .disabled(countDown > -1 || !model.turnOnImmersiveSpace)
+            Group {
+                Picker("Choose Left or Right hand to recrod", selection: $recordIndex) {
+                    Text("Left Hand").tag(0)
+                    Text("Right Hand").tag(1)
+                    Text("Both Hands").tag(2)
+                }
+                .pickerStyle(.segmented)
+                .padding(.bottom, 10)
+                
+                Button {
+                    countDown = 3
+                } label: {
+                    Text("Read to record")
+                        .font(.system(size: 16, weight: .bold))
+                }
+                .disabled(countDown > -1 || !model.turnOnImmersiveSpace)
 
+                
+                Text(verbatim: countDown < 0 ? "..." : "\(countDown)")
+                    .animation(.none, value: progressValue)
+                    .font(.system(size: 64))
+                    .bold()
+                    .padding(.bottom, 30)
+            }
             
-            Text(verbatim: countDown < 0 ? "..." : "\(countDown)")
-                .animation(.none, value: progressValue)
-                .font(.system(size: 64))
-                .bold()
+            
             Group {
                 HStack {
                     Text("left score:\(model.leftScore)")
