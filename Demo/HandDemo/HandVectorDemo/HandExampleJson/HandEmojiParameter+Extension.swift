@@ -11,6 +11,20 @@ import ARKit
 import HandVector
 
 extension HandEmojiParameter {
+    static func generateParameters(emoji: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> HandEmojiParameter? {
+        if leftHandVector == nil, rightHandVector == nil {
+            return nil
+        }
+        let left = leftHandVector?.allPositions.map { (key, value) in
+            JointInfo(position: value.position, name: key)
+        }
+        
+        let right = rightHandVector?.allPositions.map { (key, value) in
+            JointInfo(position: value.position, name: key)
+        }
+        return HandEmojiParameter(emoji: emoji, left: left, right: right)
+    }
+    
     func convertToHandVectorMatcher() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
         if let left {

@@ -12,11 +12,15 @@ struct RecordAndMatch: View {
     @State private var recordIndex = 0
     
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
     @State private var countDown = -1
+    
+    @State private var jsonString: String?
+    @State private var showJsonSheet: Bool = false
+    
     var progressValue: Float {
         min(1, max(0, Float(countDown) / 3.0 + 0.001))
     }
+    
     var body: some View {
         @Bindable var model = model
         VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 20) {
@@ -57,6 +61,26 @@ struct RecordAndMatch: View {
                         .accessibilityHidden(true)
                 }
                 
+                Button {
+                    showJsonSheet = true
+                } label: {
+                    Text("check recorded json string")
+                        .font(.system(size: 16, weight: .bold))
+                }
+                .disabled(jsonString?.isEmpty ?? true)
+                .sheet(isPresented: $showJsonSheet) {
+                    VStack {
+                        ScrollView {
+                            Text(verbatim: jsonString ?? "")
+                        }
+                        .padding(20)
+                        
+                        Button("OK", role: .cancel) {
+                            showJsonSheet = false
+                        }
+                    }
+                    .frame(height: 600)
+                }
                 
             }
             .font(.system(size: 16, weight: .bold))
@@ -75,15 +99,15 @@ struct RecordAndMatch: View {
                 case 0:
                     let para = HandEmojiParameter.generateParameters(emoji: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
                     model.recordHand = para
-                    let json = para?.toJson()
+                    jsonString = para?.toJson()
                 case 1:
                     let para = HandEmojiParameter.generateParameters(emoji: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
                     model.recordHand = para
-                    let json = para?.toJson()
+                    jsonString = para?.toJson()
                 case 2:
                     let para = HandEmojiParameter.generateParameters(emoji: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
                     model.recordHand = para
-                    let json = para?.toJson()
+                    jsonString = para?.toJson()
                 default:
                     break
                 }
