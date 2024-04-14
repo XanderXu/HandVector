@@ -5,7 +5,5 @@
   Created by 许同学 on 2024/3/17.
   
 */
-//"Test with my real hands" = "Test with my real hands";
-//"Try to make the same gesture,\nyou can use left or right hand" = "Try to make the same gesture,\nyou can use left or right hand";
-//"left score:%lld" = "left score:%lld";
-//"right score:%lld" = "right score:%lld";
+"matchBuildin" = "Match buildin OK gesture";
+"recordAndMatch" = "Record new gesture and match it";

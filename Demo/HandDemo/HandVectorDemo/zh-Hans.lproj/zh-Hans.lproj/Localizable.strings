@@ -5,7 +5,17 @@
   Created by 许同学 on 2024/3/17.
   
 */
-"Test with my real hands" = "用我自己的双手测试";
+"matchBuildin" = "匹配预置的 OK 手势";
+"recordAndMatch" = "录制并匹配新的手势";
+
+"Start hand tracking and matching" = "开启手势追踪与匹配";
 "Try to make the same gesture,\nyou can use left or right hand" = "试着做出相同的手势\n左手或右手都可以";
 "left score:%lld" = "左手得分:%lld";
 "right score:%lld" = "右手得分:%lld";
+
+"Start hand tracking" = "开启手势追踪";
+"Choose Left or Right hand to recrod" = "选择录制左手或右手";
+"Left Hand" = "左手";
+"Right Hand" = "右手";
+"Both Hands" = "双手";
+"Read to record" = "准备开始录制";

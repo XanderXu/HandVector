@@ -24,5 +24,13 @@ struct HandVectorApp: App {
                 .environment(model)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        
+        ImmersiveSpace(id: Module.recordAndMatch.immersiveId) {
+            RecordAndMatchImmersiveView()
+                .environment(model)
+        }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        
+        
     }
 }

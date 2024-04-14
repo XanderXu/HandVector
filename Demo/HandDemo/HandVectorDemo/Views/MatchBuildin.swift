@@ -9,13 +9,11 @@ import SwiftUI
 
 struct MatchBuildin: View {
     @Environment(HandViewModel.self) private var model
-    @Environment(\.openImmersiveSpace) var openImmersiveSpace
-    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     
     var body: some View {
         @Bindable var model = model
         VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
-            Toggle("Test with my real hands", isOn: $model.turnOnImmersiveSpace)
+            Toggle("Start hand tracking and matching", isOn: $model.turnOnImmersiveSpace)
                 .toggleStyle(ButtonToggleStyle())
                 .font(.system(size: 16, weight: .bold))
             

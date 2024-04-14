@@ -32,11 +32,8 @@ struct HandVectorView: View {
             case .matchBuildin:
                 MatchBuildin()
                     .navigationTitle(selectedModule.name)
-            case .recordNew:
-                Text(selectedModule.rawValue)
-                    .navigationTitle(selectedModule.name)
-            case .matchNew:
-                Text(selectedModule.rawValue)
+            case .recordAndMatch:
+                RecordAndMatch()
                     .navigationTitle(selectedModule.name)
             }
             

@@ -7,15 +7,23 @@ The modules that the app can present.
 
 
 import Foundation
+import SwiftUI
 
 /// A description of the modules that the app can present.
 enum Module: String, Identifiable, CaseIterable, Equatable {
     case matchBuildin
-    case recordNew
-    case matchNew
+    case recordAndMatch
     
     var id: Self { self }
-    var name: String { rawValue.capitalized }
+    var name: LocalizedStringKey {
+        switch self {
+        case .matchBuildin:
+            LocalizedStringKey(rawValue)
+        case .recordAndMatch:
+            LocalizedStringKey(rawValue)
+        }
+        
+    }
 
     var immersiveId: String {
         self.rawValue + "ID"

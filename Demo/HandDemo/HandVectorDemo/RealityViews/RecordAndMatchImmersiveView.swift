@@ -1,15 +1,15 @@
 //
-//  MatchBuildinImmersiveView.swift
-//  FingerDance
+//  RecordAndMatchImmersiveView.swift
+//  HandVectorDemo
 //
-//  Created by 许同学 on 2024/1/8.
+//  Created by 许同学 on 2024/4/14.
 //
 
 import SwiftUI
 import RealityKit
 import HandVector
 
-struct MatchBuildinImmersiveView: View {
+struct RecordAndMatchImmersiveView: View {
     @Environment(HandViewModel.self) private var model
     @State private var subscriptions = [EventSubscription]()
     var body: some View {
@@ -20,12 +20,15 @@ struct MatchBuildinImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
+            //优先使用左手模板
+            guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
             
+            let targetLeft = targetVector.left ?? targetVector.right
+            let targetRight = targetVector.right ?? targetVector.left
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
-                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: leftOKVector) ?? 0
+                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
                 model.leftScore = Int(abs(leftScore) * 100)
-                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: leftOKVector) ?? 0
+                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
                 model.rightScore = Int(abs(rightScore) * 100)
             }))
 #if targetEnvironment(simulator)
@@ -54,5 +57,5 @@ struct MatchBuildinImmersiveView: View {
 }
 
 #Preview {
-    MatchBuildinImmersiveView()
+    RecordAndMatchImmersiveView()
 }
