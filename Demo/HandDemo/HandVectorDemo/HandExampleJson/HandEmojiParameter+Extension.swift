@@ -15,13 +15,19 @@ extension HandEmojiParameter {
         if leftHandVector == nil, rightHandVector == nil {
             return nil
         }
-        let left = leftHandVector?.allPositions.map { (key, value) in
-            JointInfo(position: value.position, name: key)
+        var left: [JointInfo]? = nil
+        var right: [JointInfo]? = nil
+        if let leftHandVector {
+            left = HandSkeleton.JointName.allCases.map { jointName in
+                JointInfo(position: leftHandVector.allPositions[jointName.codableName]!.position, name: jointName.codableName)
+            }
         }
-        
-        let right = rightHandVector?.allPositions.map { (key, value) in
-            JointInfo(position: value.position, name: key)
+        if let rightHandVector {
+            right = HandSkeleton.JointName.allCases.map { jointName in
+                JointInfo(position: rightHandVector.allPositions[jointName.codableName]!.position, name: jointName.codableName)
+            }
         }
+
         return HandEmojiParameter(emoji: emoji, left: left, right: right)
     }
     
