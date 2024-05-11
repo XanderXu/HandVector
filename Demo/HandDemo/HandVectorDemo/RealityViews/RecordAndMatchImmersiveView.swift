@@ -20,7 +20,6 @@ struct RecordAndMatchImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
                 

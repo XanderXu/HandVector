@@ -9,87 +9,7 @@ import Foundation
 import simd
 import ARKit
 
-public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, Codable {
-    public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
-        public let name: HandSkeleton.JointName.NameCodingKey
-        public let isTracked: Bool
-        public let position: simd_float3
-        
-        public init(joint: HandSkeleton.Joint) {
-            self.name = joint.name.codableName
-            self.isTracked = joint.isTracked
-            self.position = joint.localPosition
-        }
-        public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, position: simd_float3) {
-            self.name = name
-            self.isTracked = isTracked
-            self.position = position
-        }
-        public var description: String {
-            return "name: \(name), isTracked: \(isTracked), position: \(position)"
-        }
-        
-        public func reversedChirality() -> PositionInfo {
-            return PositionInfo(name: name, isTracked: isTracked, position: -position)
-        }
-        
-        enum CodingKeys: CodingKey {
-            case name
-            case isTracked
-            case position
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let container: KeyedDecodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
-            
-            self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
-            self.isTracked = try container.decodeIfPresent(Bool.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked) ?? true
-            self.position = try container.decode(simd_float3.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
-        }
-        
-        public func encode(to encoder: Encoder) throws {
-            var container: KeyedEncodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
-            
-            try container.encode(self.name, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
-            try container.encode(self.isTracked, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked)
-            try container.encode(self.position, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
-        }
-    }
-    struct VectorInfo: CustomStringConvertible, Hashable, Sendable, Codable {
-        public let from: HandSkeleton.JointName.NameCodingKey
-        public let to: HandSkeleton.JointName.NameCodingKey
-        public let vector: simd_float3
-        public let normalizedVector: simd_float3
-        
-        public var description: String {
-            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
-        }
-        public init(from: PositionInfo, to: PositionInfo) {
-            self.from = from.name
-            self.to = to.name
-            self.vector = to.position - from.position
-            if vector == .zero {
-                self.normalizedVector = .zero
-            } else {
-                self.normalizedVector = normalize(vector)
-            }
-        }
-        public init(from: HandSkeleton.JointName.NameCodingKey, to: HandSkeleton.JointName.NameCodingKey, vector: simd_float3) {
-            self.from = from
-            self.to = to
-            self.vector = vector
-            if vector == .zero {
-                self.normalizedVector = .zero
-            } else {
-                self.normalizedVector = normalize(vector)
-            }
-        }
-        public func reversedChirality() -> VectorInfo {
-            return VectorInfo(from: from, to: to, vector: -vector)
-        }
-    }
-    
-    
+public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
     public let chirality: HandAnchor.Chirality.NameCodingKey
     public let allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]
     public let transform: simd_float4x4
@@ -112,34 +32,6 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable, C
         return positions
     }
     
-    
-    
-    enum CodingKeys: CodingKey {
-        case chirality
-        case allPositions
-        case transform
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container: KeyedDecodingContainer<HandVectorMatcher.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
-        
-        self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HandVectorMatcher.CodingKeys.chirality)
-        self.allPositions = try container.decode([HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo].self, forKey: HandVectorMatcher.CodingKeys.allPositions)
-        self.transform = try simd_float4x4(container.decodeIfPresent([SIMD4<Float>].self, forKey: HandVectorMatcher.CodingKeys.transform) ?? [.init(x: 1, y: 0, z: 0, w: 0), .init(x: 0, y: 1, z: 0, w: 0), .init(x: 0, y: 0, z: 1, w: 0), .init(x: 0, y: 0, z: 0, w: 1)])
-        self.internalVectors = Self.genetateVectors(from: allPositions)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container: KeyedEncodingContainer<HandVectorMatcher.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
-        
-        try container.encode(self.chirality, forKey: HandVectorMatcher.CodingKeys.chirality)
-        try container.encode(self.allPositions, forKey: HandVectorMatcher.CodingKeys.allPositions)
-        try container.encode([self.transform.columns.0, self.transform.columns.1, self.transform.columns.2, self.transform.columns.3], forKey: HandVectorMatcher.CodingKeys.transform)
-    }
-    
-}
-
-public extension HandVectorMatcher {
     init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo], transform: simd_float4x4) {
         if allPositions.count >= HandSkeleton.JointName.allCases.count {
             self.chirality = chirality.codableName
@@ -233,7 +125,112 @@ public extension HandVectorMatcher {
         return vectors
     }
 }
+    
+extension HandVectorMatcher: Codable {
+    enum CodingKeys: CodingKey {
+        case chirality
+        case allPositions
+        case transform
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<HandVectorMatcher.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
+        
+        self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HandVectorMatcher.CodingKeys.chirality)
+        self.allPositions = try container.decode([HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo].self, forKey: HandVectorMatcher.CodingKeys.allPositions)
+        self.transform = try simd_float4x4(container.decodeIfPresent([SIMD4<Float>].self, forKey: HandVectorMatcher.CodingKeys.transform) ?? [.init(x: 1, y: 0, z: 0, w: 0), .init(x: 0, y: 1, z: 0, w: 0), .init(x: 0, y: 0, z: 1, w: 0), .init(x: 0, y: 0, z: 0, w: 1)])
+        self.internalVectors = Self.genetateVectors(from: allPositions)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container: KeyedEncodingContainer<HandVectorMatcher.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
+        
+        try container.encode(self.chirality, forKey: HandVectorMatcher.CodingKeys.chirality)
+        try container.encode(self.allPositions, forKey: HandVectorMatcher.CodingKeys.allPositions)
+        try container.encode([self.transform.columns.0, self.transform.columns.1, self.transform.columns.2, self.transform.columns.3], forKey: HandVectorMatcher.CodingKeys.transform)
+    }
+}
 
+public extension HandVectorMatcher {
+    public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
+        public let name: HandSkeleton.JointName.NameCodingKey
+        public let isTracked: Bool
+        public let position: simd_float3
+        
+        public init(joint: HandSkeleton.Joint) {
+            self.name = joint.name.codableName
+            self.isTracked = joint.isTracked
+            self.position = joint.localPosition
+        }
+        public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, position: simd_float3) {
+            self.name = name
+            self.isTracked = isTracked
+            self.position = position
+        }
+        public var description: String {
+            return "name: \(name), isTracked: \(isTracked), position: \(position)"
+        }
+        
+        public func reversedChirality() -> PositionInfo {
+            return PositionInfo(name: name, isTracked: isTracked, position: -position)
+        }
+        
+        enum CodingKeys: CodingKey {
+            case name
+            case isTracked
+            case position
+        }
+        
+        public init(from decoder: Decoder) throws {
+            let container: KeyedDecodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
+            
+            self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
+            self.isTracked = try container.decodeIfPresent(Bool.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked) ?? true
+            self.position = try container.decode(simd_float3.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            var container: KeyedEncodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
+            
+            try container.encode(self.name, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
+            try container.encode(self.isTracked, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked)
+            try container.encode(self.position, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
+        }
+    }
+    struct VectorInfo: CustomStringConvertible, Hashable, Sendable, Codable {
+        public let from: HandSkeleton.JointName.NameCodingKey
+        public let to: HandSkeleton.JointName.NameCodingKey
+        public let vector: simd_float3
+        public let normalizedVector: simd_float3
+        
+        public var description: String {
+            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
+        }
+        public init(from: PositionInfo, to: PositionInfo) {
+            self.from = from.name
+            self.to = to.name
+            self.vector = to.position - from.position
+            if vector == .zero {
+                self.normalizedVector = .zero
+            } else {
+                self.normalizedVector = normalize(vector)
+            }
+        }
+        public init(from: HandSkeleton.JointName.NameCodingKey, to: HandSkeleton.JointName.NameCodingKey, vector: simd_float3) {
+            self.from = from
+            self.to = to
+            self.vector = vector
+            if vector == .zero {
+                self.normalizedVector = .zero
+            } else {
+                self.normalizedVector = normalize(vector)
+            }
+        }
+        public func reversedChirality() -> VectorInfo {
+            return VectorInfo(from: from, to: to, vector: -vector)
+        }
+    }
+}
 public extension HandVectorMatcher {
     public enum JointOfFinger: CaseIterable {
         case thump

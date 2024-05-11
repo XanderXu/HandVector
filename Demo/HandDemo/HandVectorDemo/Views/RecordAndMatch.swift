@@ -68,7 +68,7 @@ struct RecordAndMatch: View {
                 Button {
                     showJsonSheet = true
                 } label: {
-                    Text("check recorded json string")
+                    Text("Check recorded json string")
                         .font(.system(size: 16, weight: .bold))
                 }
                 .disabled(jsonString?.isEmpty ?? true)
@@ -93,6 +93,8 @@ struct RecordAndMatch: View {
                         Button("OK", role: .cancel) {
                             showJsonSheet = false
                         }
+                        
+                        Text("Long press to copy json string")
                         .padding(.bottom, 20)
                     }
                     .frame(minHeight: 600)
@@ -113,15 +115,15 @@ struct RecordAndMatch: View {
                 countDown = -1
                 switch recordIndex {
                 case 0:
-                    let para = HandEmojiParameter.generateParameters(emoji: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
+                    let para = HandEmojiParameter.generateParameters(name: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
                     model.recordHand = para
                     jsonString = para?.toJson()
                 case 1:
-                    let para = HandEmojiParameter.generateParameters(emoji: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
+                    let para = HandEmojiParameter.generateParameters(name: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
                     model.recordHand = para
                     jsonString = para?.toJson()
                 case 2:
-                    let para = HandEmojiParameter.generateParameters(emoji: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
+                    let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
                     model.recordHand = para
                     jsonString = para?.toJson()
                 default:

@@ -11,7 +11,7 @@ import ARKit
 import HandVector
 
 extension HandEmojiParameter {
-    static func generateParameters(emoji: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> HandEmojiParameter? {
+    static func generateParameters(name: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> HandEmojiParameter? {
         if leftHandVector == nil, rightHandVector == nil {
             return nil
         }
@@ -28,7 +28,7 @@ extension HandEmojiParameter {
             }
         }
 
-        return HandEmojiParameter(emoji: emoji, left: left, right: right)
+        return HandEmojiParameter(name: name, left: left, right: right)
     }
     
     func convertToHandVectorMatcher() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
@@ -38,7 +38,7 @@ extension HandEmojiParameter {
             left.forEach { joint in
                 allPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
             }
-            leftVector = HandVectorMatcher(chirality: .left, allPositions: allPositions, transform: .init(1))
+            leftVector = HandVectorMatcher(chirality: .left, allPositions: allPositions, transform: .init(diagonal: .one))
         }
         var rightVector: HandVectorMatcher?
         if let right {
@@ -46,7 +46,7 @@ extension HandEmojiParameter {
             right.forEach { joint in
                 allPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
             }
-            rightVector = HandVectorMatcher(chirality: .right, allPositions: allPositions, transform: .init(1))
+            rightVector = HandVectorMatcher(chirality: .right, allPositions: allPositions, transform: .init(diagonal: .one))
         }
         return (left: leftVector, right: rightVector)
     }
@@ -99,8 +99,8 @@ extension HandEmojiParameter {
             rightPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
         })
         
-        let leftVector = HandVectorMatcher(chirality: .left, allPositions: leftPositions, transform: .init(1))
-        let rightVector = HandVectorMatcher(chirality: .right, allPositions: rightPositions, transform: .init(1))
+        let leftVector = HandVectorMatcher(chirality: .left, allPositions: leftPositions, transform: .init(diagonal: .one))
+        let rightVector = HandVectorMatcher(chirality: .right, allPositions: rightPositions, transform: .init(diagonal: .one))
         
         return HandVectorTool(left: leftEntity,right: rightEntity, leftHandVector: leftVector, rightHandVector: rightVector)
     }

@@ -19,4 +19,5 @@
 "Right Hand" = "右手";
 "Both Hands" = "双手";
 "Ready to record" = "准备开始录制";
-"check recorded json string" = "查看录制好的 json 字符串";
+"Check recorded json string" = "查看录制好的 json 字符串";
+"Long press to copy json string" = "长按以复制 json 字符串";

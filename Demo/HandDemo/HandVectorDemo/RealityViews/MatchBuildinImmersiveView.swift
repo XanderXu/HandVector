@@ -20,6 +20,7 @@ struct MatchBuildinImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
+            
             guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
