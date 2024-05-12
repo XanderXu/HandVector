@@ -9,7 +9,7 @@ import Foundation
 import simd
 import ARKit
 
-public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
+public struct HandVectorMatcher: Sendable, Equatable {
     public let chirality: HandAnchor.Chirality.NameCodingKey
     public let allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]
     public let transform: simd_float4x4
@@ -19,11 +19,6 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
         return internalVectors[named.codableName]!
     }
     
-    public var description: String {
-        return "chirality: \(chirality)\nallPositions: \(allPositions)"
-    }
-    
-    
     public static func genetatePositions(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName.NameCodingKey: PositionInfo] {
         var positions: [HandSkeleton.JointName.NameCodingKey: PositionInfo] = [:]
         HandSkeleton.JointName.allCases.forEach { jointName in
@@ -32,7 +27,7 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
         return positions
     }
     
-    init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo], transform: simd_float4x4) {
+    public init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo], transform: simd_float4x4) {
         if allPositions.count >= HandSkeleton.JointName.allCases.count {
             self.chirality = chirality.codableName
             self.allPositions = allPositions
@@ -42,13 +37,13 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
             return nil
         }
     }
-    init?(handAnchor: HandAnchor) {
+    public init?(handAnchor: HandAnchor) {
         guard let handSkeleton = handAnchor.handSkeleton else  {
             return nil
         }
         self.init(chirality: handAnchor.chirality, handSkeleton: handSkeleton, transform: handAnchor.originFromAnchorTransform)
     }
-    init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
+    public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
         self.chirality = chirality.codableName
         self.allPositions = Self.genetatePositions(from: handSkeleton)
         self.transform = transform
@@ -125,34 +120,9 @@ public struct HandVectorMatcher: CustomStringConvertible, Sendable, Equatable {
         return vectors
     }
 }
-    
-extension HandVectorMatcher: Codable {
-    enum CodingKeys: CodingKey {
-        case chirality
-        case allPositions
-        case transform
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container: KeyedDecodingContainer<HandVectorMatcher.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
-        
-        self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HandVectorMatcher.CodingKeys.chirality)
-        self.allPositions = try container.decode([HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo].self, forKey: HandVectorMatcher.CodingKeys.allPositions)
-        self.transform = try simd_float4x4(container.decodeIfPresent([SIMD4<Float>].self, forKey: HandVectorMatcher.CodingKeys.transform) ?? [.init(x: 1, y: 0, z: 0, w: 0), .init(x: 0, y: 1, z: 0, w: 0), .init(x: 0, y: 0, z: 1, w: 0), .init(x: 0, y: 0, z: 0, w: 1)])
-        self.internalVectors = Self.genetateVectors(from: allPositions)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container: KeyedEncodingContainer<HandVectorMatcher.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.CodingKeys.self)
-        
-        try container.encode(self.chirality, forKey: HandVectorMatcher.CodingKeys.chirality)
-        try container.encode(self.allPositions, forKey: HandVectorMatcher.CodingKeys.allPositions)
-        try container.encode([self.transform.columns.0, self.transform.columns.1, self.transform.columns.2, self.transform.columns.3], forKey: HandVectorMatcher.CodingKeys.transform)
-    }
-}
 
 public extension HandVectorMatcher {
-    public struct PositionInfo: CustomStringConvertible, Sendable, Hashable, Codable {
+    public struct PositionInfo: Sendable, Hashable {
         public let name: HandSkeleton.JointName.NameCodingKey
         public let isTracked: Bool
         public let position: simd_float3
@@ -167,45 +137,21 @@ public extension HandVectorMatcher {
             self.isTracked = isTracked
             self.position = position
         }
-        public var description: String {
-            return "name: \(name), isTracked: \(isTracked), position: \(position)"
-        }
         
         public func reversedChirality() -> PositionInfo {
             return PositionInfo(name: name, isTracked: isTracked, position: -position)
         }
-        
-        enum CodingKeys: CodingKey {
-            case name
-            case isTracked
-            case position
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let container: KeyedDecodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = try decoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
-            
-            self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
-            self.isTracked = try container.decodeIfPresent(Bool.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked) ?? true
-            self.position = try container.decode(simd_float3.self, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
-        }
-        
-        public func encode(to encoder: Encoder) throws {
-            var container: KeyedEncodingContainer<HandVectorMatcher.PositionInfo.CodingKeys> = encoder.container(keyedBy: HandVectorMatcher.PositionInfo.CodingKeys.self)
-            
-            try container.encode(self.name, forKey: HandVectorMatcher.PositionInfo.CodingKeys.name)
-            try container.encode(self.isTracked, forKey: HandVectorMatcher.PositionInfo.CodingKeys.isTracked)
-            try container.encode(self.position, forKey: HandVectorMatcher.PositionInfo.CodingKeys.position)
-        }
     }
-    struct VectorInfo: CustomStringConvertible, Hashable, Sendable, Codable {
+    struct VectorInfo: Hashable, Sendable {
         public let from: HandSkeleton.JointName.NameCodingKey
         public let to: HandSkeleton.JointName.NameCodingKey
         public let vector: simd_float3
         public let normalizedVector: simd_float3
         
-        public var description: String {
-            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
+        public func reversedChirality() -> VectorInfo {
+            return VectorInfo(from: from, to: to, vector: -vector)
         }
+        
         public init(from: PositionInfo, to: PositionInfo) {
             self.from = from.name
             self.to = to.name
@@ -226,44 +172,43 @@ public extension HandVectorMatcher {
                 self.normalizedVector = normalize(vector)
             }
         }
-        public func reversedChirality() -> VectorInfo {
-            return VectorInfo(from: from, to: to, vector: -vector)
-        }
     }
-}
-public extension HandVectorMatcher {
+
     public enum JointOfFinger: CaseIterable {
         case thump
         case indexFinger
         case middleFinger
         case ringFinger
         case littleFinger
-        case wristOnly
+        case wristMetacarpal
+        case foreArm
         
         public var jointNames: [HandSkeleton.JointName] {
             switch self {
             case .thump:
                 return [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
             case .indexFinger:
-                return [.indexFingerMetacarpal, .indexFingerKnuckle, .indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
+                return [.indexFingerKnuckle, .indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
             case .middleFinger:
-                return [.middleFingerMetacarpal, .middleFingerKnuckle, .middleFingerIntermediateBase, .middleFingerIntermediateTip, .middleFingerTip]
+                return [.middleFingerKnuckle, .middleFingerIntermediateBase, .middleFingerIntermediateTip, .middleFingerTip]
             case .ringFinger:
-                return [.ringFingerMetacarpal, .ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
+                return [.ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
             case .littleFinger:
-                return [.littleFingerMetacarpal, .littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
-            case .wristOnly:
-                return [.wrist]
+                return [.littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
+            case .wristMetacarpal:
+                return [.wrist, .indexFingerMetacarpal, .middleFingerMetacarpal, .ringFingerMetacarpal, .littleFingerMetacarpal]
+            case .foreArm:
+                return [.forearmWrist, .forearmArm]
             }
         }
-        
-        
     }
     public static let allFingers: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-    public static let allFingersAndWrist: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristOnly]
-    /// Fingers and wrist
+    public static let allFingersAndWrist: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
+    public static let allFingersAndWristAndForearm: Set<JointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
+    
+    /// Fingers and wrist and forearm
     func similarity(to vector: HandVectorMatcher) -> Float {
-        return similarity(of: HandVectorMatcher.allFingersAndWrist, to: vector)
+        return similarity(of: HandVectorMatcher.allFingersAndWristAndForearm, to: vector)
     }
     /// Fingers your selected
     func similarity(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> Float {
@@ -279,7 +224,7 @@ public extension HandVectorMatcher {
     }
     
     func similarities(to vector: HandVectorMatcher) -> (average: Float, each: [JointOfFinger: Float]) {
-        return similarities(of: HandVectorMatcher.allFingersAndWrist, to: vector)
+        return similarities(of: HandVectorMatcher.allFingersAndWristAndForearm, to: vector)
     }
     func similarities(of fingers: Set<JointOfFinger>, to vector: HandVectorMatcher) -> (average: Float, each: [JointOfFinger: Float]) {
         let fingerTotal = fingers.reduce(into: [JointOfFinger: Float]()) { partialResult, finger in
