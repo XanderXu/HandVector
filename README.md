@@ -23,11 +23,21 @@
 
 ## Usage
 
-Your can run demo in package to see how to use it, and also can try an Vision Pro App: [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901)  in App Store to see how it works.
+Your can run demo in package to see how to use it, and also can try an Vision Pro App. And also can see the App  in App Store whitch uses `HandVector` to match gesture: 
 
-![](./Resources/handVectorDemo.gif)
+1. [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901) : FingerEmoji Let your finger dance with Emoji, you can Hit the emoji card by hand with the same gesture.
 
-### Match hand gesture
+   ![960x540mv](./Resources/960x540mv.webp)
+
+2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** is an innovative app that uses hand gestures to control DJI Tello drones via the Vision Pro platform. It's [Open Source](https://github.com/zlinoliver/SkyGestures) now.
+
+   ![](./Resources/gesture_demo1.2024-05-12 12_28_35.gif)
+
+
+
+### 1. Match builtin hand gesture: OK
+
+![](./Resources/handVectorDemoMatchOK.gif)
 
 `HandVector` allows you to track your hands, and calculate the similarity between your current hand to another recorded hand gesture:
 
@@ -60,9 +70,36 @@ model.rightScore = Int(abs(rightScore) * 100)
 
 the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand, and `0` means not matched.
 
+### 2. Record a new gesture and match
+
+![](./Resources/handVectorDemoRecordMatch.gif)
+
+`HandVector` allows you to record your custom hands gesture, and save as JSON string:
+
+```swift
+let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
+model.recordHand = para
+
+jsonString = para?.toJson()
+```
+
+And then, you can turn this JSON string to `HandVectorMatcher`，so you can use it to match your gesture now:
+
+```swift
+guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
+
+let targetLeft = targetVector.left ?? targetVector.right
+let targetRight = targetVector.right ?? targetVector.left
+
+let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
+model.leftScore = Int(abs(leftScore) * 100)
+let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
+model.rightScore = Int(abs(rightScore) * 100)
+```
 
 
-### Test on simulator
+
+### 3. Test hand gesture on Mac simulator
 
 The test method of`HandVector`  is inspired by  [VisionOS Simulator hands](https://github.com/BenLumenDigital/VisionOS-SimHands),  it allow you to test hand tracking on visionOS simulator:
 
@@ -94,7 +131,7 @@ To go further, take a look at the documentation and the demo project.
 To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
 ```
-.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.2.0"))
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.3.0"))
 ```
 
 #### Manually

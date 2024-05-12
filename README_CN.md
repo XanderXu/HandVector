@@ -24,11 +24,21 @@
 
 ## 用法
 
-你可以下载运行软件包中的 demo 工程来查看如何使用，也可以从 App Store 中下载 [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901) 来查看功能演示。
+你可以下载运行软件包中的 demo 工程来查看如何使用，也可以从 App Store 中下载使用了 **HandVector** 的 App 来查看功能演示：
 
-![](./Resources/handVectorDemo.gif)
+1. [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901) : FingerEmoji 让你的手指与 Emoji 共舞，你可以做出相同的手势并撞击 Emoji 卡片得分。
 
-### 手势匹配
+   ![960x540mv](./Resources/960x540mv.webp)
+
+2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** 使用 Vision Pro 上的手势来控制大疆 DJI Tello 无人机，并且目前它已经 [开源](https://github.com/zlinoliver/SkyGestures) 了！
+
+   ![](/Users/Shared/SharedCode/HandVector/Resources/gesture_demo1.2024-05-12 12_28_35.gif)
+
+
+
+### 1.匹配内置的 OK 手势
+
+![](./Resources/handVectorDemoMatchOK.gif)
 
 `HandVector` 可以让你追踪双手关节的姿态，并与先前记录下的手势相比较，得出它们的相似度:
 
@@ -61,7 +71,36 @@ model.rightScore = Int(abs(rightScore) * 100)
 
 相似度得分在 `[-1.0,1.0]` 之间， `1.0` 含义为手势完全匹配并且左右手也匹配， `-1.0 ` 含义为手势完全匹配但一个是左手一个是右手， `0` 含义为完全不匹配。
 
-### 在模拟器上测试
+### 2. 录制自定义的新手势并匹配它
+
+![](./Resources/handVectorDemoRecordMatch.gif)
+
+`HandVector` 允许你录制你的自定义手势，并保存为 JSON 字符串:
+
+```swift
+let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
+model.recordHand = para
+
+jsonString = para?.toJson()
+```
+
+然后，你还可以将 JSON 字符串转换为 `HandVectorMatcher` 类型，这样就可以进行手势匹配了：
+
+```swift
+guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
+
+let targetLeft = targetVector.left ?? targetVector.right
+let targetRight = targetVector.right ?? targetVector.left
+
+let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
+model.leftScore = Int(abs(leftScore) * 100)
+let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
+model.rightScore = Int(abs(rightScore) * 100)
+```
+
+
+
+### 3. 在模拟器上测试
 
 `HandVector` 中的模拟器测试方法来自于  [VisionOS Simulator hands](https://github.com/BenLumenDigital/VisionOS-SimHands) 项目,  它提供了一种可以在模拟器上测试手部追踪的方法:
 
@@ -76,7 +115,7 @@ model.rightScore = Int(abs(rightScore) * 100)
 
 然后通过 Swift 代码将 JSON 信息通过 Bonjour 服务广播出去。
 
-> 如果手势识别长时间无法启动（按钮一直无法点击），请检查网络是否能连接到 google MediaPipes。
+> 如果手势识别长时间无法启动（按钮一直无法点击），请检查网络是否能连接到 google MediaPipes。（中国用户请特别注意网络）
 
 ![](./Resources/handVectorTest.gif)
 
@@ -93,7 +132,7 @@ model.rightScore = Int(abs(rightScore) * 100)
 要使用苹果的 Swift Package Manager 集成，将以下内容作为依赖添加到你的 `Package.swift`：
 
 ```
-.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.1.0"))
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.3.0"))
 ```
 
 #### 手动
