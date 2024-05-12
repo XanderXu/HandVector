@@ -66,7 +66,8 @@ extension HandVectorMatcher.PositionInfo: CustomStringConvertible, Codable {
     }
 }
 
-extension HandVectorMatcher.VectorInfo: CustomStringConvertible, Codable {
+extension HandVectorMatcher.VectorInfo: CustomStringConvertible {
+    
     public var description: String {
         return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
     }

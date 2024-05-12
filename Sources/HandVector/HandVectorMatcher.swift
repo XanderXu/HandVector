@@ -14,8 +14,8 @@ public struct HandVectorMatcher: Sendable, Equatable {
     public let allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]
     public let transform: simd_float4x4
     
-    private let internalVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
-    private func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
+    let internalVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
+    func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
         return internalVectors[named.codableName]!
     }
     
@@ -49,7 +49,7 @@ public struct HandVectorMatcher: Sendable, Equatable {
         self.transform = transform
         self.internalVectors = Self.genetateVectors(from: allPositions)
     }
-    private static func genetateVectors(from positions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]) -> [HandSkeleton.JointName.NameCodingKey: VectorInfo] {
+    static func genetateVectors(from positions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]) -> [HandSkeleton.JointName.NameCodingKey: VectorInfo] {
         var vectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo] = [:]
         
         let wrist = positions[.wrist]!
@@ -142,7 +142,7 @@ public extension HandVectorMatcher {
             return PositionInfo(name: name, isTracked: isTracked, position: -position)
         }
     }
-    struct VectorInfo: Hashable, Sendable {
+    public struct VectorInfo: Hashable, Sendable, Codable {
         public let from: HandSkeleton.JointName.NameCodingKey
         public let to: HandSkeleton.JointName.NameCodingKey
         public let vector: simd_float3
