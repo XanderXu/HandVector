@@ -32,7 +32,7 @@
 
 2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** 使用 Vision Pro 上的手势来控制大疆 DJI Tello 无人机，并且目前它已经 [开源](https://github.com/zlinoliver/SkyGestures) 了！
 
-   ![](/Users/Shared/SharedCode/HandVector/Resources/gesture_demo1.2024-05-12 12_28_35.gif)
+   ![](./Resources/skygestures_demo1.gif)
 
 
 

@@ -31,7 +31,7 @@ Your can run demo in package to see how to use it, and also can try an Vision Pr
 
 2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** is an innovative app that uses hand gestures to control DJI Tello drones via the Vision Pro platform. It's [Open Source](https://github.com/zlinoliver/SkyGestures) now.
 
-   ![](./Resources/gesture_demo1.2024-05-12 12_28_35.gif)
+   ![](./Resources/skygestures_demo1.gif)
 
 
 
