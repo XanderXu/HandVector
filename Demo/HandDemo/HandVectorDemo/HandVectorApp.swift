@@ -15,6 +15,7 @@ struct HandVectorApp: App {
             HandVectorView()
                 .environment(model)
 //                .environment(\.locale, .init(identifier: "en"))
+//                .environment(\.locale, .init(identifier: "zh-Hans"))
         }
         .windowResizability(.contentSize)
         .defaultSize(width: 0.75, height: 0.5, depth: 0.5, in: .meters)

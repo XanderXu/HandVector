@@ -68,6 +68,9 @@ public class HandVectorTool {
         let hand = Entity()
         hand.name = handAnchor.chirality == .left ? "leftHand" : "rightHand"
         hand.transform.matrix = handAnchor.originFromAnchorTransform
+        
+        
+        
         if let skeleton = handAnchor.handSkeleton {
             let wm = SimpleMaterial(color: .white, isMetallic: false)
             let rm = SimpleMaterial(color: .red, isMetallic: false)

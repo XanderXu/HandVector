@@ -29,6 +29,11 @@ struct RecordAndMatch: View {
                 .font(.system(size: 16, weight: .bold))
                 .padding(.bottom, 20)
             
+            Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
+                .toggleStyle(ButtonToggleStyle())
+                .font(.system(size: 16, weight: .bold))
+                .disabled(!model.turnOnImmersiveSpace)
+            
             Group {
                 Picker("Choose Left or Right hand to recrod", selection: $recordIndex) {
                     Text("Left Hand").tag(0)

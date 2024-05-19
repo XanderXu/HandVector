@@ -29,9 +29,7 @@ struct MatchBuildinImmersiveView: View {
                 let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: leftOKVector) ?? 0
                 model.rightScore = Int(abs(rightScore) * 100)
             }))
-#if targetEnvironment(simulator)
-            model.latestHandTracking.isSkeletonVisible = true
-#endif
+
         } update: { content in
             
             

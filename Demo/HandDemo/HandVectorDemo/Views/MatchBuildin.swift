@@ -16,7 +16,12 @@ struct MatchBuildin: View {
             Toggle("Start hand tracking and matching", isOn: $model.turnOnImmersiveSpace)
                 .toggleStyle(ButtonToggleStyle())
                 .font(.system(size: 16, weight: .bold))
+                .padding(.bottom, 20)
             
+            Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
+                .toggleStyle(ButtonToggleStyle())
+                .font(.system(size: 16, weight: .bold))
+                .disabled(!model.turnOnImmersiveSpace)
             VStack {
                 Text("👌")
                     .font(.system(size: 100))
