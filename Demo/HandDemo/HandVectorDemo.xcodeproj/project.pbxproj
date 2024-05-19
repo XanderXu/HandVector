@@ -7,17 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C25F8D42BB0194200D54551 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C25F8D32BB0194200D54551 /* HandVector */; };
 		6C25F8DB2BB01C4B00D54551 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C25F8DA2BB01C4B00D54551 /* HandVector */; };
-		6C25F8E02BB01FD600D54551 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C25F8DF2BB01FD600D54551 /* HandVector */; };
 		6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */; };
 		6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FC2AB7418000B7B026 /* Assets.xcassets */; };
 		6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FF2AB7418000B7B026 /* Preview Assets.xcassets */; };
-		6C62102D2BB0148200437D63 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C62102C2BB0148200437D63 /* HandVector */; };
-		6C6210302BB015EE00437D63 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C62102F2BB015EE00437D63 /* HandVector */; };
 		6C69C4CE2BEFB7BF000BE896 /* Codable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C69C4CB2BEFB7BF000BE896 /* Codable+Extensions.swift */; };
 		6C69C4CF2BEFB7BF000BE896 /* Entity+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C69C4CC2BEFB7BF000BE896 /* Entity+Extensions.swift */; };
-		6C7138C92B862AEE004E7F8B /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C7138C82B862AEE004E7F8B /* HandVector */; };
 		6CB144CA2BCB807400CEB043 /* HandVectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144C92BCB807400CEB043 /* HandVectorView.swift */; };
 		6CB144CC2BCB887400CEB043 /* HandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144CB2BCB887400CEB043 /* HandViewModel.swift */; };
 		6CB144D02BCBADC400CEB043 /* Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB144CF2BCBADC400CEB043 /* Module.swift */; };
@@ -30,8 +25,6 @@
 		6CD819FD2B8767FD009FF2CB /* HandEmojiParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD819FC2B8767FD009FF2CB /* HandEmojiParameter.swift */; };
 		6CD8751F2BA6A5CA008BED5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CD8751D2BA6A5CA008BED5D /* Localizable.strings */; };
 		6CD875272BA6A683008BED5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CD875262BA6A683008BED5D /* Localizable.strings */; };
-		6CD8756B2BAFDBEC008BED5D /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD8756A2BAFDBEC008BED5D /* HandVector */; };
-		6CD8756E2BAFDD05008BED5D /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD8756D2BAFDD05008BED5D /* HandVector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,13 +54,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C25F8E02BB01FD600D54551 /* HandVector in Frameworks */,
-				6C25F8D42BB0194200D54551 /* HandVector in Frameworks */,
-				6C62102D2BB0148200437D63 /* HandVector in Frameworks */,
-				6C6210302BB015EE00437D63 /* HandVector in Frameworks */,
-				6CD8756E2BAFDD05008BED5D /* HandVector in Frameworks */,
-				6CD8756B2BAFDBEC008BED5D /* HandVector in Frameworks */,
-				6C7138C92B862AEE004E7F8B /* HandVector in Frameworks */,
 				6C25F8DB2BB01C4B00D54551 /* HandVector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,14 +183,7 @@
 			);
 			name = HandVectorDemo;
 			packageProductDependencies = (
-				6C7138C82B862AEE004E7F8B /* HandVector */,
-				6CD8756A2BAFDBEC008BED5D /* HandVector */,
-				6CD8756D2BAFDD05008BED5D /* HandVector */,
-				6C62102C2BB0148200437D63 /* HandVector */,
-				6C62102F2BB015EE00437D63 /* HandVector */,
-				6C25F8D32BB0194200D54551 /* HandVector */,
 				6C25F8DA2BB01C4B00D54551 /* HandVector */,
-				6C25F8DF2BB01FD600D54551 /* HandVector */,
 			);
 			productName = HandVector;
 			productReference = 6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */;
@@ -508,35 +487,7 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6C25F8D32BB0194200D54551 /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
 		6C25F8DA2BB01C4B00D54551 /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6C25F8DF2BB01FD600D54551 /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6C62102C2BB0148200437D63 /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6C62102F2BB015EE00437D63 /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6C7138C82B862AEE004E7F8B /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6CD8756A2BAFDBEC008BED5D /* HandVector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HandVector;
-		};
-		6CD8756D2BAFDD05008BED5D /* HandVector */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HandVector;
 		};

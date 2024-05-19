@@ -14,9 +14,19 @@ public struct HandVectorMatcher: Sendable, Equatable {
     public let allPositions: [HandSkeleton.JointName.NameCodingKey: PositionInfo]
     public let transform: simd_float4x4
     
-    let internalVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
-    func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
+    internal let internalVectors: [HandSkeleton.JointName.NameCodingKey: VectorInfo]
+    internal func vectorEndTo(_ named: HandSkeleton.JointName) -> VectorInfo {
         return internalVectors[named.codableName]!
+    }
+    //world space direction
+    public var fingersExtendedDirection: simd_float3 {
+        return chirality == .left ? transform.columns.0.xyz : -transform.columns.0.xyz
+    }
+    public var thumbExtendedDirection: simd_float3 {
+        return chirality == .left ? -transform.columns.2.xyz : transform.columns.2.xyz
+    }
+    public var palmDirection: simd_float3 {
+        return chirality == .left ? transform.columns.1.xyz : -transform.columns.1.xyz
     }
     
     public static func genetatePositions(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName.NameCodingKey: PositionInfo] {
@@ -253,11 +263,18 @@ public extension HandVectorMatcher {
         let m = HandVectorMatcher(chirality: chirality == .left ? .right : .left, allPositions: infoNew, transform: simd_float4x4([-transform.columns.0, transform.columns.1, -transform.columns.2, transform.columns.3]))!
         return m
     }
-}
-
-fileprivate extension HandSkeleton.Joint {
-    var localPosition: simd_float3 {
-        return anchorFromJointTransform.columns.3.xyz
+    //in world space
+    //direction: from knukle to tip of a finger
+    func fingerPositionDirection(of finger: HandVectorMatcher.JointOfFinger) -> (position: SIMD3<Float>, direction: SIMD3<Float>) {
+        let tip = finger.jointNames.last!
+        let tipLocal = allPositions[tip.codableName]?.position ?? .zero
+        let tipWorld = transform * SIMD4(tipLocal, 1)
+        
+        let back = chirality == .left ? SIMD3<Float>(1, 0, 0) : SIMD3<Float>(-1, 0, 0)
+        let knukle = finger.jointNames.first!
+        let knukleLocal = allPositions[knukle.codableName]?.position ?? back
+        let knukleWorld = transform * SIMD4(knukleLocal, 1)
+        
+        return (position: tipWorld.xyz, direction: simd_normalize(tipWorld.xyz - knukleWorld.xyz))
     }
 }
-
