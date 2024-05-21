@@ -73,11 +73,6 @@ class HandViewModel: @unchecked Sendable {
                 if let right = latestHandTracking.right {
                     await rootEntity?.addChild(right)
                 }
-//                if update.event == .added {
-//                    await directionEntity()
-//                } else {
-//                    await updateEntity()
-//                }
             case .removed:
                 let anchor = update.anchor
                 latestHandTracking.removeHand(from: anchor)
@@ -111,20 +106,5 @@ class HandViewModel: @unchecked Sendable {
             }
         }
     }
-    @MainActor
-    func directionEntity() async {
-        let rm = SimpleMaterial(color: .red, isMetallic: false)
-        let modelEntity = ModelEntity(mesh: .generateBox(size: 0.04), materials: [rm])
-        modelEntity.name = "root" + "-model"
-        rootEntity?.addChild(modelEntity)
-    }
-    @MainActor
-    func updateEntity() async {
-        let box = rootEntity?.findEntity(named: "root-model")
-        let worldDirection = latestHandTracking.rightHandVector?.palmDirection ?? .zero
-        let worldPosition = latestHandTracking.right?.transform.translation ?? .zero
-        
-        box?.transform.translation = worldPosition + worldDirection
-        
-    }
+    
 }
