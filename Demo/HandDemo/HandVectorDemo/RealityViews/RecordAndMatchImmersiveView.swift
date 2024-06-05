@@ -26,9 +26,9 @@ struct RecordAndMatchImmersiveView: View {
                 let targetLeft = targetVector.left ?? targetVector.right
                 let targetRight = targetVector.right ?? targetVector.left
                 
-                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
+                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HVJointOfFinger.allFingers, to: targetLeft!) ?? 0
                 model.leftScore = Int(abs(leftScore) * 100)
-                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
+                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HVJointOfFinger.allFingers, to: targetRight!) ?? 0
                 model.rightScore = Int(abs(rightScore) * 100)
             }))
 

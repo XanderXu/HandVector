@@ -34,17 +34,17 @@ extension HandEmojiParameter {
     func convertToHandVectorMatcher() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
         if let left {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
+            var allPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
             left.forEach { joint in
-                allPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
+                allPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, position: joint.position)
             }
             leftVector = HandVectorMatcher(chirality: .left, allPositions: allPositions, transform: .init(diagonal: .one))
         }
         var rightVector: HandVectorMatcher?
         if let right {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
+            var allPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
             right.forEach { joint in
-                allPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
+                allPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, position: joint.position)
             }
             rightVector = HandVectorMatcher(chirality: .right, allPositions: allPositions, transform: .init(diagonal: .one))
         }
@@ -63,7 +63,7 @@ extension HandEmojiParameter {
         let wm = SimpleMaterial(color: .white, isMetallic: false)
         let rm = SimpleMaterial(color: .red, isMetallic: false)
         
-        var leftPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
+        var leftPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
         left?.forEach({ joint in
             let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
@@ -78,10 +78,10 @@ extension HandEmojiParameter {
             collisionEntity.name = joint.name.rawValue + "-collision"
             leftEntity.addChild(collisionEntity)
             
-            leftPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
+            leftPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, position: joint.position)
         })
         
-        var rightPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorMatcher.PositionInfo] = [:]
+        var rightPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
         right?.forEach({ joint in
             let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
@@ -96,7 +96,7 @@ extension HandEmojiParameter {
             collisionEntity.name = joint.name.rawValue + "-collision"
             rightEntity.addChild(collisionEntity)
             
-            rightPositions[joint.name] = HandVectorMatcher.PositionInfo(name: joint.name, isTracked: true, position: joint.position)
+            rightPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, position: joint.position)
         })
         
         let leftVector = HandVectorMatcher(chirality: .left, allPositions: leftPositions, transform: .init(diagonal: .one))

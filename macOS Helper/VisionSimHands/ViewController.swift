@@ -65,7 +65,7 @@ class ViewController: NSViewController, WKUIDelegate, WKScriptMessageHandler {
                 print("Disconnected peer", peer)
             }
             
-        } else if (response == "start_server") {
+        } else if (response == "stop_server") {
             bonjour.stop()
             
         } else if let data = response.data(using: .utf8) {
