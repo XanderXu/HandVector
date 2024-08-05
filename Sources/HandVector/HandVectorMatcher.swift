@@ -11,7 +11,7 @@ import ARKit
 
 public struct HandVectorMatcher: Sendable, Equatable {
     public let chirality: HandAnchor.Chirality.NameCodingKey
-    public let allPositions: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]
+    public let allJoints: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]
     public let transform: simd_float4x4
     
     internal let internalVectors: [HandSkeleton.JointName.NameCodingKey: InternalVectorInfo]
@@ -28,12 +28,12 @@ public struct HandVectorMatcher: Sendable, Equatable {
         return positions
     }
     
-    public init?(chirality: HandAnchor.Chirality, allPositions: [HandSkeleton.JointName.NameCodingKey: HVJointInfo], transform: simd_float4x4) {
-        if allPositions.count >= HandSkeleton.JointName.allCases.count {
+    public init?(chirality: HandAnchor.Chirality, allJoints: [HandSkeleton.JointName.NameCodingKey: HVJointInfo], transform: simd_float4x4) {
+        if allJoints.count >= HandSkeleton.JointName.allCases.count {
             self.chirality = chirality.codableName
-            self.allPositions = allPositions
+            self.allJoints = allJoints
             self.transform = transform
-            self.internalVectors = Self.genetateVectors(from: allPositions)
+            self.internalVectors = Self.genetateVectors(from: allJoints)
         } else {
             return nil
         }
@@ -46,9 +46,9 @@ public struct HandVectorMatcher: Sendable, Equatable {
     }
     public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
         self.chirality = chirality.codableName
-        self.allPositions = Self.genetatePositions(from: handSkeleton)
+        self.allJoints = Self.genetatePositions(from: handSkeleton)
         self.transform = transform
-        self.internalVectors = Self.genetateVectors(from: allPositions)
+        self.internalVectors = Self.genetateVectors(from: allJoints)
     }
     static func genetateVectors(from positions: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]) -> [HandSkeleton.JointName.NameCodingKey: InternalVectorInfo] {
         var vectors: [HandSkeleton.JointName.NameCodingKey: InternalVectorInfo] = [:]
@@ -123,10 +123,10 @@ public struct HandVectorMatcher: Sendable, Equatable {
     
     public func reversedChirality() -> HandVectorMatcher {
         var infoNew: [HandSkeleton.JointName.NameCodingKey: HVJointInfo] = [:]
-        for (name, info) in allPositions {
+        for (name, info) in allJoints {
             infoNew[name] = info.reversedChirality()
         }
-        let m = HandVectorMatcher(chirality: chirality == .left ? .right : .left, allPositions: infoNew, transform: simd_float4x4([-transform.columns.0, transform.columns.1, -transform.columns.2, transform.columns.3]))!
+        let m = HandVectorMatcher(chirality: chirality == .left ? .right : .left, allJoints: infoNew, transform: simd_float4x4([-transform.columns.0, transform.columns.1, -transform.columns.2, transform.columns.3]))!
         return m
     }
 }

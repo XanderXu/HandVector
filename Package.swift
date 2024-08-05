@@ -12,13 +12,17 @@ let package = Package(
             name: "HandVector",
             targets: ["HandVector"]),
     ],
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+        // .package(url: /* package url */, from: "1.0.0"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "HandVector"),
-        .testTarget(
-            name: "HandVectorTests",
-            dependencies: ["HandVector"]),
+            name: "HandVector",
+            dependencies: [],
+            resources: [.process("BuiltinJson")]
+        )
     ]
 )

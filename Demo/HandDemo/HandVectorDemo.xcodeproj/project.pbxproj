@@ -215,7 +215,7 @@
 			);
 			mainGroup = 6C36A3E42AB7417F00B7B026;
 			packageReferences = (
-				6C25F8DE2BB01FD600D54551 /* XCLocalSwiftPackageReference "../.." */,
+				6CD0FD582C60BC800011E104 /* XCLocalSwiftPackageReference "../../../HandVector" */,
 			);
 			productRefGroup = 6C36A3EE2AB7417F00B7B026 /* Products */;
 			projectDirPath = "";
@@ -480,9 +480,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6C25F8DE2BB01FD600D54551 /* XCLocalSwiftPackageReference "../.." */ = {
+		6CD0FD582C60BC800011E104 /* XCLocalSwiftPackageReference "../../../HandVector" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../..;
+			relativePath = ../../../HandVector;
 		};
 /* End XCLocalSwiftPackageReference section */
 

@@ -141,7 +141,7 @@ public class HandVectorTool {
         
         let wm = SimpleMaterial(color: .white, isMetallic: false)
         let rm = SimpleMaterial(color: .red, isMetallic: false)
-        for positionInfo in handVector.allPositions.values {
+        for positionInfo in handVector.allJoints.values {
             let m = (positionInfo.name == .wrist || positionInfo.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
             modelEntity.position = positionInfo.position
@@ -159,7 +159,7 @@ public class HandVectorTool {
     }
     private func updateHandEntity(from handVector: HandVectorMatcher, to: Entity) {
         to.transform.matrix = handVector.transform
-        for positionInfo in handVector.allPositions.values {
+        for positionInfo in handVector.allJoints.values {
             let modelEntity = to.findEntity(named: positionInfo.name.rawValue + "-model")
             modelEntity?.position = positionInfo.position
             modelEntity?.isEnabled = isSkeletonVisible

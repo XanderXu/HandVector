@@ -1,52 +1,76 @@
 //
-//  HandEmojiParameter+Extension.swift
-//  HandVectorDemo
+//  File.swift
+//  HandVector
 //
-//  Created by 许同学 on 2024/2/22.
+//  Created by 许同学 on 2024/8/5.
 //
 
-import Foundation
-import RealityKit
+import RealityFoundation
 import ARKit
-import HandVector
 
-extension HandEmojiParameter {
-    static func generateParameters(name: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> HandEmojiParameter? {
+public struct BuiltinHandGesture: Codable {
+    public let name: String
+    public let left: [HVJointInfo]?
+    public let right: [HVJointInfo]?
+    
+    public static func loadBulitin(fileName: String?) -> BuiltinHandGesture? {
+        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+        do {
+            let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
+            return jsonStr.toModel(BuiltinHandGesture.self)
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+    public static func loadBuiltinDict(fileName: String?) -> [String: BuiltinHandGesture]? {
+        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+        do {
+            let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
+            return jsonStr.toModel([String: BuiltinHandGesture].self)
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+}
+
+public extension BuiltinHandGesture {
+    static func generateParameters(name: String, leftHandVector: HandVectorMatcher?, rightHandVector: HandVectorMatcher?) -> BuiltinHandGesture? {
         if leftHandVector == nil, rightHandVector == nil {
             return nil
         }
-        var left: [JointInfo]? = nil
-        var right: [JointInfo]? = nil
+        var left: [HVJointInfo]? = nil
+        var right: [HVJointInfo]? = nil
         if let leftHandVector {
             left = HandSkeleton.JointName.allCases.map { jointName in
-                JointInfo(position: leftHandVector.allJoints[jointName.codableName]!.position, name: jointName.codableName)
+                leftHandVector.allJoints[jointName.codableName]!
             }
         }
         if let rightHandVector {
             right = HandSkeleton.JointName.allCases.map { jointName in
-                JointInfo(position: rightHandVector.allJoints[jointName.codableName]!.position, name: jointName.codableName)
+                rightHandVector.allJoints[jointName.codableName]!
             }
         }
 
-        return HandEmojiParameter(name: name, left: left, right: right)
+        return BuiltinHandGesture(name: name, left: left, right: right)
     }
     
     func convertToHandVectorMatcher() -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
         if let left {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
-            left.forEach { joint in
-                allPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, transformArray: [])//: joint.position)
+            let all = left.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+                $0[$1.name] = $1
             }
-            leftVector = HandVectorMatcher(chirality: .left, allJoints: allPositions, transform: .init(diagonal: .one))
+            
+            leftVector = HandVectorMatcher(chirality: .left, allJoints: all, transform: .init(diagonal: .one))
         }
         var rightVector: HandVectorMatcher?
         if let right {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
-            right.forEach { joint in
-                allPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, transformArray: [])// joint.position)
+            let all = right.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+                $0[$1.name] = $1
             }
-            rightVector = HandVectorMatcher(chirality: .right, allJoints: allPositions, transform: .init(diagonal: .one))
+            rightVector = HandVectorMatcher(chirality: .right, allJoints: all, transform: .init(diagonal: .one))
         }
         return (left: leftVector, right: rightVector)
     }
@@ -67,36 +91,36 @@ extension HandEmojiParameter {
         left?.forEach({ joint in
             let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = joint.transform
+            modelEntity.transform = Transform(matrix: joint.transfrom)
             modelEntity.name = joint.name.rawValue + "-model"
             modelEntity.isEnabled = true
             leftEntity.addChild(modelEntity)
             
             let collisionEntity = Entity()
             collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = joint.transform
+            collisionEntity.transform = Transform(matrix: joint.transfrom)
             collisionEntity.name = joint.name.rawValue + "-collision"
             leftEntity.addChild(collisionEntity)
             
-            leftPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, transformArray: [])// joint.position)
+            leftPositions[joint.name] = joint
         })
         
         var rightPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
         right?.forEach({ joint in
             let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = joint.transform
+            modelEntity.transform = Transform(matrix: joint.transfrom)
             modelEntity.name = joint.name.rawValue + "-model"
             modelEntity.isEnabled = true
             rightEntity.addChild(modelEntity)
             
             let collisionEntity = Entity()
             collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = joint.transform
+            collisionEntity.transform = Transform(matrix: joint.transfrom)
             collisionEntity.name = joint.name.rawValue + "-collision"
             rightEntity.addChild(collisionEntity)
             
-            rightPositions[joint.name] = HVJointInfo(name: joint.name, isTracked: true, transformArray: [])// joint.position)
+            rightPositions[joint.name] = joint
         })
         
         let leftVector = HandVectorMatcher(chirality: .left, allJoints: leftPositions, transform: .init(diagonal: .one))
