@@ -19,8 +19,8 @@ class HandViewModel: @unchecked Sendable {
     var rootEntity: Entity?
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
-    var handEmojiDict: [String: HandEmojiParameter] = [:]
-    var recordHand: HandEmojiParameter?
+    var handGestureDict: [String: BuiltinHandGesture] = [:]
+    var recordHand: BuiltinHandGesture?
     
     var leftScore: Int = 0
     var rightScore: Int = 0
@@ -30,7 +30,7 @@ class HandViewModel: @unchecked Sendable {
     private var simHandProvider = SimulatorHandTrackingProvider()
 
     init() {
-        self.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
+        self.handGestureDict = BuiltinHandGesture.loadBuiltinDict(fileName: "BuiltinHand")!
     }
     func clear() {
         rootEntity?.children.removeAll()

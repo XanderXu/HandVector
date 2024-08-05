@@ -186,14 +186,15 @@ extension HandVectorMatcher {
         public init(from: HVJointInfo, to: HVJointInfo) {
             self.from = from.name
             self.to = to.name
-            self.vector = to.position - from.position
+            let position4 = SIMD4(to.position, 0)
+            self.vector = (from.transfrom.inverse * position4).xyz
             if vector == .zero {
                 self.normalizedVector = .zero
             } else {
-                self.normalizedVector = normalize(vector)
+                self.normalizedVector = normalize(self.vector)
             }
         }
-        public init(from: HandSkeleton.JointName.NameCodingKey, to: HandSkeleton.JointName.NameCodingKey, vector: simd_float3) {
+        private init(from: HandSkeleton.JointName.NameCodingKey, to: HandSkeleton.JointName.NameCodingKey, vector: simd_float3) {
             self.from = from
             self.to = to
             self.vector = vector

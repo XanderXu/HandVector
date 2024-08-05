@@ -121,17 +121,15 @@ struct RecordAndMatch: View {
                 countDown = -1
                 switch recordIndex {
                 case 0:
-//                    let para = HandEmojiParameter.generateParameters(name: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
-//                    model.recordHand = para
-//                    jsonString = para?.toJson()
                     let para = BuiltinHandGesture.generateParameters(name: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
+                    model.recordHand = para
                     jsonString = para?.toJson()
                 case 1:
                     let para = BuiltinHandGesture.generateParameters(name: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
-//                    model.recordHand = para
+                    model.recordHand = para
                     jsonString = para?.toJson()
                 case 2:
-                    let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
+                    let para = BuiltinHandGesture.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
                     model.recordHand = para
                     jsonString = para?.toJson()
                 default:

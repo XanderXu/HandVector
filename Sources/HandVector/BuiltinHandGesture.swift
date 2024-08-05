@@ -14,7 +14,7 @@ public struct BuiltinHandGesture: Codable {
     public let right: [HVJointInfo]?
     
     public static func loadBulitin(fileName: String?) -> BuiltinHandGesture? {
-        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+        guard let path = Bundle.module.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
             return jsonStr.toModel(BuiltinHandGesture.self)
@@ -24,7 +24,7 @@ public struct BuiltinHandGesture: Codable {
         return nil
     }
     public static func loadBuiltinDict(fileName: String?) -> [String: BuiltinHandGesture]? {
-        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {return nil}
+        guard let path = Bundle.module.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
             return jsonStr.toModel([String: BuiltinHandGesture].self)

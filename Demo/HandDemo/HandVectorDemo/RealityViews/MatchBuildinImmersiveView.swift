@@ -21,13 +21,13 @@ struct MatchBuildinImmersiveView: View {
             content.add(entity)
             
             
-            guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
+            guard let okVector = model.handGestureDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HVJointOfFinger.allFingers, to: leftOKVector) ?? 0
-                model.leftScore = Int(abs(leftScore) * 100)
+                model.leftScore = Int((leftScore) * 100)
                 let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HVJointOfFinger.allFingers, to: leftOKVector) ?? 0
-                model.rightScore = Int(abs(rightScore) * 100)
+                model.rightScore = Int((rightScore) * 100)
             }))
 
         } update: { content in
