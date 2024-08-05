@@ -67,7 +67,7 @@ public enum HVJointOfFinger: CaseIterable {
     case wristMetacarpal
     case foreArm
     
-    public var jointNames: [HandSkeleton.JointName] {
+    public var jointGroupNames: [HandSkeleton.JointName] {
         switch self {
         case .thump:
             return [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]

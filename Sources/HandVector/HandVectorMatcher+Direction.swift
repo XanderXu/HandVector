@@ -22,12 +22,12 @@ public extension HandVectorMatcher {
     //in world space
     //direction: from knukle to tip of a finger
     public func fingerPositionDirection(of finger: HVJointOfFinger) -> (position: SIMD3<Float>, direction: SIMD3<Float>) {
-        let tip = finger.jointNames.last!
+        let tip = finger.jointGroupNames.last!
         let tipLocal = allJoints[tip.codableName]?.position ?? .zero
         let tipWorld = transform * SIMD4(tipLocal, 1)
         
         let back = chirality == .left ? SIMD3<Float>(1, 0, 0) : SIMD3<Float>(-1, 0, 0)
-        let knukle = finger.jointNames.first!
+        let knukle = finger.jointGroupNames.first!
         let knukleLocal = allJoints[knukle.codableName]?.position ?? back
         let knukleWorld = transform * SIMD4(knukleLocal, 1)
         

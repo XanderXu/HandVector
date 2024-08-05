@@ -75,58 +75,58 @@ public extension BuiltinHandGesture {
         return (left: leftVector, right: rightVector)
     }
     
-    func convertToHandsVectorTool(offset: simd_float3 = .init(0, HandVectorTool.simHandPositionY, -0.5)) -> HandVectorTool {
-        let leftEntity = Entity()
-        leftEntity.name = "leftHand"
-        leftEntity.position = .init(x: -0.2, y: 0, z: 0) + offset
-        
-        let rightEntity = Entity()
-        rightEntity.name = "rightHand"
-        rightEntity.position = .init(x: 0.2, y: 0, z: 0) + offset
-        
-        let wm = SimpleMaterial(color: .white, isMetallic: false)
-        let rm = SimpleMaterial(color: .red, isMetallic: false)
-        
-        var leftPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
-        left?.forEach({ joint in
-            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
-            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = Transform(matrix: joint.transfrom)
-            modelEntity.name = joint.name.rawValue + "-model"
-            modelEntity.isEnabled = true
-            leftEntity.addChild(modelEntity)
-            
-            let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = Transform(matrix: joint.transfrom)
-            collisionEntity.name = joint.name.rawValue + "-collision"
-            leftEntity.addChild(collisionEntity)
-            
-            leftPositions[joint.name] = joint
-        })
-        
-        var rightPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
-        right?.forEach({ joint in
-            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
-            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.transform = Transform(matrix: joint.transfrom)
-            modelEntity.name = joint.name.rawValue + "-model"
-            modelEntity.isEnabled = true
-            rightEntity.addChild(modelEntity)
-            
-            let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
-            collisionEntity.transform = Transform(matrix: joint.transfrom)
-            collisionEntity.name = joint.name.rawValue + "-collision"
-            rightEntity.addChild(collisionEntity)
-            
-            rightPositions[joint.name] = joint
-        })
-        
-        let leftVector = HandVectorMatcher(chirality: .left, allJoints: leftPositions, transform: .init(diagonal: .one))
-        let rightVector = HandVectorMatcher(chirality: .right, allJoints: rightPositions, transform: .init(diagonal: .one))
-        
-        return HandVectorTool(left: leftEntity,right: rightEntity, leftHandVector: leftVector, rightHandVector: rightVector)
-    }
+//    func convertToHandsVectorTool(offset: simd_float3 = .init(0, HandVectorTool.simHandPositionY, -0.5)) -> HandVectorTool {
+//        let leftEntity = Entity()
+//        leftEntity.name = "leftHand"
+//        leftEntity.position = .init(x: -0.2, y: 0, z: 0) + offset
+//        
+//        let rightEntity = Entity()
+//        rightEntity.name = "rightHand"
+//        rightEntity.position = .init(x: 0.2, y: 0, z: 0) + offset
+//        
+//        let wm = SimpleMaterial(color: .white, isMetallic: false)
+//        let rm = SimpleMaterial(color: .red, isMetallic: false)
+//        
+//        var leftPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
+//        left?.forEach({ joint in
+//            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
+//            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
+//            modelEntity.transform = Transform(matrix: joint.transfrom)
+//            modelEntity.name = joint.name.rawValue + "-model"
+//            modelEntity.isEnabled = true
+//            leftEntity.addChild(modelEntity)
+//            
+//            let collisionEntity = Entity()
+//            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
+//            collisionEntity.transform = Transform(matrix: joint.transfrom)
+//            collisionEntity.name = joint.name.rawValue + "-collision"
+//            leftEntity.addChild(collisionEntity)
+//            
+//            leftPositions[joint.name] = joint
+//        })
+//        
+//        var rightPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
+//        right?.forEach({ joint in
+//            let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
+//            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
+//            modelEntity.transform = Transform(matrix: joint.transfrom)
+//            modelEntity.name = joint.name.rawValue + "-model"
+//            modelEntity.isEnabled = true
+//            rightEntity.addChild(modelEntity)
+//            
+//            let collisionEntity = Entity()
+//            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)]))
+//            collisionEntity.transform = Transform(matrix: joint.transfrom)
+//            collisionEntity.name = joint.name.rawValue + "-collision"
+//            rightEntity.addChild(collisionEntity)
+//            
+//            rightPositions[joint.name] = joint
+//        })
+//        
+//        let leftVector = HandVectorMatcher(chirality: .left, allJoints: leftPositions, transform: .init(diagonal: .one))
+//        let rightVector = HandVectorMatcher(chirality: .right, allJoints: rightPositions, transform: .init(diagonal: .one))
+//        
+//        return HandVectorTool(left: leftEntity,right: rightEntity, leftHandVector: leftVector, rightHandVector: rightVector)
+//    }
     
 }
