@@ -1,7 +1,8 @@
 {
     "👆": {
         "name": "👆",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "name": "wrist",
             "transformArray": [
@@ -249,7 +250,8 @@
     },
     "✌️": {
         "name": "✌️",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "transformArray": [
                 [1, 0, 0, 0],
@@ -496,7 +498,8 @@
     },
     "✋": {
         "name": "✋",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "name": "wrist",
             "transformArray": [
@@ -743,7 +746,8 @@
     },
     "👌": {
         "name": "👌",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "name": "wrist",
             "isTracked": true,
             "transformArray": [
@@ -990,7 +994,8 @@
     },
     "✊": {
         "name": "✊",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "transformArray": [
                 [1, 0, 0, 0],
@@ -1238,7 +1243,8 @@
     
     "🤘": {
         "name": "🤘",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "transformArray": [
                 [1, 0, 0, 0],
@@ -1485,7 +1491,8 @@
     },
     "🤙": {
         "name": "🤙",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "name": "wrist",
             "transformArray": [
@@ -1732,7 +1739,8 @@
     },
     "🖖": {
         "name": "🖖",
-        "left": [{
+        "chirality": "left",
+        "joints": [{
             "isTracked": true,
             "transformArray": [
                 [1, 0, 0, 0],

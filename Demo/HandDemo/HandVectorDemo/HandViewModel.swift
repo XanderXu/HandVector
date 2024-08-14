@@ -30,7 +30,7 @@ class HandViewModel: @unchecked Sendable {
     private var simHandProvider = SimulatorHandTrackingProvider()
 
     init() {
-        self.handGestureDict = HVHandInfo.loadBuiltinDict(fileName: "BuiltinHand")!
+        self.handGestureDict = HVHandInfo.loadBuiltinDict()!
     }
     func clear() {
         rootEntity?.children.removeAll()
