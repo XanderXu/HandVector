@@ -12,7 +12,7 @@ public struct HVJointInfo: Sendable, Equatable {
     public let isTracked: Bool
     public let transform: simd_float4x4
     
-    public var transformToParent: simd_float4x4?
+    private(set) var transformToParent: simd_float4x4?
     
     public init(joint: HandSkeleton.Joint) {
         self.name = joint.name.codableName
@@ -26,7 +26,9 @@ public struct HVJointInfo: Sendable, Equatable {
         self.isTracked = isTracked
         self.transform = anchorFromJointTransform
     }
-    
+    public mutating func updateTransformToParent(_ transform: simd_float4x4) {
+        self.transformToParent = transform
+    }
     public func reversedChirality() -> HVJointInfo {
         let anchorTransform = simd_float4x4(
             [transform.columns.0,
