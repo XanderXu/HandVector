@@ -198,7 +198,7 @@ extension HandVectorMatcher {
             self.from = from.name
             self.to = to.name
             let position4 = SIMD4(to.position, 0)
-            self.vector = (from.transfrom.inverse * position4).xyz
+            self.vector = (from.transform.inverse * position4).xyz
             if vector == .zero {
                 self.normalizedVector = .zero
             } else {

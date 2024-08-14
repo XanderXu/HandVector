@@ -2,6 +2,12 @@
     "👆": {
         "name": "👆",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "name": "wrist",
@@ -251,6 +257,12 @@
     "✌️": {
         "name": "✌️",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "transform": [
@@ -499,6 +511,12 @@
     "✋": {
         "name": "✋",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "name": "wrist",
@@ -747,6 +765,12 @@
     "👌": {
         "name": "👌",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "name": "wrist",
             "isTracked": true,
@@ -995,6 +1019,12 @@
     "✊": {
         "name": "✊",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "transform": [
@@ -1244,6 +1274,12 @@
     "🤘": {
         "name": "🤘",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "transform": [
@@ -1492,6 +1528,12 @@
     "🤙": {
         "name": "🤙",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "name": "wrist",
@@ -1740,6 +1782,12 @@
     "🖖": {
         "name": "🖖",
         "chirality": "left",
+        "transform": [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 1.3, -0.5, 1]
+        ],
         "joints": [{
             "isTracked": true,
             "transform": [

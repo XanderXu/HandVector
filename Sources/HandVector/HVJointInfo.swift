@@ -28,16 +28,19 @@ public struct HVJointInfo: Sendable, Equatable {
     }
     
     public func reversedChirality() -> HVJointInfo {
-        let anchorTransfrom = simd_float4x4(
+        let anchorTransform = simd_float4x4(
             [transform.columns.0,
              transform.columns.1,
              transform.columns.2,
              SIMD4<Float>(-transform.columns.3.xyz, 1)]
         )
-        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransfrom)
+        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransform)
     }
 }
 extension HVJointInfo {
+    public var position: SIMD3<Float> {
+        return transform.columns.3.xyz
+    }
     public var parentName: HandSkeleton.JointName.NameCodingKey? {
         return Self.getParentName(jointName: name)
     }
@@ -119,7 +122,7 @@ extension HVJointInfo: CustomStringConvertible, Codable {
     public init(from decoder: Decoder) throws {
         let container: KeyedDecodingContainer<HVJointInfo.CodingKeys> = try decoder.container(keyedBy: HVJointInfo.CodingKeys.self)
         
-        self.name = try container.decode(String.self, forKey: HVJointInfo.CodingKeys.name)
+        self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HVJointInfo.CodingKeys.name)
         self.isTracked = try container.decode(Bool.self, forKey: HVJointInfo.CodingKeys.isTracked)
         self.transform = try simd_float4x4(container.decode([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transform))
         

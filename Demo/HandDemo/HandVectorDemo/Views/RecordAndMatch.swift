@@ -39,7 +39,6 @@ struct RecordAndMatch: View {
                 Picker("Choose Left or Right hand to recrod", selection: $recordIndex) {
                     Text("Left Hand").tag(0)
                     Text("Right Hand").tag(1)
-                    Text("Both Hands").tag(2)
                 }
                 .pickerStyle(.segmented)
                 .padding(.bottom, 10)
@@ -121,17 +120,18 @@ struct RecordAndMatch: View {
                 countDown = -1
                 switch recordIndex {
                 case 0:
-                    let para = HVHandInfo.generateParameters(name: "left", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: nil)
-                    model.recordHand = para
-                    jsonString = para?.toJson()
+                    if let left = model.latestHandTracking.leftHandVector {
+                        let para = HVHandJsonModel.generateParameters(name: "left", handVector: left)
+                        model.recordHand = left
+                        jsonString = para.toJson()
+                    }
                 case 1:
-                    let para = HVHandInfo.generateParameters(name: "right", leftHandVector: nil, rightHandVector: model.latestHandTracking.rightHandVector)
-                    model.recordHand = para
-                    jsonString = para?.toJson()
-                case 2:
-                    let para = HVHandInfo.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
-                    model.recordHand = para
-                    jsonString = para?.toJson()
+                    if let right = model.latestHandTracking.rightHandVector {
+                        let para = HVHandJsonModel.generateParameters(name: "right", handVector: right)
+                        model.recordHand = right
+                        jsonString = para.toJson()
+                    }
+                
                 default:
                     break
                 }

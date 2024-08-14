@@ -21,7 +21,7 @@ struct MatchBuildinImmersiveView: View {
             content.add(entity)
             
             
-            guard let okVector = model.handGestureDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
+            guard let leftOKVector = model.handGestureDict["👌"]?.convertToHandVectorMatcher() else { return }
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HVJointOfFinger.allFingers, to: leftOKVector) ?? 0
