@@ -7,68 +7,39 @@
 
 import ARKit
 
-public struct HVJointInfo: Sendable, Hashable, Codable {
+public struct HVJointInfo: Sendable, Equatable {
     public let name: HandSkeleton.JointName.NameCodingKey
     public let isTracked: Bool
-    public let transformArray: [SIMD4<Float>]
+    public let transform: simd_float4x4
     
-    public var transformArrayToParent: [SIMD4<Float>]?
+    public var transformToParent: simd_float4x4?
     
-    enum CodingKeys: CodingKey {
-        case name
-        case isTracked
-        case transformArray
-    }
-    
-    
-    public var parentName: HandSkeleton.JointName.NameCodingKey? {
-        return Self.getParentName(jointName: name)
-    }
-    public var transformToParent: simd_float4x4 {
-        if let transformArrayToParent {
-            return simd_float4x4.init(transformArrayToParent[0], transformArrayToParent[1], transformArrayToParent[2], transformArrayToParent[3])
-            
-        } else {
-            return .init(diagonal: .one)
-        }
-    }
-    
-    /// The position of the joint to the hand anchor coordinate system.
-    public var position: simd_float3 {
-        return transformArray[3].xyz
-    }
-    /// The transform from the joint to the hand anchor coordinate system.
-    public var transfrom: simd_float4x4 {
-        return simd_float4x4.init(transformArray[0], transformArray[1], transformArray[2], transformArray[3])
-    }
     public init(joint: HandSkeleton.Joint) {
         self.name = joint.name.codableName
         self.isTracked = joint.isTracked
-        self.transformArray = [joint.anchorFromJointTransform.columns.0,
-                                         joint.anchorFromJointTransform.columns.1,
-                                         joint.anchorFromJointTransform.columns.2,
-                                         joint.anchorFromJointTransform.columns.3]
+        self.transform = joint.anchorFromJointTransform
+        self.transformToParent = joint.parentFromJointTransform
     }
-    public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, transformArray: [SIMD4<Float>]) {
-        self.name = name
-        self.isTracked = isTracked
-        self.transformArray = transformArray
-    }
+    
     public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, anchorFromJointTransform: simd_float4x4) {
         self.name = name
         self.isTracked = isTracked
-        self.transformArray = [anchorFromJointTransform.columns.0,
-                               anchorFromJointTransform.columns.1,
-                               anchorFromJointTransform.columns.2,
-                               anchorFromJointTransform.columns.3]
+        self.transform = anchorFromJointTransform
     }
     
     public func reversedChirality() -> HVJointInfo {
-        let anchorTransfrom = [transformArray[0],
-                               transformArray[1],
-                               transformArray[2],
-                               SIMD4<Float>(-transformArray[3].xyz, 1)]
-        return HVJointInfo(name: name, isTracked: isTracked, transformArray: anchorTransfrom)
+        let anchorTransfrom = simd_float4x4(
+            [transform.columns.0,
+             transform.columns.1,
+             transform.columns.2,
+             SIMD4<Float>(-transform.columns.3.xyz, 1)]
+        )
+        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransfrom)
+    }
+}
+extension HVJointInfo {
+    public var parentName: HandSkeleton.JointName.NameCodingKey? {
+        return Self.getParentName(jointName: name)
     }
     
     private static func getParentName(jointName:HandSkeleton.JointName.NameCodingKey) -> HandSkeleton.JointName.NameCodingKey? {
@@ -134,9 +105,32 @@ public struct HVJointInfo: Sendable, Hashable, Codable {
         }
     }
 }
-extension HVJointInfo: CustomStringConvertible {
+extension HVJointInfo: CustomStringConvertible, Codable {
     public var description: String {
-        return "name: \(name), isTracked: \(isTracked), position: \(position)"
+        return "name: \(name), isTracked: \(isTracked), position: \(transform.columns.0.xyz)"
+    }
+    
+    enum CodingKeys: CodingKey {
+        case name
+        case isTracked
+        case transform
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<HVJointInfo.CodingKeys> = try decoder.container(keyedBy: HVJointInfo.CodingKeys.self)
+        
+        self.name = try container.decode(String.self, forKey: HVJointInfo.CodingKeys.name)
+        self.isTracked = try container.decode(Bool.self, forKey: HVJointInfo.CodingKeys.isTracked)
+        self.transform = try simd_float4x4(container.decode([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transform))
+        
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container: KeyedEncodingContainer<HVJointInfo.CodingKeys> = encoder.container(keyedBy: HVJointInfo.CodingKeys.self)
+        
+        try container.encode(self.name, forKey: HVJointInfo.CodingKeys.name)
+        try container.encode(self.isTracked, forKey: HVJointInfo.CodingKeys.isTracked)
+        try container.encode(self.transform.float4Array, forKey: HVJointInfo.CodingKeys.transform)
     }
 }
 
