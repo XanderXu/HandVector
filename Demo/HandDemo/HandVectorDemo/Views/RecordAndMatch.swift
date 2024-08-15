@@ -121,13 +121,13 @@ struct RecordAndMatch: View {
                 switch recordIndex {
                 case 0:
                     if let left = model.latestHandTracking.leftHandVector {
-                        let para = HVHandJsonModel.generateParameters(name: "left", handVector: left)
+                        let para = HVHandJsonModel.generateJsonModel(name: "left", handVector: left)
                         model.recordHand = left
                         jsonString = para.toJson()
                     }
                 case 1:
                     if let right = model.latestHandTracking.rightHandVector {
-                        let para = HVHandJsonModel.generateParameters(name: "right", handVector: right)
+                        let para = HVHandJsonModel.generateJsonModel(name: "right", handVector: right)
                         model.recordHand = right
                         jsonString = para.toJson()
                     }
