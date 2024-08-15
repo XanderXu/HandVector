@@ -20,7 +20,7 @@ public struct HandVectorMatcher: Sendable, Equatable {
     }
     
     
-    public static func genetatePositions(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName.NameCodingKey: HVJointInfo] {
+    public static func genetateJoints(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName.NameCodingKey: HVJointInfo] {
         var positions: [HandSkeleton.JointName.NameCodingKey: HVJointInfo] = [:]
         HandSkeleton.JointName.allCases.forEach { jointName in
             positions[jointName.codableName] = HVJointInfo(joint: handSkeleton.joint(jointName))
@@ -46,7 +46,7 @@ public struct HandVectorMatcher: Sendable, Equatable {
     }
     public init(chirality: HandAnchor.Chirality, handSkeleton: HandSkeleton, transform: simd_float4x4) {
         self.chirality = chirality.codableName
-        self.allJoints = Self.genetatePositions(from: handSkeleton)
+        self.allJoints = Self.genetateJoints(from: handSkeleton)
         self.transform = transform
         self.internalVectors = Self.genetateVectors(from: allJoints)
     }
