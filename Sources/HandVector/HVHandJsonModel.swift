@@ -68,18 +68,22 @@ extension HVHandJsonModel: Codable {
         self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HVHandJsonModel.CodingKeys.chirality)
         
         let joints = try container.decode([HVJointInfo].self, forKey: HVHandJsonModel.CodingKeys.joints)
-        let dict = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+        var dict = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
             $0[$1.name] = $1
         }
-        dict.forEach { (key,value) in
+        HandSkeleton.JointName.allCases.forEach { name in
             let identity = simd_float4x4.init(diagonal: .one)
-            if let parentName = value.parentName {
-                let parentT = dict[parentName]?.transform.inverse ?? identity
-                value.updateTransformToParent(parentT * value.transform)
-            } else {
-                value.updateTransformToParent(identity)
+            if var joint = dict[name.codableName] {
+                if let parentName = joint.parentName {
+                    let parentT = dict[parentName]?.transform.inverse ?? identity
+                    joint.updateTransformToParent(parentT * joint.transform)
+                } else {
+                    joint.updateTransformToParent(identity)
+                }
+                dict[name.codableName] = joint
             }
         }
+        
         self.joints = HandSkeleton.JointName.allCases.map { jointName in
             dict[jointName.codableName]!
         }

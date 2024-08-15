@@ -12,7 +12,7 @@ public struct HVJointInfo: Sendable, Equatable {
     public let isTracked: Bool
     public let transform: simd_float4x4
     
-    private(set) var transformToParent: simd_float4x4?
+    private(set) var transformToParent: simd_float4x4
     
     public init(joint: HandSkeleton.Joint) {
         self.name = joint.name.codableName
@@ -21,10 +21,11 @@ public struct HVJointInfo: Sendable, Equatable {
         self.transformToParent = joint.parentFromJointTransform
     }
     
-    public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, anchorFromJointTransform: simd_float4x4) {
+    public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, anchorFromJointTransform: simd_float4x4, parentFromJointTransform: simd_float4x4) {
         self.name = name
         self.isTracked = isTracked
         self.transform = anchorFromJointTransform
+        self.transformToParent = parentFromJointTransform
     }
     public mutating func updateTransformToParent(_ transform: simd_float4x4) {
         self.transformToParent = transform
@@ -36,7 +37,13 @@ public struct HVJointInfo: Sendable, Equatable {
              transform.columns.2,
              SIMD4<Float>(-transform.columns.3.xyz, 1)]
         )
-        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransform)
+        let parentTransform = simd_float4x4(
+            [transformToParent.columns.0,
+             transformToParent.columns.1,
+             transformToParent.columns.2,
+             SIMD4<Float>(-transformToParent.columns.3.xyz, 1)]
+        )
+        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransform, parentFromJointTransform: parentTransform)
     }
 }
 extension HVJointInfo {
@@ -119,6 +126,7 @@ extension HVJointInfo: CustomStringConvertible, Codable {
         case name
         case isTracked
         case transform
+        case transformToParent
     }
     
     public init(from decoder: Decoder) throws {
@@ -127,6 +135,13 @@ extension HVJointInfo: CustomStringConvertible, Codable {
         self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HVJointInfo.CodingKeys.name)
         self.isTracked = try container.decode(Bool.self, forKey: HVJointInfo.CodingKeys.isTracked)
         self.transform = try simd_float4x4(container.decode([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transform))
+        
+        let arrT = try container.decodeIfPresent([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transformToParent)
+        if let arrT {
+            self.transformToParent = simd_float4x4(arrT)
+        } else {
+            self.transformToParent = .init(diagonal: .one)
+        }
         
     }
     
