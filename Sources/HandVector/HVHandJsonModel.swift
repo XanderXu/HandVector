@@ -52,10 +52,10 @@ public struct HVHandJsonModel {
             if let jsonJoint = jsonDict[$1.codableName] {
                 if let parentName = $1.codableName.parentName, let parentTransform = jsonDict[parentName]?.transform {
                     let parentIT = parentTransform.inverse * jsonJoint.transform
-                    let joint = HVJointInfo(name: jsonJoint.codableName, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
+                    let joint = HVJointInfo(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
                     $0[$1.codableName] = joint
                 } else {
-                    let joint = HVJointInfo(name: jsonJoint.codableName, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
+                    let joint = HVJointInfo(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
                     $0[$1.codableName] = joint
                 }
             }

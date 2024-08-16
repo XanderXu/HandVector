@@ -116,12 +116,9 @@ public extension HandSkeleton.JointName {
             return self.rawValue
         }
         
-        public var parentName: HandSkeleton.JointName.NameCodingKey? {
-            return Self.getParentName(jointName: name)
-        }
         
         public var parentName: HandSkeleton.JointName.NameCodingKey? {
-            return Self.getParentName(jointName: name)
+            return Self.getParentName(jointName: self)
         }
         
         private static func getParentName(jointName:HandSkeleton.JointName.NameCodingKey) -> HandSkeleton.JointName.NameCodingKey? {

@@ -139,7 +139,8 @@ struct RecordAndMatch: View {
             }
         }
         .onAppear {
-            if let para = model.recordHand {
+            if let hand = model.recordHand {
+                let para = HVHandJsonModel.generateJsonModel(name: hand.chirality.rawValue, handVector: hand)
                 jsonString = para.toJson()
             }
         }
