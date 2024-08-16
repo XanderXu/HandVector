@@ -7,7 +7,7 @@
 
 import ARKit
 
-public struct HVJointJsonModel: Sendable, Equatable {
+public struct HVJointJsonModel: Sendable, Equatable, HVJoint {
     public let name: HandSkeleton.JointName.NameCodingKey
     public let isTracked: Bool
     public let transform: simd_float4x4

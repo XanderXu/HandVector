@@ -7,12 +7,17 @@
 
 import ARKit
 
-public struct HVJointInfo: Sendable, Equatable {
+protocol HVJoint {
+    var name: HandSkeleton.JointName.NameCodingKey { get }
+    var isTracked: Bool { get }
+    var transform: simd_float4x4 { get }
+}
+
+public struct HVJointInfo: Sendable, Equatable, HVJoint {
     public let name: HandSkeleton.JointName.NameCodingKey
     public let isTracked: Bool
     public let transform: simd_float4x4
-    
-    private(set) var transformToParent: simd_float4x4
+    public let transformToParent: simd_float4x4
     
     public init(joint: HandSkeleton.Joint) {
         self.name = joint.name.codableName
@@ -28,9 +33,6 @@ public struct HVJointInfo: Sendable, Equatable {
         self.transformToParent = parentFromJointTransform
     }
     
-    public mutating func updateTransformToParent(_ transform: simd_float4x4) {
-        self.transformToParent = transform
-    }
     public func reversedChirality() -> HVJointInfo {
         let anchorTransform = simd_float4x4(
             [transform.columns.0,
@@ -50,43 +52,13 @@ public struct HVJointInfo: Sendable, Equatable {
     public var position: SIMD3<Float> {
         return transform.columns.3.xyz
     }
-    
 }
-extension HVJointInfo: CustomStringConvertible, Codable {
+
+extension HVJointInfo: CustomStringConvertible {
     public var description: String {
         return "name: \(name), isTracked: \(isTracked), position: \(transform.columns.0.xyz)"
     }
     
-    enum CodingKeys: CodingKey {
-        case name
-        case isTracked
-        case transform
-        case transformToParent
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container: KeyedDecodingContainer<HVJointInfo.CodingKeys> = try decoder.container(keyedBy: HVJointInfo.CodingKeys.self)
-        
-        self.name = try container.decode(HandSkeleton.JointName.NameCodingKey.self, forKey: HVJointInfo.CodingKeys.name)
-        self.isTracked = try container.decode(Bool.self, forKey: HVJointInfo.CodingKeys.isTracked)
-        self.transform = try simd_float4x4(container.decode([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transform))
-        
-        let arrT = try container.decodeIfPresent([SIMD4<Float>].self, forKey: HVJointInfo.CodingKeys.transformToParent)
-        if let arrT {
-            self.transformToParent = simd_float4x4(arrT)
-        } else {
-            self.transformToParent = .init(diagonal: .one)
-        }
-        
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container: KeyedEncodingContainer<HVJointInfo.CodingKeys> = encoder.container(keyedBy: HVJointInfo.CodingKeys.self)
-        
-        try container.encode(self.name, forKey: HVJointInfo.CodingKeys.name)
-        try container.encode(self.isTracked, forKey: HVJointInfo.CodingKeys.isTracked)
-        try container.encode(self.transform.float4Array, forKey: HVJointInfo.CodingKeys.transform)
-    }
 }
 
 
