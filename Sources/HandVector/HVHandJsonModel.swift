@@ -12,7 +12,7 @@ public struct HVHandJsonModel {
     public let name: String
     public let chirality: HandAnchor.Chirality.NameCodingKey
     public let transform: simd_float4x4
-    public let joints: [HVJointInfo]
+    public let joints: [HVJointJsonModel]
 
     public static func loadBulitin() -> HVHandJsonModel? {
         guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
@@ -37,17 +37,32 @@ public struct HVHandJsonModel {
     
     public static func generateJsonModel(name: String, handVector: HandVectorMatcher) -> HVHandJsonModel {
         let joints = HandSkeleton.JointName.allCases.map { jointName in
-            handVector.allJoints[jointName.codableName]!
+            let joint = handVector.allJoints[jointName.codableName]!
+            return HVJointJsonModel(name: joint.name, isTracked: joint.isTracked, transform: joint.transform)
         }
         return HVHandJsonModel(name: name, chirality: handVector.chirality, transform: handVector.transform, joints: joints)
     }
     
     public func convertToHandVectorMatcher() -> HandVectorMatcher? {
-        let all = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+        let jsonDict = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointJsonModel]()) {
             $0[$1.name] = $1
         }
+        let identity = simd_float4x4.init(diagonal: .one)
+        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+            if let jsonJoint = jsonDict[$1.codableName] {
+                if let parentName = $1.codableName.parentName, let parentTransform = jsonDict[parentName]?.transform {
+                    let parentIT = parentTransform.inverse * jsonJoint.transform
+                    let joint = HVJointInfo(name: jsonJoint.codableName, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
+                    $0[$1.codableName] = joint
+                } else {
+                    let joint = HVJointInfo(name: jsonJoint.codableName, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
+                    $0[$1.codableName] = joint
+                }
+            }
+        }
+        
         let ch: HandAnchor.Chirality = (chirality == .left) ? .left : .right
-        let vector = HandVectorMatcher(chirality: ch, allJoints: all, transform: .init(diagonal: .one))
+        let vector = HandVectorMatcher(chirality: ch, allJoints: allJoints, transform: .init(diagonal: .one))
         return vector
     }
     
@@ -66,28 +81,7 @@ extension HVHandJsonModel: Codable {
         
         self.name = try container.decode(String.self, forKey: HVHandJsonModel.CodingKeys.name)
         self.chirality = try container.decode(HandAnchor.Chirality.NameCodingKey.self, forKey: HVHandJsonModel.CodingKeys.chirality)
-        
-        let joints = try container.decode([HVJointInfo].self, forKey: HVHandJsonModel.CodingKeys.joints)
-        var dict = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
-            $0[$1.name] = $1
-        }
-        HandSkeleton.JointName.allCases.forEach { name in
-            let identity = simd_float4x4.init(diagonal: .one)
-            if var joint = dict[name.codableName] {
-                if let parentName = joint.parentName {
-                    let parentT = dict[parentName]?.transform.inverse ?? identity
-                    joint.updateTransformToParent(parentT * joint.transform)
-                } else {
-                    joint.updateTransformToParent(identity)
-                }
-                dict[name.codableName] = joint
-            }
-        }
-        
-        self.joints = HandSkeleton.JointName.allCases.map { jointName in
-            dict[jointName.codableName]!
-        }
-        
+        self.joints = try container.decode([HVJointJsonModel].self, forKey: HVHandJsonModel.CodingKeys.joints)
         self.transform = try simd_float4x4(container.decode([SIMD4<Float>].self, forKey: HVHandJsonModel.CodingKeys.transform))
     }
     

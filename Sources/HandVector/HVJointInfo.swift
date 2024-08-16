@@ -27,6 +27,7 @@ public struct HVJointInfo: Sendable, Equatable {
         self.transform = anchorFromJointTransform
         self.transformToParent = parentFromJointTransform
     }
+    
     public mutating func updateTransformToParent(_ transform: simd_float4x4) {
         self.transformToParent = transform
     }
@@ -45,77 +46,11 @@ public struct HVJointInfo: Sendable, Equatable {
         )
         return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: anchorTransform, parentFromJointTransform: parentTransform)
     }
-}
-extension HVJointInfo {
+
     public var position: SIMD3<Float> {
         return transform.columns.3.xyz
     }
-    public var parentName: HandSkeleton.JointName.NameCodingKey? {
-        return Self.getParentName(jointName: name)
-    }
     
-    private static func getParentName(jointName:HandSkeleton.JointName.NameCodingKey) -> HandSkeleton.JointName.NameCodingKey? {
-        switch jointName {
-        case .wrist:
-            return nil
-        case .thumbKnuckle:
-            return .wrist
-        case .thumbIntermediateBase:
-            return .thumbKnuckle
-        case .thumbIntermediateTip:
-            return .thumbIntermediateBase
-        case .thumbTip:
-            return .thumbIntermediateTip
-        case .indexFingerMetacarpal:
-            return .wrist
-        case .indexFingerKnuckle:
-            return .indexFingerMetacarpal
-        case .indexFingerIntermediateBase:
-            return .indexFingerKnuckle
-        case .indexFingerIntermediateTip:
-            return .indexFingerIntermediateBase
-        case .indexFingerTip:
-            return .indexFingerIntermediateTip
-        case .middleFingerMetacarpal:
-            return .wrist
-        case .middleFingerKnuckle:
-            return .middleFingerMetacarpal
-        case .middleFingerIntermediateBase:
-            return .middleFingerKnuckle
-        case .middleFingerIntermediateTip:
-            return .middleFingerIntermediateBase
-        case .middleFingerTip:
-            return .middleFingerIntermediateTip
-        case .ringFingerMetacarpal:
-            return .wrist
-        case .ringFingerKnuckle:
-            return .ringFingerMetacarpal
-        case .ringFingerIntermediateBase:
-            return .ringFingerKnuckle
-        case .ringFingerIntermediateTip:
-            return .ringFingerIntermediateBase
-        case .ringFingerTip:
-            return .ringFingerIntermediateTip
-        case .littleFingerMetacarpal:
-            return .wrist
-        case .littleFingerKnuckle:
-            return .littleFingerMetacarpal
-        case .littleFingerIntermediateBase:
-            return .littleFingerKnuckle
-        case .littleFingerIntermediateTip:
-            return .littleFingerIntermediateBase
-        case .littleFingerTip:
-            return .littleFingerIntermediateTip
-        case .forearmWrist:
-            return .wrist
-        case .forearmArm:
-            return .forearmWrist
-        case .unknown:
-            return nil
-        default:
-            return nil
-        }
-    }
 }
 extension HVJointInfo: CustomStringConvertible, Codable {
     public var description: String {
