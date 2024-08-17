@@ -133,7 +133,7 @@ public struct SimHand: Codable {
         var leftVector: HandVectorMatcher?
         var rightVector: HandVectorMatcher?
         for (landmarks, handednesses) in zip(landmarks, handednesses) {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HVJointInfo] = [:]
+            var allPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorJoint] = [:]
             let jointsDict = Self.fullFillLandmarksToJointsDict(landmarks)
             let wrist = jointsDict[.wrist]!
             let indexFingerKnuckle = jointsDict[.indexFingerKnuckle]!
@@ -148,7 +148,7 @@ public struct SimHand: Codable {
                 
                 for joint in jointsDict.values {
                     let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    allPositions[joint.handPart] = HVJointInfo(name: joint.handPart, isTracked: true, anchorFromJointTransform: .init(), parentFromJointTransform: .init()) //inversedPosition.xyz)
+                    allPositions[joint.handPart] = HandVectorJoint(name: joint.handPart, isTracked: true, anchorFromJointTransform: .init(), parentFromJointTransform: .init()) //inversedPosition.xyz)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
                 leftVector = HandVectorMatcher(chirality: .left, allJoints: allPositions, transform: transform)
@@ -159,7 +159,7 @@ public struct SimHand: Codable {
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
                 for joint in jointsDict.values {
                     let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    allPositions[joint.handPart] = HVJointInfo(name: joint.handPart, isTracked: true, anchorFromJointTransform: .init(), parentFromJointTransform: .init())//: inversedPosition.xyz)
+                    allPositions[joint.handPart] = HandVectorJoint(name: joint.handPart, isTracked: true, anchorFromJointTransform: .init(), parentFromJointTransform: .init())//: inversedPosition.xyz)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
                 rightVector = HandVectorMatcher(chirality: .right, allJoints: allPositions, transform: transform)

@@ -73,14 +73,14 @@ public struct HVHandJsonModel {
             $0[$1.name] = $1
         }
         let identity = simd_float4x4.init(diagonal: .one)
-        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointInfo]()) {
+        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName.NameCodingKey: HandVectorJoint]()) {
             if let jsonJoint = jsonDict[$1.codableName] {
                 if let parentName = $1.codableName.parentName, let parentTransform = jsonDict[parentName]?.transform {
                     let parentIT = parentTransform.inverse * jsonJoint.transform
-                    let joint = HVJointInfo(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
+                    let joint = HandVectorJoint(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
                     $0[$1.codableName] = joint
                 } else {
-                    let joint = HVJointInfo(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
+                    let joint = HandVectorJoint(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
                     $0[$1.codableName] = joint
                 }
             }
