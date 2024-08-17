@@ -145,12 +145,12 @@ public extension HandVectorMatcher {
     }
     /// Fingers and wrist and forearm
     func similarity(to vector: HandVectorMatcher) -> Float {
-        return similarity(of: HVJointOfFinger.allFingersAndWristAndForearm, to: vector)
+        return similarity(of: HVJointGroupOptions.all, to: vector)
     }
     /// Fingers your selected
-    func similarity(of fingers: Set<HVJointOfFinger>, to vector: HandVectorMatcher) -> Float {
+    func similarity(of fingers: HVJointGroupOptions, to vector: HandVectorMatcher) -> Float {
         var similarity: Float = 0
-        let jointNames = fingers.flatMap { $0.jointGroupNames }
+        let jointNames = fingers.jointGroupNames
         similarity = jointNames.map { name in
             let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
             return dv
@@ -160,25 +160,26 @@ public extension HandVectorMatcher {
         return similarity
     }
     
-    func similarities(to vector: HandVectorMatcher) -> (average: Float, each: [HVJointOfFinger: Float]) {
-        return averageAndEachSimilarities(of: HVJointOfFinger.allFingersAndWristAndForearm, to: vector)
+    func similarities(to vector: HandVectorMatcher) -> (average: Float, each: [HVJointGroupOptions: Float]) {
+        return averageAndEachSimilarities(of: HVJointGroupOptions.all, to: vector)
     }
-    func averageAndEachSimilarities(of fingers: Set<HVJointOfFinger>, to vector: HandVectorMatcher) -> (average: Float, each: [HVJointOfFinger: Float]) {
-        let fingerTotal = fingers.reduce(into: [HVJointOfFinger: Float]()) { partialResult, finger in
+    func averageAndEachSimilarities(of fingers: HVJointGroupOptions, to vector: HandVectorMatcher) -> (average: Float, each: [HVJointGroupOptions: Float]) {
+        
+        let fingerTotal = fingers.fingerGroups.reduce(into: [HVJointGroupOptions: Float]()) { partialResult, finger in
             let fingerResult = finger.jointGroupNames.reduce(into: Float.zero) { partialResult, name in
                 let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
                 partialResult += dv
             }
             partialResult[finger] = fingerResult
         }
-        let fingerScore = fingerTotal.reduce(into: [HVJointOfFinger: Float]()) { partialResult, ele in
+        let fingerScore = fingerTotal.reduce(into: [HVJointGroupOptions: Float]()) { partialResult, ele in
             partialResult[ele.key]  = ele.value / Float(ele.key.jointGroupNames.count)
         }
         
         let jointTotal = fingerTotal.reduce(into: Float.zero) { partialResult, element in
             partialResult += element.value
         }
-        let jointCount = fingers.flatMap { $0.jointGroupNames }.count
+        let jointCount = fingers.jointGroupNames.count
         return (average: jointTotal / Float(jointCount), each: fingerScore)
     }
 }

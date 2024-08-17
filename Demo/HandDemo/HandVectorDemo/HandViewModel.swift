@@ -19,7 +19,7 @@ class HandViewModel: @unchecked Sendable {
     var rootEntity: Entity?
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
-    var handGestureDict: [String: HVHandJsonModel] = [:]
+    var handGestureDict: [String: HandVectorMatcher] = [:]
     var recordHand: HandVectorMatcher?
     
     var leftScore: Int = 0

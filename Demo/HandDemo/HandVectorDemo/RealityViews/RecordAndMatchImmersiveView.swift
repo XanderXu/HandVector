@@ -23,9 +23,9 @@ struct RecordAndMatchImmersiveView: View {
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 guard let targetVector = model.recordHand else { return }
                 
-                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HVJointOfFinger.allFingers, to: targetVector) ?? 0
+                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HVJointGroupOptions.fiveFingers, to: targetVector) ?? 0
                 model.leftScore = Int(leftScore * 100)
-                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HVJointOfFinger.allFingers, to: targetVector) ?? 0
+                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HVJointGroupOptions.fiveFingers, to: targetVector) ?? 0
                 model.rightScore = Int(rightScore * 100)
             }))
 
