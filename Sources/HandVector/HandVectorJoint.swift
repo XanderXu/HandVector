@@ -8,20 +8,20 @@
 import ARKit
 
 
-public struct HandVectorJoint: Sendable, Equatable, HVJoint {
-    public let name: HandSkeleton.JointName.NameCodingKey
+public struct HandVectorJoint: Sendable, Equatable {
+    public let name: HandSkeleton.JointName
     public let isTracked: Bool
     public let transform: simd_float4x4
     public let transformToParent: simd_float4x4
     
     public init(joint: HandSkeleton.Joint) {
-        self.name = joint.name.codableName
+        self.name = joint.name
         self.isTracked = joint.isTracked
         self.transform = joint.anchorFromJointTransform
         self.transformToParent = joint.parentFromJointTransform
     }
     
-    public init(name: HandSkeleton.JointName.NameCodingKey, isTracked: Bool, anchorFromJointTransform: simd_float4x4, parentFromJointTransform: simd_float4x4) {
+    public init(name: HandSkeleton.JointName, isTracked: Bool, anchorFromJointTransform: simd_float4x4, parentFromJointTransform: simd_float4x4) {
         self.name = name
         self.isTracked = isTracked
         self.transform = anchorFromJointTransform

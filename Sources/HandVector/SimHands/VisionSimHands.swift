@@ -34,11 +34,11 @@ public struct SimHand: Codable {
             return simd_float3(Float(x), Float(y), Float(z))
         }
     }
-    struct Joint {
+    private struct Joint {
         var position: SIMD3<Float>
-        let handPart: HandSkeleton.JointName.NameCodingKey
+        let handPart: HandSkeleton.JointName
         
-        init(handPart: HandSkeleton.JointName.NameCodingKey, position: SIMD3<Float>) {
+        init(handPart: HandSkeleton.JointName, position: SIMD3<Float>) {
             self.handPart = handPart
             self.position = position
         }
@@ -92,13 +92,13 @@ public struct SimHand: Codable {
                 handPart = .littleFingerTip
                 
             default:
-                handPart = .unknown
+                handPart = .forearmWrist
             }
             self.position = position
         }
     }
-    private static func fullFillLandmarksToJointsDict(_ landmarks: [Landmark]) -> [HandSkeleton.JointName.NameCodingKey :Joint] {
-        var joints: [HandSkeleton.JointName.NameCodingKey :Joint] = [:]
+    private static func fullFillLandmarksToJointsDict(_ landmarks: [Landmark]) -> [HandSkeleton.JointName :Joint] {
+        var joints: [HandSkeleton.JointName :Joint] = [:]
         for (i, landmark) in landmarks.enumerated() {
             let joint = Joint(jointIndex: i, position: landmark.position)
             joints[joint.handPart] = joint
@@ -133,7 +133,7 @@ public struct SimHand: Codable {
         var leftVector: HandVectorMatcher?
         var rightVector: HandVectorMatcher?
         for (landmarks, handednesses) in zip(landmarks, handednesses) {
-            var allPositions: [HandSkeleton.JointName.NameCodingKey : HandVectorJoint] = [:]
+            var allPositions: [HandSkeleton.JointName : HandVectorJoint] = [:]
             let jointsDict = Self.fullFillLandmarksToJointsDict(landmarks)
             let wrist = jointsDict[.wrist]!
             let indexFingerKnuckle = jointsDict[.indexFingerKnuckle]!

@@ -8,7 +8,7 @@
 import RealityFoundation
 import ARKit
 
-public struct HVJointJsonModel: Sendable, Equatable, HVJoint {
+public struct HVJointJsonModel: Sendable, Equatable {
     public let name: HandSkeleton.JointName.NameCodingKey
     public let isTracked: Bool
     public let transform: simd_float4x4
@@ -69,19 +69,19 @@ public struct HVHandJsonModel {
     }
     
     public func convertToHandVectorMatcher() -> HandVectorMatcher? {
-        let jsonDict = joints.reduce(into: [HandSkeleton.JointName.NameCodingKey: HVJointJsonModel]()) {
-            $0[$1.name] = $1
+        let jsonDict = joints.reduce(into: [HandSkeleton.JointName: HVJointJsonModel]()) {
+            $0[$1.name.jointName!] = $1
         }
         let identity = simd_float4x4.init(diagonal: .one)
-        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName.NameCodingKey: HandVectorJoint]()) {
-            if let jsonJoint = jsonDict[$1.codableName] {
-                if let parentName = $1.codableName.parentName, let parentTransform = jsonDict[parentName]?.transform {
+        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName: HandVectorJoint]()) {
+            if let jsonJoint = jsonDict[$1] {
+                if let parentName = $1.parentName, let parentTransform = jsonDict[parentName]?.transform {
                     let parentIT = parentTransform.inverse * jsonJoint.transform
-                    let joint = HandVectorJoint(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
-                    $0[$1.codableName] = joint
+                    let joint = HandVectorJoint(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
+                    $0[$1] = joint
                 } else {
-                    let joint = HandVectorJoint(name: jsonJoint.name, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
-                    $0[$1.codableName] = joint
+                    let joint = HandVectorJoint(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
+                    $0[$1] = joint
                 }
             }
         }
@@ -93,10 +93,10 @@ public struct HVHandJsonModel {
     
     public static func generateJsonModel(name: String, handVector: HandVectorMatcher) -> HVHandJsonModel {
         let joints = HandSkeleton.JointName.allCases.map { jointName in
-            let joint = handVector.allJoints[jointName.codableName]!
-            return HVJointJsonModel(name: joint.name, isTracked: joint.isTracked, transform: joint.transform)
+            let joint = handVector.allJoints[jointName]!
+            return HVJointJsonModel(name: joint.name.codableName, isTracked: joint.isTracked, transform: joint.transform)
         }
-        return HVHandJsonModel(name: name, chirality: handVector.chirality, transform: handVector.transform, joints: joints)
+        return HVHandJsonModel(name: name, chirality: handVector.chirality.codableName, transform: handVector.transform, joints: joints)
     }
     
 }

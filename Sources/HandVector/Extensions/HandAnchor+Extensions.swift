@@ -181,74 +181,7 @@ public extension HandSkeleton.JointName {
                 return .forearmWrist
             case .forearmArm:
                 return .forearmArm
-            default:
-                return nil
-            }
-        }
-        
-        public var parentName: HandSkeleton.JointName.NameCodingKey? {
-            return Self.getParentName(jointName: self)
-        }
-        
-        private static func getParentName(jointName:HandSkeleton.JointName.NameCodingKey) -> HandSkeleton.JointName.NameCodingKey? {
-            switch jointName {
-            case .wrist:
-                return nil
-            case .thumbKnuckle:
-                return .wrist
-            case .thumbIntermediateBase:
-                return .thumbKnuckle
-            case .thumbIntermediateTip:
-                return .thumbIntermediateBase
-            case .thumbTip:
-                return .thumbIntermediateTip
-            case .indexFingerMetacarpal:
-                return .wrist
-            case .indexFingerKnuckle:
-                return .indexFingerMetacarpal
-            case .indexFingerIntermediateBase:
-                return .indexFingerKnuckle
-            case .indexFingerIntermediateTip:
-                return .indexFingerIntermediateBase
-            case .indexFingerTip:
-                return .indexFingerIntermediateTip
-            case .middleFingerMetacarpal:
-                return .wrist
-            case .middleFingerKnuckle:
-                return .middleFingerMetacarpal
-            case .middleFingerIntermediateBase:
-                return .middleFingerKnuckle
-            case .middleFingerIntermediateTip:
-                return .middleFingerIntermediateBase
-            case .middleFingerTip:
-                return .middleFingerIntermediateTip
-            case .ringFingerMetacarpal:
-                return .wrist
-            case .ringFingerKnuckle:
-                return .ringFingerMetacarpal
-            case .ringFingerIntermediateBase:
-                return .ringFingerKnuckle
-            case .ringFingerIntermediateTip:
-                return .ringFingerIntermediateBase
-            case .ringFingerTip:
-                return .ringFingerIntermediateTip
-            case .littleFingerMetacarpal:
-                return .wrist
-            case .littleFingerKnuckle:
-                return .littleFingerMetacarpal
-            case .littleFingerIntermediateBase:
-                return .littleFingerKnuckle
-            case .littleFingerIntermediateTip:
-                return .littleFingerIntermediateBase
-            case .littleFingerTip:
-                return .littleFingerIntermediateTip
-            case .forearmWrist:
-                return .wrist
-            case .forearmArm:
-                return .forearmWrist
             case .unknown:
-                return nil
-            default:
                 return nil
             }
         }
@@ -311,6 +244,67 @@ public extension HandSkeleton.JointName {
             return .forearmArm
         @unknown default:
             return .unknown
+        }
+    }
+    
+    public var parentName: HandSkeleton.JointName? {
+        switch self {
+        case .wrist:
+            return nil
+        case .thumbKnuckle:
+            return .wrist
+        case .thumbIntermediateBase:
+            return .thumbKnuckle
+        case .thumbIntermediateTip:
+            return .thumbIntermediateBase
+        case .thumbTip:
+            return .thumbIntermediateTip
+        case .indexFingerMetacarpal:
+            return .wrist
+        case .indexFingerKnuckle:
+            return .indexFingerMetacarpal
+        case .indexFingerIntermediateBase:
+            return .indexFingerKnuckle
+        case .indexFingerIntermediateTip:
+            return .indexFingerIntermediateBase
+        case .indexFingerTip:
+            return .indexFingerIntermediateTip
+        case .middleFingerMetacarpal:
+            return .wrist
+        case .middleFingerKnuckle:
+            return .middleFingerMetacarpal
+        case .middleFingerIntermediateBase:
+            return .middleFingerKnuckle
+        case .middleFingerIntermediateTip:
+            return .middleFingerIntermediateBase
+        case .middleFingerTip:
+            return .middleFingerIntermediateTip
+        case .ringFingerMetacarpal:
+            return .wrist
+        case .ringFingerKnuckle:
+            return .ringFingerMetacarpal
+        case .ringFingerIntermediateBase:
+            return .ringFingerKnuckle
+        case .ringFingerIntermediateTip:
+            return .ringFingerIntermediateBase
+        case .ringFingerTip:
+            return .ringFingerIntermediateTip
+        case .littleFingerMetacarpal:
+            return .wrist
+        case .littleFingerKnuckle:
+            return .littleFingerMetacarpal
+        case .littleFingerIntermediateBase:
+            return .littleFingerKnuckle
+        case .littleFingerIntermediateTip:
+            return .littleFingerIntermediateBase
+        case .littleFingerTip:
+            return .littleFingerIntermediateTip
+        case .forearmWrist:
+            return .wrist
+        case .forearmArm:
+            return .forearmWrist
+        @unknown default:
+            return nil
         }
     }
 }

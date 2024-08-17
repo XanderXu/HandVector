@@ -145,14 +145,14 @@ public class HandVectorTool {
             let m = (positionInfo.name == .wrist || positionInfo.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
             modelEntity.position = positionInfo.position
-            modelEntity.name = positionInfo.name.rawValue + "-model"
+            modelEntity.name = positionInfo.name.codableName.rawValue + "-model"
             modelEntity.isEnabled = isSkeletonVisible
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
             collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
             collisionEntity.position = positionInfo.position
-            collisionEntity.name = positionInfo.name.rawValue + "-collision"
+            collisionEntity.name = positionInfo.name.codableName.rawValue + "-collision"
             hand.addChild(collisionEntity)
         }
         return hand
@@ -160,11 +160,11 @@ public class HandVectorTool {
     private func updateHandEntity(from handVector: HandVectorMatcher, to: Entity) {
         to.transform.matrix = handVector.transform
         for positionInfo in handVector.allJoints.values {
-            let modelEntity = to.findEntity(named: positionInfo.name.rawValue + "-model")
+            let modelEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-model")
             modelEntity?.position = positionInfo.position
             modelEntity?.isEnabled = isSkeletonVisible
             
-            let collisionEntity = to.findEntity(named: positionInfo.name.rawValue + "-collision")
+            let collisionEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-collision")
             collisionEntity?.position = positionInfo.position
         }
         

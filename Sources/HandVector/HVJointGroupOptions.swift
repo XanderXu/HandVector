@@ -1,17 +1,11 @@
 //
-//  HVJointJsonModel.swift
+//  HVJointGroupOptions.swift
 //
 //
 //  Created by xu on 2024/8/16.
 //
 
 import ARKit
-
-protocol HVJoint {
-    var name: HandSkeleton.JointName.NameCodingKey { get }
-    var isTracked: Bool { get }
-    var transform: simd_float4x4 { get }
-}
 
 
 public struct HVJointGroupOptions: OptionSet, Hashable {
