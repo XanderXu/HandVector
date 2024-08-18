@@ -144,14 +144,14 @@ public class HandVectorTool {
         for positionInfo in handVector.allJoints.values {
             let m = (positionInfo.name == .wrist || positionInfo.name == .forearmWrist) ? rm : wm
             let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-            modelEntity.position = positionInfo.position
+            modelEntity.transform.matrix = positionInfo.transform
             modelEntity.name = positionInfo.name.codableName.rawValue + "-model"
             modelEntity.isEnabled = isSkeletonVisible
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
             collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
-            collisionEntity.position = positionInfo.position
+            collisionEntity.transform.matrix = positionInfo.transform
             collisionEntity.name = positionInfo.name.codableName.rawValue + "-collision"
             hand.addChild(collisionEntity)
         }
@@ -161,11 +161,11 @@ public class HandVectorTool {
         to.transform.matrix = handVector.transform
         for positionInfo in handVector.allJoints.values {
             let modelEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-model")
-            modelEntity?.position = positionInfo.position
+            modelEntity?.transform.matrix = positionInfo.transform
             modelEntity?.isEnabled = isSkeletonVisible
             
             let collisionEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-collision")
-            collisionEntity?.position = positionInfo.position
+            collisionEntity?.transform.matrix = positionInfo.transform
         }
         
     }

@@ -86,8 +86,7 @@ public struct HVHandJsonModel {
             }
         }
         
-        let ch: HandAnchor.Chirality = (chirality == .left) ? .left : .right
-        let vector = HandVectorMatcher(chirality: ch, allJoints: allJoints, transform: .init(diagonal: .one))
+        let vector = HandVectorMatcher(chirality: chirality.chirality, allJoints: allJoints, transform: transform)
         return vector
     }
     
