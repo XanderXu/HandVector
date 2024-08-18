@@ -36,8 +36,8 @@ public struct SimHand: Codable {
     }
     private struct Joint {
         let handPart: HandSkeleton.JointName
+        //world position in 3D
         var position: SIMD3<Float>
-        var transform: simd_float4x4 = .init(diagonal: .one)
         
         init(handPart: HandSkeleton.JointName, position: SIMD3<Float>) {
             self.handPart = handPart
@@ -98,8 +98,8 @@ public struct SimHand: Codable {
             self.position = position
         }
     }
-    private static func fullFillLandmarksToJointsDict(_ landmarks: [Landmark]) -> [HandSkeleton.JointName :Joint] {
-        var joints: [HandSkeleton.JointName :Joint] = [:]
+    private static func fullFillLandmarksToJointsDict(_ landmarks: [Landmark]) -> [HandSkeleton.JointName: Joint] {
+        var joints: [HandSkeleton.JointName: Joint] = [:]
         for (i, landmark) in landmarks.enumerated() {
             let joint = Joint(jointIndex: i, position: landmark.position)
             joints[joint.handPart] = joint
@@ -127,12 +127,28 @@ public struct SimHand: Codable {
             joints[key] = .init(handPart: key, position: p)
         }
         
-        return calculateJointTransform(jointDict: joints)
+        return joints
     }
-    private static func calculateJointTransform(jointDict: [HandSkeleton.JointName :Joint]) -> [HandSkeleton.JointName :Joint] {
-        return jointDict
+    private static func calculateJointTransform(jointDict: [HandSkeleton.JointName: Joint], rootTransform: simd_float4x4, isLeft: Bool) -> [HandSkeleton.JointName: simd_float4x4] {
+        var transforms: [HandSkeleton.JointName: simd_float4x4] = [:]
+        let from = isLeft ? rootTransform.columns.0.xyz : -rootTransform.columns.0.xyz
+        for (key, value) in jointDict {
+            let inversedPosition = rootTransform.inverse * simd_float4(value.position, 1)
+            if let parent = key.parentName, let parentP = jointDict[parent]?.position {
+                let to = value.position - parentP
+                let rotation = simd_quatf(from: from, to: to)
+                let rt = simd_float4x4.init(rotation)
+                transforms[key] = simd_float4x4(columns: (rt.columns.0, rt.columns.1, rt.columns.2, inversedPosition))
+            } else {
+                transforms[key] = simd_float4x4(columns: (rootTransform.columns.0, rootTransform.columns.1, rootTransform.columns.2, inversedPosition))
+            }
+        }
+        let knukleCenter = (jointDict[.indexFingerKnuckle]!.position + jointDict[.middleFingerKnuckle]!.position + jointDict[.ringFingerKnuckle]!.position + jointDict[.littleFingerKnuckle]!.position) / 4
+        let palmCenter = (knukleCenter + jointDict[.wrist]!.position) / 2
+        let palmOffset = palmCenter + rootTransform.columns.1.xyz * (isLeft ? 0.02 : -0.02)
+        
+        return transforms
     }
-
     func convertToHandVector(offset: simd_float3) -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
         var rightVector: HandVectorMatcher?
@@ -152,7 +168,8 @@ public struct SimHand: Codable {
                 
                 for joint in jointsDict.values {
                     let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    allJoints.append( HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: joint.transform))
+                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: .init())
+                    allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
                 leftVector = HVHandJsonModel(name: "SimLeft", chirality: .left, transform: transform, joints: allJoints).convertToHandVectorMatcher()
@@ -164,7 +181,8 @@ public struct SimHand: Codable {
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
                 for joint in jointsDict.values {
                     let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    allJoints.append( HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: joint.transform))
+                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: .init())
+                    allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
                 rightVector = HVHandJsonModel(name: "SimRight", chirality: .right, transform: transform, joints: allJoints).convertToHandVectorMatcher()
