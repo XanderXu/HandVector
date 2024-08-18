@@ -134,8 +134,8 @@ public struct SimHand: Codable {
         
         // wrist
         worldTransforms[.wrist] = rootTransform
-        worldTransforms[.forearmWrist] = rootTransform
-        worldTransforms[.forearmArm] = .init(rootTransform.columns.0, rootTransform.columns.1, rootTransform.columns.2, SIMD4(jointDict[.forearmArm]!.position, 1))
+        worldTransforms[.forearmWrist] = .init(-rootTransform.columns.0, rootTransform.columns.1, -rootTransform.columns.2, rootTransform.columns.3)
+        worldTransforms[.forearmArm] = .init(-rootTransform.columns.0, rootTransform.columns.1, -rootTransform.columns.2, SIMD4(jointDict[.forearmArm]!.position, 1))
 
         // thumb transform need refer palm center
         let knukleCenter = (jointDict[.indexFingerKnuckle]!.position + jointDict[.middleFingerKnuckle]!.position + jointDict[.ringFingerKnuckle]!.position + jointDict[.littleFingerKnuckle]!.position) / 5.0
@@ -293,8 +293,9 @@ public struct SimHand: Codable {
             
             if handednesses.first?.categoryName == "Right" {
                 let xAxis = normalize(middleFingerKnuckle.position - wrist.position)
-                let zAxis = normalize(ringFingerKnuckle.position - indexFingerKnuckle.position)
+                var zAxis = normalize(ringFingerKnuckle.position - indexFingerKnuckle.position)
                 let yAxis = cross(zAxis, xAxis)
+                zAxis = cross(xAxis, yAxis)
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
                 
                 let localDict = Self.calculateJointTransform(jointDict: jointsDict, rootTransform: matrix, isLeft: true)
@@ -307,8 +308,9 @@ public struct SimHand: Codable {
                 //HandVectorMatcher(chirality: .left, allJoints: allPositions, transform: transform)
             } else if handednesses.first?.categoryName == "Left" {
                 let xAxis = -normalize(middleFingerKnuckle.position - wrist.position)
-                let zAxis = -normalize(ringFingerKnuckle.position - indexFingerKnuckle.position)
+                var zAxis = -normalize(ringFingerKnuckle.position - indexFingerKnuckle.position)
                 let yAxis = cross(zAxis, xAxis)
+                zAxis = cross(xAxis, yAxis)
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
                 
                 let localDict = Self.calculateJointTransform(jointDict: jointsDict, rootTransform: matrix, isLeft: false)
