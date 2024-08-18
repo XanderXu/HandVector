@@ -130,24 +130,155 @@ public struct SimHand: Codable {
         return joints
     }
     private static func calculateJointTransform(jointDict: [HandSkeleton.JointName: Joint], rootTransform: simd_float4x4, isLeft: Bool) -> [HandSkeleton.JointName: simd_float4x4] {
-        var transforms: [HandSkeleton.JointName: simd_float4x4] = [:]
-        let from = isLeft ? rootTransform.columns.0.xyz : -rootTransform.columns.0.xyz
-        for (key, value) in jointDict {
-            let inversedPosition = rootTransform.inverse * simd_float4(value.position, 1)
-            if let parent = key.parentName, let parentP = jointDict[parent]?.position {
-                let to = value.position - parentP
-                let rotation = simd_quatf(from: from, to: to)
-                let rt = simd_float4x4.init(rotation)
-                transforms[key] = simd_float4x4(columns: (rt.columns.0, rt.columns.1, rt.columns.2, inversedPosition))
-            } else {
-                transforms[key] = simd_float4x4(columns: (rootTransform.columns.0, rootTransform.columns.1, rootTransform.columns.2, inversedPosition))
-            }
-        }
-        let knukleCenter = (jointDict[.indexFingerKnuckle]!.position + jointDict[.middleFingerKnuckle]!.position + jointDict[.ringFingerKnuckle]!.position + jointDict[.littleFingerKnuckle]!.position) / 4
-        let palmCenter = (knukleCenter + jointDict[.wrist]!.position) / 2
-        let palmOffset = palmCenter + rootTransform.columns.1.xyz * (isLeft ? 0.02 : -0.02)
+        var worldTransforms: [HandSkeleton.JointName: simd_float4x4] = [:]
         
-        return transforms
+        let rootZ = rootTransform.columns.2.xyz
+        // wrist
+        worldTransforms[.wrist] = rootTransform
+        worldTransforms[.forearmWrist] = rootTransform
+        worldTransforms[.forearmArm] = .init(rootTransform.columns.0, rootTransform.columns.1, rootTransform.columns.2, SIMD4(jointDict[.forearmArm]!.position, 1))
+
+        // thumb transform need refer palm center
+        let knukleCenter = (jointDict[.indexFingerKnuckle]!.position + jointDict[.middleFingerKnuckle]!.position + jointDict[.ringFingerKnuckle]!.position + jointDict[.littleFingerKnuckle]!.position) / 5.0
+        let palmCenter = knukleCenter + jointDict[.wrist]!.position / 5.0
+        let palmOffsetLeft = palmCenter + rootTransform.columns.1.xyz * 0.025
+        
+        // thumbIntermediateBase
+        let thumbInterBaseX = normalize(jointDict[.thumbIntermediateTip]!.position - jointDict[.thumbIntermediateBase]!.position)
+        let thumbInterBaseY = normalize(palmOffsetLeft - jointDict[.thumbIntermediateBase]!.position)
+        let thumbInterBaseZ = cross(thumbInterBaseX, thumbInterBaseY)
+        worldTransforms[.thumbIntermediateBase] = simd_float4x4(SIMD4(thumbInterBaseX, 0), SIMD4(thumbInterBaseY, 0), SIMD4(thumbInterBaseZ, 0), SIMD4(jointDict[.thumbIntermediateBase]!.position, 1))
+        
+        // thumbIntermediateTip
+        let thumbInterTipX = normalize(jointDict[.thumbTip]!.position - jointDict[.thumbIntermediateTip]!.position)
+        let thumbInterTipY = cross(thumbInterBaseZ, thumbInterTipX)
+        let thumbInterTipZ = cross(thumbInterTipX, thumbInterTipY)
+        worldTransforms[.thumbIntermediateTip] = simd_float4x4(SIMD4(thumbInterTipX, 0), SIMD4(thumbInterTipY, 0), SIMD4(thumbInterTipZ, 0), SIMD4(jointDict[.thumbIntermediateTip]!.position, 1))
+        
+        // thumbTip
+        worldTransforms[.thumbTip] = simd_float4x4(SIMD4(thumbInterTipX, 0), SIMD4(thumbInterTipY, 0), SIMD4(thumbInterTipZ, 0), SIMD4(jointDict[.thumbTip]!.position, 1))
+        
+        // thumbKnuckle
+        let thumbKnuckleX = normalize(jointDict[.thumbKnuckle]!.position - jointDict[.wrist]!.position)
+        let thumbKnuckleY = cross(thumbInterBaseZ, thumbKnuckleX)
+        let thumbKnuckleZ = cross(thumbKnuckleX, thumbKnuckleY)
+        worldTransforms[.thumbKnuckle] = simd_float4x4(SIMD4(thumbKnuckleX, 0), SIMD4(thumbKnuckleY, 0), SIMD4(thumbKnuckleZ, 0), SIMD4(jointDict[.thumbKnuckle]!.position, 1))
+        
+        
+        // indexFingerMetacarpal
+        let indexMetaX = normalize(jointDict[.indexFingerMetacarpal]!.position - jointDict[.wrist]!.position)
+        let indexMetaY = cross(rootZ, indexMetaX)
+        let indexMetaZ = cross(indexMetaX, indexMetaY)
+        worldTransforms[.indexFingerMetacarpal] = simd_float4x4(SIMD4(indexMetaX, 0), SIMD4(indexMetaY, 0), SIMD4(indexMetaZ, 0), SIMD4(jointDict[.indexFingerMetacarpal]!.position, 1))
+        
+        // indexFingerKnuckle
+        let indexKnuckleX = normalize(jointDict[.indexFingerKnuckle]!.position - jointDict[.indexFingerMetacarpal]!.position)
+        let indexKnuckleY = cross(indexMetaZ, indexKnuckleX)
+        let indexKnuckleZ = cross(indexKnuckleX, indexKnuckleY)
+        worldTransforms[.indexFingerKnuckle] = simd_float4x4(SIMD4(indexKnuckleX, 0), SIMD4(indexKnuckleY, 0), SIMD4(indexKnuckleZ, 0), SIMD4(jointDict[.indexFingerKnuckle]!.position, 1))
+        
+        // indexFingerIntermediateBase
+        let indexInterBaseX = normalize(jointDict[.indexFingerIntermediateBase]!.position - jointDict[.indexFingerKnuckle]!.position)
+        let indexInterBaseY = cross(indexKnuckleZ, indexInterBaseX)
+        let indexInterBaseZ = cross(indexInterBaseX, indexInterBaseY)
+        worldTransforms[.indexFingerIntermediateBase] = simd_float4x4(SIMD4(indexKnuckleX, 0), SIMD4(indexKnuckleY, 0), SIMD4(indexKnuckleZ, 0), SIMD4(jointDict[.indexFingerIntermediateBase]!.position, 1))
+        
+        // indexFingerIntermediateTip
+        let indexInterTipX = normalize(jointDict[.indexFingerIntermediateTip]!.position - jointDict[.indexFingerIntermediateBase]!.position)
+        let indexInterTipY = cross(indexInterBaseZ, indexInterTipX)
+        let indexInterTipZ = cross(indexInterTipX, indexInterTipY)
+        worldTransforms[.indexFingerIntermediateTip] = simd_float4x4(SIMD4(indexInterTipX, 0), SIMD4(indexInterTipY, 0), SIMD4(indexInterTipZ, 0), SIMD4(jointDict[.indexFingerIntermediateTip]!.position, 1))
+        
+        // indexFingerTip
+        worldTransforms[.indexFingerTip] = simd_float4x4(SIMD4(indexInterTipX, 0), SIMD4(indexInterTipY, 0), SIMD4(indexInterTipZ, 0), SIMD4(jointDict[.indexFingerTip]!.position, 1))
+        
+        // middleFingerMetacarpal
+        let middleMetaX = normalize(jointDict[.middleFingerMetacarpal]!.position - jointDict[.wrist]!.position)
+        let middleMetaY = cross(rootZ, middleMetaX)
+        let middleMetaZ = cross(middleMetaX, middleMetaY)
+        worldTransforms[.middleFingerMetacarpal] = simd_float4x4(SIMD4(middleMetaX, 0), SIMD4(middleMetaY, 0), SIMD4(middleMetaZ, 0), SIMD4(jointDict[.middleFingerMetacarpal]!.position, 1))
+        
+        // middleFingerKnuckle
+        let middleKnuckleX = normalize(jointDict[.middleFingerKnuckle]!.position - jointDict[.middleFingerMetacarpal]!.position)
+        let middleKnuckleY = cross(middleMetaZ, middleKnuckleX)
+        let middleKnuckleZ = cross(middleKnuckleX, middleKnuckleY)
+        worldTransforms[.middleFingerKnuckle] = simd_float4x4(SIMD4(middleKnuckleX, 0), SIMD4(middleKnuckleY, 0), SIMD4(middleKnuckleZ, 0), SIMD4(jointDict[.middleFingerKnuckle]!.position, 1))
+        
+        // middleFingerIntermediateBase
+        let middleInterBaseX = normalize(jointDict[.middleFingerIntermediateBase]!.position - jointDict[.middleFingerKnuckle]!.position)
+        let middleInterBaseY = cross(middleKnuckleZ, middleInterBaseX)
+        let middleInterBaseZ = cross(middleInterBaseX, middleInterBaseY)
+        worldTransforms[.middleFingerIntermediateBase] = simd_float4x4(SIMD4(middleKnuckleX, 0), SIMD4(middleKnuckleY, 0), SIMD4(middleKnuckleZ, 0), SIMD4(jointDict[.middleFingerIntermediateBase]!.position, 1))
+        
+        // middleFingerIntermediateTip
+        let middleInterTipX = normalize(jointDict[.middleFingerIntermediateTip]!.position - jointDict[.middleFingerIntermediateBase]!.position)
+        let middleInterTipY = cross(middleInterBaseZ, middleInterTipX)
+        let middleInterTipZ = cross(middleInterTipX, middleInterTipY)
+        worldTransforms[.middleFingerIntermediateTip] = simd_float4x4(SIMD4(middleInterTipX, 0), SIMD4(middleInterTipY, 0), SIMD4(middleInterTipZ, 0), SIMD4(jointDict[.middleFingerIntermediateTip]!.position, 1))
+        
+        // middleFingerTip
+        worldTransforms[.middleFingerTip] = simd_float4x4(SIMD4(middleInterTipX, 0), SIMD4(middleInterTipY, 0), SIMD4(middleInterTipZ, 0), SIMD4(jointDict[.middleFingerTip]!.position, 1))
+        
+        
+        // ringFingerMetacarpal
+        let ringMetaX = normalize(jointDict[.ringFingerMetacarpal]!.position - jointDict[.wrist]!.position)
+        let ringMetaY = cross(rootZ, ringMetaX)
+        let ringMetaZ = cross(ringMetaX, ringMetaY)
+        worldTransforms[.ringFingerMetacarpal] = simd_float4x4(SIMD4(ringMetaX, 0), SIMD4(ringMetaY, 0), SIMD4(ringMetaZ, 0), SIMD4(jointDict[.ringFingerMetacarpal]!.position, 1))
+        
+        // ringFingerKnuckle
+        let ringKnuckleX = normalize(jointDict[.ringFingerKnuckle]!.position - jointDict[.ringFingerMetacarpal]!.position)
+        let ringKnuckleY = cross(ringMetaZ, ringKnuckleX)
+        let ringKnuckleZ = cross(ringKnuckleX, ringKnuckleY)
+        worldTransforms[.ringFingerKnuckle] = simd_float4x4(SIMD4(ringKnuckleX, 0), SIMD4(ringKnuckleY, 0), SIMD4(ringKnuckleZ, 0), SIMD4(jointDict[.ringFingerKnuckle]!.position, 1))
+        
+        // ringFingerIntermediateBase
+        let ringInterBaseX = normalize(jointDict[.ringFingerIntermediateBase]!.position - jointDict[.ringFingerKnuckle]!.position)
+        let ringInterBaseY = cross(ringKnuckleZ, ringInterBaseX)
+        let ringInterBaseZ = cross(ringInterBaseX, ringInterBaseY)
+        worldTransforms[.ringFingerIntermediateBase] = simd_float4x4(SIMD4(ringKnuckleX, 0), SIMD4(ringKnuckleY, 0), SIMD4(ringKnuckleZ, 0), SIMD4(jointDict[.ringFingerIntermediateBase]!.position, 1))
+        
+        // ringFingerIntermediateTip
+        let ringInterTipX = normalize(jointDict[.ringFingerIntermediateTip]!.position - jointDict[.ringFingerIntermediateBase]!.position)
+        let ringInterTipY = cross(ringInterBaseZ, ringInterTipX)
+        let ringInterTipZ = cross(ringInterTipX, ringInterTipY)
+        worldTransforms[.ringFingerIntermediateTip] = simd_float4x4(SIMD4(ringInterTipX, 0), SIMD4(ringInterTipY, 0), SIMD4(ringInterTipZ, 0), SIMD4(jointDict[.ringFingerIntermediateTip]!.position, 1))
+        
+        // ringFingerTip
+        worldTransforms[.ringFingerTip] = simd_float4x4(SIMD4(ringInterTipX, 0), SIMD4(ringInterTipY, 0), SIMD4(ringInterTipZ, 0), SIMD4(jointDict[.ringFingerTip]!.position, 1))
+        
+        // littleFingerMetacarpal
+        let littleMetaX = normalize(jointDict[.littleFingerMetacarpal]!.position - jointDict[.wrist]!.position)
+        let littleMetaY = cross(rootZ, littleMetaX)
+        let littleMetaZ = cross(littleMetaX, littleMetaY)
+        worldTransforms[.littleFingerMetacarpal] = simd_float4x4(SIMD4(littleMetaX, 0), SIMD4(littleMetaY, 0), SIMD4(littleMetaZ, 0), SIMD4(jointDict[.littleFingerMetacarpal]!.position, 1))
+        
+        // littleFingerKnuckle
+        let littleKnuckleX = normalize(jointDict[.littleFingerKnuckle]!.position - jointDict[.littleFingerMetacarpal]!.position)
+        let littleKnuckleY = cross(littleMetaZ, littleKnuckleX)
+        let littleKnuckleZ = cross(littleKnuckleX, littleKnuckleY)
+        worldTransforms[.littleFingerKnuckle] = simd_float4x4(SIMD4(littleKnuckleX, 0), SIMD4(littleKnuckleY, 0), SIMD4(littleKnuckleZ, 0), SIMD4(jointDict[.littleFingerKnuckle]!.position, 1))
+        
+        // littleFingerIntermediateBase
+        let littleInterBaseX = normalize(jointDict[.littleFingerIntermediateBase]!.position - jointDict[.littleFingerKnuckle]!.position)
+        let littleInterBaseY = cross(littleKnuckleZ, littleInterBaseX)
+        let littleInterBaseZ = cross(littleInterBaseX, littleInterBaseY)
+        worldTransforms[.littleFingerIntermediateBase] = simd_float4x4(SIMD4(littleKnuckleX, 0), SIMD4(littleKnuckleY, 0), SIMD4(littleKnuckleZ, 0), SIMD4(jointDict[.littleFingerIntermediateBase]!.position, 1))
+        
+        // littleFingerIntermediateTip
+        let littleInterTipX = normalize(jointDict[.littleFingerIntermediateTip]!.position - jointDict[.littleFingerIntermediateBase]!.position)
+        let littleInterTipY = cross(littleInterBaseZ, littleInterTipX)
+        let littleInterTipZ = cross(littleInterTipX, littleInterTipY)
+        worldTransforms[.littleFingerIntermediateTip] = simd_float4x4(SIMD4(littleInterTipX, 0), SIMD4(littleInterTipY, 0), SIMD4(littleInterTipZ, 0), SIMD4(jointDict[.littleFingerIntermediateTip]!.position, 1))
+        
+        // littleFingerTip
+        worldTransforms[.littleFingerTip] = simd_float4x4(SIMD4(littleInterTipX, 0), SIMD4(littleInterTipY, 0), SIMD4(littleInterTipZ, 0), SIMD4(jointDict[.littleFingerTip]!.position, 1))
+        
+        let rotation = simd_quatf(angle: isLeft ? 0 : .pi, axis: .init(0, 1, 0))
+        let localTransforms = worldTransforms.reduce(into: [HandSkeleton.JointName: simd_float4x4]()) {
+            $0[$1.key] = rootTransform.inverse * $1.value * .init(rotation)
+        }
+        return localTransforms
     }
     func convertToHandVector(offset: simd_float3) -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
         var leftVector: HandVectorMatcher?
@@ -166,9 +297,9 @@ public struct SimHand: Codable {
                 let yAxis = cross(zAxis, xAxis)
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
                 
+                let localDict = Self.calculateJointTransform(jointDict: jointsDict, rootTransform: matrix, isLeft: true)
                 for joint in jointsDict.values {
-                    let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: .init())
+                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: localDict[joint.handPart]!)
                     allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
@@ -179,9 +310,10 @@ public struct SimHand: Codable {
                 let zAxis = -normalize(ringFingerKnuckle.position - indexFingerKnuckle.position)
                 let yAxis = cross(zAxis, xAxis)
                 let matrix = simd_float4x4(columns: (simd_float4(xAxis, 0), simd_float4(yAxis, 0), simd_float4(zAxis, 0), simd_float4(wrist.position, 1)))
+                
+                let localDict = Self.calculateJointTransform(jointDict: jointsDict, rootTransform: matrix, isLeft: false)
                 for joint in jointsDict.values {
-                    let inversedPosition = matrix.inverse * simd_float4(joint.position, 1)
-                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: .init())
+                    let jsonJoint = HVJointJsonModel(name: joint.handPart.codableName, isTracked: true, transform: localDict[joint.handPart]!)
                     allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
