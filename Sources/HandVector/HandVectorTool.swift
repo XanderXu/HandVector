@@ -36,19 +36,19 @@ public class HandVectorTool {
     }
     @MainActor
     public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
-        if handAnchor.chirality == .left {
-            leftHandVector = HandVectorMatcher(handAnchor: handAnchor)
-            if left == nil {
-                left = generateHandEntity(from: handAnchor, filter: filter)
-            } else {
-                updateHandEntity(from: handAnchor, to: left!)
-            }
-        } else if handAnchor.chirality == .right { // Update right hand info.
-            rightHandVector = HandVectorMatcher(handAnchor: handAnchor)
-            if right == nil {
-                right = generateHandEntity(from: handAnchor, filter: filter)
-            } else {
-                updateHandEntity(from: handAnchor, to: right!)
+        if let handVectorMatcher = HandVectorMatcher(handAnchor: handAnchor) {
+            if handVectorMatcher.chirality == .left {
+                if left == nil {
+                    left = generateHandEntity(from: handVectorMatcher, filter: filter)
+                } else {
+                    updateHandEntity(from: handVectorMatcher, to: left!)
+                }
+            } else if handVectorMatcher.chirality == .right { // Update right hand info.
+                if right == nil {
+                    right = generateHandEntity(from: handVectorMatcher, filter: filter)
+                } else {
+                    updateHandEntity(from: handVectorMatcher, to: right!)
+                }
             }
         }
     }
@@ -64,46 +64,44 @@ public class HandVectorTool {
         }
     }
     
-    private func generateHandEntity(from handAnchor: HandAnchor, filter: CollisionFilter = .default) -> Entity {
-        let hand = Entity()
-        hand.name = handAnchor.chirality == .left ? "leftHand" : "rightHand"
-        hand.transform.matrix = handAnchor.originFromAnchorTransform
-        
-        
-        
-        if let skeleton = handAnchor.handSkeleton {
-            let wm = SimpleMaterial(color: .white, isMetallic: false)
-            let rm = SimpleMaterial(color: .red, isMetallic: false)
-            for joint in skeleton.allJoints {
-                let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
-                let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
-                modelEntity.transform.matrix = joint.anchorFromJointTransform
-                modelEntity.name = joint.name.codableName.rawValue + "-model"
-                modelEntity.isEnabled = isSkeletonVisible
-                hand.addChild(modelEntity)
-                
-                let collisionEntity = Entity()
-                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
-                collisionEntity.transform.matrix = joint.anchorFromJointTransform
-                collisionEntity.name = joint.name.codableName.rawValue + "-collision"
-                hand.addChild(collisionEntity)
-            }
-        }
-        return hand
-    }
-    private func updateHandEntity(from handAnchor: HandAnchor, to: Entity) {
-        to.transform.matrix = handAnchor.originFromAnchorTransform
-        if let skeleton = handAnchor.handSkeleton {
-            for joint in skeleton.allJoints {
-                let modelEntity = to.findEntity(named: joint.name.codableName.rawValue + "-model")
-                modelEntity?.transform.matrix = joint.anchorFromJointTransform
-                modelEntity?.isEnabled = isSkeletonVisible
-                
-                let collisionEntity = to.findEntity(named: joint.name.codableName.rawValue + "-collision")
-                collisionEntity?.transform.matrix = joint.anchorFromJointTransform
-            }
-        }
-    }
+//    private func generateHandEntity(from handAnchor: HandAnchor, filter: CollisionFilter = .default) -> Entity {
+//        let hand = Entity()
+//        hand.name = handAnchor.chirality == .left ? "leftHand" : "rightHand"
+//        hand.transform.matrix = handAnchor.originFromAnchorTransform
+//        
+//        if let skeleton = handAnchor.handSkeleton {
+//            let wm = SimpleMaterial(color: .white, isMetallic: false)
+//            let rm = SimpleMaterial(color: .red, isMetallic: false)
+//            for joint in skeleton.allJoints {
+//                let m = (joint.name == .wrist || joint.name == .forearmWrist) ? rm : wm
+//                let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
+//                modelEntity.transform.matrix = joint.anchorFromJointTransform
+//                modelEntity.name = joint.name.codableName.rawValue + "-model"
+//                modelEntity.isEnabled = isSkeletonVisible
+//                hand.addChild(modelEntity)
+//                
+//                let collisionEntity = Entity()
+//                collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
+//                collisionEntity.transform.matrix = joint.anchorFromJointTransform
+//                collisionEntity.name = joint.name.codableName.rawValue + "-collision"
+//                hand.addChild(collisionEntity)
+//            }
+//        }
+//        return hand
+//    }
+//    private func updateHandEntity(from handAnchor: HandAnchor, to: Entity) {
+//        to.transform.matrix = handAnchor.originFromAnchorTransform
+//        if let skeleton = handAnchor.handSkeleton {
+//            for joint in skeleton.allJoints {
+//                let modelEntity = to.findEntity(named: joint.name.codableName.rawValue + "-model")
+//                modelEntity?.transform.matrix = joint.anchorFromJointTransform
+//                modelEntity?.isEnabled = isSkeletonVisible
+//                
+//                let collisionEntity = to.findEntity(named: joint.name.codableName.rawValue + "-collision")
+//                collisionEntity?.transform.matrix = joint.anchorFromJointTransform
+//            }
+//        }
+//    }
     
     @MainActor
     public func updateHand(from simHand: SimHand, filter: CollisionFilter = .default) async {
