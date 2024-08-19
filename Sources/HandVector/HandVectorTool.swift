@@ -156,14 +156,14 @@ public class HandVectorTool {
         let gnm = SimpleMaterial(color: .init(red: 0, green: 0.5, blue: 0, alpha: 1), isMetallic: false)
         let bnm = SimpleMaterial(color: .init(red: 0, green: 0, blue: 0.5, alpha: 1), isMetallic: false)
         for positionInfo in handVector.allJoints.values {
-            let modelEntity = ModelEntity(mesh: .generateBox(width: 0.01, height: 0.01, depth: 0.01, splitFaces: true), materials: [bm, gm, bnm, gnm, rm, rnm])//[+z, +y, -z, -y, +x, -x]
+            let modelEntity = ModelEntity(mesh: .generateBox(width: 0.015, height: 0.015, depth: 0.015, splitFaces: true), materials: [bm, gm, bnm, gnm, rm, rnm])//[+z, +y, -z, -y, +x, -x]
             modelEntity.transform.matrix = positionInfo.transform
             modelEntity.name = positionInfo.name.codableName.rawValue + "-model"
             modelEntity.isEnabled = isSkeletonVisible
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateBox(width: 0.01, height: 0.01, depth: 0.01)], filter: filter))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateBox(width: 0.015, height: 0.015, depth: 0.015)], filter: filter))
             collisionEntity.transform.matrix = positionInfo.transform
             collisionEntity.name = positionInfo.name.codableName.rawValue + "-collision"
             collisionEntity.isEnabled = isCollisionEnable

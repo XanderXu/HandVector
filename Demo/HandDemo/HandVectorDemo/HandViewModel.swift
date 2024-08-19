@@ -31,6 +31,7 @@ class HandViewModel: @unchecked Sendable {
 
     init() {
         self.handGestureDict = HVHandJsonModel.loadBuiltinDict()!
+        latestHandTracking.isCollisionEnable = true
     }
     func clear() {
         rootEntity?.children.removeAll()

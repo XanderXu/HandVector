@@ -140,7 +140,7 @@ public struct SimHand: Codable {
         // thumb transform need refer palm center
         let knukleCenter = (jointDict[.indexFingerKnuckle]!.position + jointDict[.middleFingerKnuckle]!.position + jointDict[.ringFingerKnuckle]!.position + jointDict[.littleFingerKnuckle]!.position) / 5.0
         let palmCenter = knukleCenter + jointDict[.wrist]!.position / 5.0
-        let palmOffset = palmCenter + rootTransform.columns.1.xyz * (isLeft ? 0.025 : -0.025)
+        let palmOffset = palmCenter + rootTransform.columns.1.xyz * (isLeft ? 0.035 : -0.035)
         
         // thumbIntermediateBase
         let thumbInterBaseX = normalize(jointDict[.thumbIntermediateTip]!.position - jointDict[.thumbIntermediateBase]!.position) * (isLeft ? 1 : -1)
