@@ -163,7 +163,7 @@ public struct SimHand: Codable {
         let thumbKnuckleZ = cross(thumbKnuckleX, thumbKnuckleY)
         worldTransforms[.thumbKnuckle] = simd_float4x4(SIMD4(thumbKnuckleX, 0), SIMD4(thumbKnuckleY, 0), SIMD4(thumbKnuckleZ, 0), SIMD4(jointDict[.thumbKnuckle]!.position, 1))
         
-        let rootZ = rootTransform.columns.2.xyz * (isLeft ? 1 : -1)
+        let rootZ = rootTransform.columns.2.xyz
         
         // indexFingerMetacarpal
         let indexMetaX = normalize(jointDict[.indexFingerMetacarpal]!.position - jointDict[.wrist]!.position) * (isLeft ? 1 : -1)
