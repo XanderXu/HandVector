@@ -34,6 +34,17 @@ public class HandVectorTool {
             }
         }
     }
+    public var isCollisionEnable: Bool = false {
+        didSet {
+            for name in HandSkeleton.JointName.allCases {
+                let modelEntityLeft = left?.findEntity(named: name.codableName.rawValue + "-collision")
+                modelEntityLeft?.isEnabled = isCollisionEnable
+                
+                let modelEntityRight = right?.findEntity(named: name.codableName.rawValue + "-collision")
+                modelEntityRight?.isEnabled = isCollisionEnable
+            }
+        }
+    }
     @MainActor
     public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
         if let handVectorMatcher = HandVectorMatcher(handAnchor: handAnchor) {
@@ -139,18 +150,23 @@ public class HandVectorTool {
         
         let wm = SimpleMaterial(color: .white, isMetallic: false)
         let rm = SimpleMaterial(color: .red, isMetallic: false)
+        let gm = SimpleMaterial(color: .green, isMetallic: false)
+        let bm = SimpleMaterial(color: .blue, isMetallic: false)
+        let rnm = SimpleMaterial(color: .init(red: 0.5, green: 0, blue: 0, alpha: 1), isMetallic: false)
+        let gnm = SimpleMaterial(color: .init(red: 0, green: 0.5, blue: 0, alpha: 1), isMetallic: false)
+        let bnm = SimpleMaterial(color: .init(red: 0, green: 0, blue: 0.5, alpha: 1), isMetallic: false)
         for positionInfo in handVector.allJoints.values {
-            let m = (positionInfo.name == .wrist || positionInfo.name == .forearmWrist) ? rm : wm
-            let modelEntity = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [m])
+            let modelEntity = ModelEntity(mesh: .generateBox(width: 0.01, height: 0.01, depth: 0.01, splitFaces: true), materials: [bm, gm, bnm, gnm, rm, rnm])//[+z, +y, -z, -y, +x, -x]
             modelEntity.transform.matrix = positionInfo.transform
             modelEntity.name = positionInfo.name.codableName.rawValue + "-model"
             modelEntity.isEnabled = isSkeletonVisible
             hand.addChild(modelEntity)
             
             let collisionEntity = Entity()
-            collisionEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: 0.01)], filter: filter))
+            collisionEntity.components.set(CollisionComponent(shapes: [.generateBox(width: 0.01, height: 0.01, depth: 0.01)], filter: filter))
             collisionEntity.transform.matrix = positionInfo.transform
             collisionEntity.name = positionInfo.name.codableName.rawValue + "-collision"
+            collisionEntity.isEnabled = isCollisionEnable
             hand.addChild(collisionEntity)
         }
         return hand
@@ -164,6 +180,7 @@ public class HandVectorTool {
             
             let collisionEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-collision")
             collisionEntity?.transform.matrix = positionInfo.transform
+            collisionEntity?.isEnabled = isCollisionEnable
         }
         
     }
