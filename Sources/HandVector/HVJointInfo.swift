@@ -8,10 +8,12 @@
 import ARKit
 
 
-public struct HandVectorJoint: Sendable, Equatable {
+public struct HVJointInfo: Sendable, Equatable {
     public let name: HandSkeleton.JointName
     public let isTracked: Bool
+    // relative to anchor
     public let transform: simd_float4x4
+    // relative to parent joint
     public let transformToParent: simd_float4x4
     
     public init(joint: HandSkeleton.Joint) {
@@ -28,24 +30,22 @@ public struct HandVectorJoint: Sendable, Equatable {
         self.transformToParent = parentFromJointTransform
     }
     
-    public func reversedChirality() -> HandVectorJoint {
-        return HandVectorJoint(name: name, isTracked: isTracked, anchorFromJointTransform: transform.positionReversed, parentFromJointTransform: transformToParent.positionReversed)
+    public func reversedChirality() -> HVJointInfo {
+        return HVJointInfo(name: name, isTracked: isTracked, anchorFromJointTransform: transform.positionReversed, parentFromJointTransform: transformToParent.positionReversed)
     }
 
     public var position: SIMD3<Float> {
         return transform.columns.3.xyz
     }
-}
 
-extension HandVectorJoint: CustomStringConvertible {
     public var description: String {
         return "name: \(name), isTracked: \(isTracked), position: \(transform.columns.0.xyz)"
     }
     
 }
 
-
-
+//Full Curl
+//CustomStringConvertible
 
 
 /*

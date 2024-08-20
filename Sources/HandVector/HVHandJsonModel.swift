@@ -45,52 +45,52 @@ public struct HVHandJsonModel {
     public let transform: simd_float4x4
     public let joints: [HVJointJsonModel]
 
-    public static func loadBulitin() -> HandVectorMatcher? {
-        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
+    public static func loadHandJsonModel(fileName: String, bundle: Bundle = Bundle.main) -> HVHandJsonModel? {
+//        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
+        guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
-            return jsonStr.toModel(HVHandJsonModel.self)?.convertToHandVectorMatcher()
+            return jsonStr.toModel(HVHandJsonModel.self)
         } catch {
             print(error)
         }
         return nil
     }
-    public static func loadBuiltinDict() -> [String: HandVectorMatcher]? {
-        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
+    public static func loadHandJsonModelDict(fileName: String, bundle: Bundle = Bundle.main) -> [String: HVHandJsonModel]? {
+//        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
+        guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
-            return jsonStr.toModel([String: HVHandJsonModel].self)?.reduce(into: [String: HandVectorMatcher](), {
-                $0[$1.key] = $1.value.convertToHandVectorMatcher()
-            })
+            return jsonStr.toModel([String: HVHandJsonModel].self)
         } catch {
             print(error)
         }
         return nil
     }
     
-    public func convertToHandVectorMatcher() -> HandVectorMatcher? {
+    public func convertToHandVectorMatcher() -> HVHandInfo? {
         let jsonDict = joints.reduce(into: [HandSkeleton.JointName: HVJointJsonModel]()) {
             $0[$1.name.jointName!] = $1
         }
         let identity = simd_float4x4.init(diagonal: .one)
-        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName: HandVectorJoint]()) {
+        let allJoints = HandSkeleton.JointName.allCases.reduce(into: [HandSkeleton.JointName: HVJointInfo]()) {
             if let jsonJoint = jsonDict[$1] {
                 if let parentName = $1.parentName, let parentTransform = jsonDict[parentName]?.transform {
                     let parentIT = parentTransform.inverse * jsonJoint.transform
-                    let joint = HandVectorJoint(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
+                    let joint = HVJointInfo(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: parentIT)
                     $0[$1] = joint
                 } else {
-                    let joint = HandVectorJoint(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
+                    let joint = HVJointInfo(name: jsonJoint.name.jointName!, isTracked: jsonJoint.isTracked, anchorFromJointTransform: jsonJoint.transform, parentFromJointTransform: identity)
                     $0[$1] = joint
                 }
             }
         }
         
-        let vector = HandVectorMatcher(chirality: chirality.chirality, allJoints: allJoints, transform: transform)
+        let vector = HVHandInfo(chirality: chirality.chirality, allJoints: allJoints, transform: transform)
         return vector
     }
     
-    public static func generateJsonModel(name: String, handVector: HandVectorMatcher) -> HVHandJsonModel {
+    public static func generateJsonModel(name: String, handVector: HVHandInfo) -> HVHandJsonModel {
         let joints = HandSkeleton.JointName.allCases.map { jointName in
             let joint = handVector.allJoints[jointName]!
             return HVJointJsonModel(name: joint.name.codableName, isTracked: joint.isTracked, transform: joint.transform)

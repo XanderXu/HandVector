@@ -7,7 +7,7 @@
 
 import ARKit
 
-public extension HandVectorMatcher {
+public extension HVHandInfo {
     //world space direction
     public var fingersExtendedDirection: simd_float3 {
         return chirality == .left ? transform.columns.0.xyz : -transform.columns.0.xyz

@@ -280,9 +280,9 @@ public struct SimHand: Codable {
         return localTransforms
     }
     
-    func convertToHandVector(offset: simd_float3) -> (left: HandVectorMatcher?, right: HandVectorMatcher?) {
-        var leftVector: HandVectorMatcher?
-        var rightVector: HandVectorMatcher?
+    func convertToHandVector(offset: simd_float3) -> (left: HVHandInfo?, right: HVHandInfo?) {
+        var leftVector: HVHandInfo?
+        var rightVector: HVHandInfo?
         for (landmarks, handednesses) in zip(landmarks, handednesses) {
             var allJoints: [HVJointJsonModel] = []
             let jointsDict = Self.fullFillLandmarksToJointsDict(landmarks)

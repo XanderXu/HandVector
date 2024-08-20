@@ -13,10 +13,10 @@ public class HandVectorTool {
     public var left: Entity?
     public var right: Entity?
     
-    public var leftHandVector: HandVectorMatcher?
-    public var rightHandVector: HandVectorMatcher?
+    public var leftHandVector: HVHandInfo?
+    public var rightHandVector: HVHandInfo?
     
-    public init(left: Entity? = nil, right: Entity? = nil, leftHandVector: HandVectorMatcher? = nil, rightHandVector: HandVectorMatcher? = nil) {
+    public init(left: Entity? = nil, right: Entity? = nil, leftHandVector: HVHandInfo? = nil, rightHandVector: HVHandInfo? = nil) {
         self.left = left
         self.right = right
         self.leftHandVector = leftHandVector
@@ -47,7 +47,7 @@ public class HandVectorTool {
     }
     @MainActor
     public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
-        if let handVectorMatcher = HandVectorMatcher(handAnchor: handAnchor) {
+        if let handVectorMatcher = HVHandInfo(handAnchor: handAnchor) {
             if handVectorMatcher.chirality == .left {
                 if left == nil {
                     left = generateHandEntity(from: handVectorMatcher, filter: filter)
@@ -143,7 +143,7 @@ public class HandVectorTool {
         }
     }
     
-    private func generateHandEntity(from handVector: HandVectorMatcher, filter: CollisionFilter = .default) -> Entity {
+    private func generateHandEntity(from handVector: HVHandInfo, filter: CollisionFilter = .default) -> Entity {
         let hand = Entity()
         hand.name = handVector.chirality == .left ? "leftHand" : "rightHand"
         hand.transform.matrix = handVector.transform
@@ -171,7 +171,7 @@ public class HandVectorTool {
         }
         return hand
     }
-    private func updateHandEntity(from handVector: HandVectorMatcher, to: Entity) {
+    private func updateHandEntity(from handVector: HVHandInfo, to: Entity) {
         to.transform.matrix = handVector.transform
         for positionInfo in handVector.allJoints.values {
             let modelEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-model")
