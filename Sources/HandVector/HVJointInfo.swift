@@ -44,9 +44,6 @@ public struct HVJointInfo: Sendable, Equatable {
     
 }
 
-//Full Curl
-//CustomStringConvertible
-
 
 /*
  name:wrist,parent:nil
