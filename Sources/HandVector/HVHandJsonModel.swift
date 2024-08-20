@@ -12,7 +12,6 @@ public struct HVJointJsonModel: Sendable, Equatable {
     public let name: HandSkeleton.JointName.NameCodingKey
     public let isTracked: Bool
     public let transform: simd_float4x4
-    
 }
 
 extension HVJointJsonModel: Codable {
@@ -39,7 +38,7 @@ extension HVJointJsonModel: Codable {
     }
 }
 
-public struct HVHandJsonModel {
+public struct HVHandJsonModel:Sendable, Equatable {
     public let name: String
     public let chirality: HandAnchor.Chirality.NameCodingKey
     public let transform: simd_float4x4

@@ -90,9 +90,6 @@ struct RecordAndMatch: View {
                                         Image(systemName: "doc.on.doc")
                                     }
                                 }
-                                .onLongPressGesture { // Add Long Press Gesture
-                                    UIPasteboard.general.string = jsonString // Copy to the clipboard
-                                }
                         }
                         
                         Button("OK", role: .cancel) {
