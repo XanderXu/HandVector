@@ -25,6 +25,12 @@ public struct HVHandInfo: Sendable, Equatable {
         return dict
     }
     
+    public func calculateFingerShape(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, configuration: HVFingerShape.FingerShapeConfiguration = .detault) -> HVFingerShape {
+        
+        let shape = HVFingerShape(finger: finger, fingerShapeTypes: fingerShapeTypes, joints: allJoints)
+        return shape
+    }
+    
     public init?(chirality: HandAnchor.Chirality, allJoints: [HandSkeleton.JointName: HVJointInfo], transform: simd_float4x4) {
         if allJoints.count >= HandSkeleton.JointName.allCases.count {
             self.chirality = chirality
@@ -47,6 +53,19 @@ public struct HVHandInfo: Sendable, Equatable {
         self.transform = transform
         self.internalVectors = Self.genetateVectors(from: allJoints)
     }
+    
+    
+    public func reversedChirality() -> HVHandInfo {
+        var infoNew: [HandSkeleton.JointName: HVJointInfo] = [:]
+        for (name, info) in allJoints {
+            infoNew[name] = info.reversedChirality()
+        }
+        let m = HVHandInfo(chirality: chirality == .left ? .right : .left, allJoints: infoNew, transform: simd_float4x4([-transform.columns.0, transform.columns.1, -transform.columns.2, transform.columns.3]))!
+        return m
+    }
+}
+
+extension HVHandInfo {
     private static func genetateJoints(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: HVJointInfo] {
         var joints: [HandSkeleton.JointName: HVJointInfo] = [:]
         HandSkeleton.JointName.allCases.forEach { jointName in
@@ -124,18 +143,7 @@ public struct HVHandInfo: Sendable, Equatable {
         vectors[.littleFingerTip] = InternalVectorInfo(from: littleFingerIntermediateTip, to: littleFingerTip)
         return vectors
     }
-    
-    public func reversedChirality() -> HVHandInfo {
-        var infoNew: [HandSkeleton.JointName: HVJointInfo] = [:]
-        for (name, info) in allJoints {
-            infoNew[name] = info.reversedChirality()
-        }
-        let m = HVHandInfo(chirality: chirality == .left ? .right : .left, allJoints: infoNew, transform: simd_float4x4([-transform.columns.0, transform.columns.1, -transform.columns.2, transform.columns.3]))!
-        return m
-    }
 }
-
-
 
 extension HVHandInfo {
     struct InternalVectorInfo: Hashable, Sendable, CustomStringConvertible {

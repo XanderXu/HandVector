@@ -24,6 +24,7 @@ public struct HVJointGroupOptions: OptionSet, Hashable {
     
     
     public static let fiveFingers: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+    public static let fiveFingersAndForeArm: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
     public static let fiveFingersAndWrist: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
     public static let all: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
     

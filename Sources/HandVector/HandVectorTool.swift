@@ -47,20 +47,23 @@ public class HandVectorTool {
     }
     @MainActor
     public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
-        if let handVectorMatcher = HVHandInfo(handAnchor: handAnchor) {
-            if handVectorMatcher.chirality == .left {
+        if let handInfo = HVHandInfo(handAnchor: handAnchor) {
+            if handInfo.chirality == .left {
                 if left == nil {
-                    left = generateHandEntity(from: handVectorMatcher, filter: filter)
+                    left = generateHandEntity(from: handInfo, filter: filter)
                 } else {
-                    updateHandEntity(from: handVectorMatcher, to: left!)
+                    updateHandEntity(from: handInfo, to: left!)
                 }
-            } else if handVectorMatcher.chirality == .right { // Update right hand info.
+                let shape = handInfo.calculateFingerShape(finger: .indexFinger)
+            } else if handInfo.chirality == .right { // Update right hand info.
                 if right == nil {
-                    right = generateHandEntity(from: handVectorMatcher, filter: filter)
+                    right = generateHandEntity(from: handInfo, filter: filter)
                 } else {
-                    updateHandEntity(from: handVectorMatcher, to: right!)
+                    updateHandEntity(from: handInfo, to: right!)
                 }
+                
             }
+            
         }
     }
     public func removeHand(from handAnchor: HandAnchor) {
