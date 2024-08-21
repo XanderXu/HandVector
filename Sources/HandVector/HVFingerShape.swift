@@ -10,25 +10,23 @@ import ARKit
 public struct HVFingerShape: Sendable, Equatable {
     public struct FingerShapeConfiguration {
         public var maximumBaseCurlDegrees: Float
-        public var maximumFullCurlDegrees1: Float
-        public var maximumFullCurlDegrees2: Float
-        public var maximumFullCurlDegrees3: Float
-        public var maximumPinchDistance: Float
-        public var maximumSpreadDegrees: Float
         public var maximumTipCurlDegrees1: Float
         public var maximumTipCurlDegrees2: Float
+        public var maximumPinchDistance: Float
+        public var maximumSpreadDegrees: Float
         
         public var minimumBaseCurlDegrees: Float
-        public var minimumFullCurlDegrees1: Float
-        public var minimumFullCurlDegrees2: Float
-        public var minimumFullCurlDegrees3: Float
-        public var minimumPinchDistance: Float
-        public var minimumSpreadDegrees: Float
         public var minimumTipCurlDegrees1: Float
         public var minimumTipCurlDegrees2: Float
+        public var minimumPinchDistance: Float
+        public var minimumSpreadDegrees: Float
         
-        public static var detault: FingerShapeConfiguration {
-            return FingerShapeConfiguration(maximumBaseCurlDegrees: 90, maximumFullCurlDegrees1: 90, maximumFullCurlDegrees2: 90, maximumFullCurlDegrees3: 80, maximumPinchDistance: 0.05, maximumSpreadDegrees: 45, maximumTipCurlDegrees1: 90, maximumTipCurlDegrees2: 90, minimumBaseCurlDegrees: -5, minimumFullCurlDegrees1: -5, minimumFullCurlDegrees2: -5, minimumFullCurlDegrees3: -5, minimumPinchDistance: 0.01, minimumSpreadDegrees: 0, minimumTipCurlDegrees1: 0, minimumTipCurlDegrees2: 0)
+        
+        public static var thumb: FingerShapeConfiguration {
+            return FingerShapeConfiguration(maximumBaseCurlDegrees: 80, maximumTipCurlDegrees1: 90, maximumTipCurlDegrees2: 90, maximumPinchDistance: 0.05, maximumSpreadDegrees: 40, minimumBaseCurlDegrees: -5, minimumTipCurlDegrees1: 0, minimumTipCurlDegrees2: 0, minimumPinchDistance: 0.01, minimumSpreadDegrees: 0)
+        }
+        public static var indexFinger: FingerShapeConfiguration {
+            return FingerShapeConfiguration(maximumBaseCurlDegrees: 80, maximumTipCurlDegrees1: 90, maximumTipCurlDegrees2: 90, maximumPinchDistance: 0.05, maximumSpreadDegrees: 40, minimumBaseCurlDegrees: -5, minimumTipCurlDegrees1: 0, minimumTipCurlDegrees2: 0, minimumPinchDistance: 0.01, minimumSpreadDegrees: 0)
         }
     }
     public enum FingerShapeType: Int {
@@ -46,19 +44,21 @@ public struct HVFingerShape: Sendable, Equatable {
     let fullCurl: Float
     let baseCurl: Float
     let tipCurl: Float
+    /// not avalible on thumb
     let pinch: Float?
+    /// not avalible on littleFinger
     let spread: Float?
     
-//    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType>, fullCurl: Float, baseCurl: Float, tipCurl: Float, pinch: Float?, spread: Float?) {
-//        self.finger = finger
-//        self.fingerShapeTypes = fingerShapeTypes
-//        self.fullCurl = fullCurl
-//        self.baseCurl = baseCurl
-//        self.tipCurl = tipCurl
-//        self.pinch = pinch
-//        self.spread = spread
-//    }
-    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, configuration: HVFingerShape.FingerShapeConfiguration = .detault, joints: [HandSkeleton.JointName: HVJointInfo]) {
+    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType>, fullCurl: Float, baseCurl: Float, tipCurl: Float, pinch: Float?, spread: Float?) {
+        self.finger = finger
+        self.fingerShapeTypes = fingerShapeTypes
+        self.fullCurl = fullCurl
+        self.baseCurl = baseCurl
+        self.tipCurl = tipCurl
+        self.pinch = pinch
+        self.spread = spread
+    }
+    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
         self.finger = finger
         self.fingerShapeTypes = fingerShapeTypes
         
@@ -72,7 +72,7 @@ public struct HVFingerShape: Sendable, Equatable {
             let joint = joints[finger.jointGroupNames.first!]!
             let xAxis = joint.transformToParent.columns.0
             let angle = atan2(xAxis.y, xAxis.x)
-            self.baseCurl = linearInterpolate(min: configuration.minimumBaseCurlDegrees, max: configuration.maximumBaseCurlDegrees, t: angle / .pi * 180)
+            self.baseCurl = linearInterpolate(min: -5, max: 80, t: angle / .pi * 180)
             print(angle,angle / .pi * 180,baseCurl)
         } else {
             self.baseCurl = 0

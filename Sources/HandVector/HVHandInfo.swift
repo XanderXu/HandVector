@@ -25,8 +25,8 @@ public struct HVHandInfo: Sendable, Equatable {
         return dict
     }
     
-    public func calculateFingerShape(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, configuration: HVFingerShape.FingerShapeConfiguration = .detault) -> HVFingerShape {
-        let shape = HVFingerShape(finger: finger, fingerShapeTypes: fingerShapeTypes, configuration: configuration, joints: allJoints)
+    public func calculateFingerShape(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all) -> HVFingerShape {
+        let shape = HVFingerShape(finger: finger, fingerShapeTypes: fingerShapeTypes, joints: allJoints)
         return shape
     }
     
