@@ -54,8 +54,8 @@ public class HandVectorTool {
                 } else {
                     updateHandEntity(from: handInfo, to: left!)
                 }
-                let shape = handInfo.calculateFingerShape(finger: .indexFinger)
             } else if handInfo.chirality == .right { // Update right hand info.
+                let shape = handInfo.calculateFingerShape(finger: .indexFinger)
                 if right == nil {
                     right = generateHandEntity(from: handInfo, filter: filter)
                 } else {
