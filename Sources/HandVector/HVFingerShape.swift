@@ -6,7 +6,8 @@
 //
 
 import ARKit
-
+import SwiftUI
+import UIKit
 public struct HVFingerShape: Sendable, Equatable {
     public enum FingerShapeType: Int {
         case baseCurl = 1
@@ -38,9 +39,9 @@ public struct HVFingerShape: Sendable, Equatable {
 //        self.spread = spread
 //    }
     init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
-        func linearInterpolate(min: Float, max: Float, t: Float) -> Float {
-            let x = t < min ? min : (t > max ? max : t)
-            return (x - min) / (max - min)
+        func linearInterpolate(lowerBound: Float, upperBound: Float, x: Float) -> Float {
+            let p = (x-lowerBound)/(upperBound-lowerBound)
+            return simd_clamp(p, 0, 1)
         }
         
         self.finger = finger
@@ -58,7 +59,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint = joints[finger.jointGroupNames[1]]!
                 let xAxis = joint.transformToParent.columns.0
                 let angle = atan2(xAxis.y, xAxis.x)
-                baseCurl = linearInterpolate(min: config.minimumBaseCurlDegrees, max: config.maximumBaseCurlDegrees, t: angle / .pi * 180)
+                baseCurl = linearInterpolate(lowerBound: config.minimumBaseCurlDegrees, upperBound: config.maximumBaseCurlDegrees, x: angle / .pi * 180)
                 
                 print("baseCurl", angle, angle / .pi * 180, baseCurl)
             } else {
@@ -69,7 +70,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint = joints[finger.jointGroupNames[2]]!
                 let xAxis = joint.transformToParent.columns.0
                 let angle = atan2(xAxis.y, xAxis.x)
-                let tipCurl = linearInterpolate(min: config.minimumTipCurlDegrees1, max: config.maximumTipCurlDegrees1, t: angle / .pi * 180)
+                let tipCurl = linearInterpolate(lowerBound: config.minimumTipCurlDegrees1, upperBound: config.maximumTipCurlDegrees1, x: angle / .pi * 180)
                 
                 print("tipCurl", angle, angle / .pi * 180, tipCurl)
             } else {
@@ -87,7 +88,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let xAxis2 = joint2.transform.columns.0.xyz
                 
                 let angle = acos(simd_dot(simd_float3(xAxis1.x, 0, xAxis1.z), simd_float3(xAxis2.x, 0, xAxis2.z)))
-                let spread = linearInterpolate(min: config.minimumSpreadDegrees, max: config.maximumSpreadDegrees, t: angle / .pi * 180)
+                let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, x: angle / .pi * 180)
                 
                 print("spread", angle, angle / .pi * 180, spread)
             } else {
@@ -98,7 +99,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint = joints[finger.jointGroupNames.first!]!
                 let xAxis = joint.transformToParent.columns.0
                 let angle = atan2(xAxis.y, xAxis.x)
-                baseCurl = linearInterpolate(min: config.minimumBaseCurlDegrees, max: config.maximumBaseCurlDegrees, t: angle / .pi * 180)
+                baseCurl = linearInterpolate(lowerBound: config.minimumBaseCurlDegrees, upperBound: config.maximumBaseCurlDegrees, x: angle / .pi * 180)
                 
                 print("baseCurl", angle, angle / .pi * 180, baseCurl)
             } else {
@@ -109,12 +110,12 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint1 = joints[finger.jointGroupNames[1]]!
                 let xAxis1 = joint1.transformToParent.columns.0
                 let angle1 = atan2(xAxis1.y, xAxis1.x)
-                let tipCurl1 = linearInterpolate(min: config.minimumTipCurlDegrees1, max: config.maximumTipCurlDegrees1, t: angle1 / .pi * 180)
+                let tipCurl1 = linearInterpolate(lowerBound: config.minimumTipCurlDegrees1, upperBound: config.maximumTipCurlDegrees1, x: angle1 / .pi * 180)
                 
                 let joint2 = joints[finger.jointGroupNames[2]]!
                 let xAxis2 = joint2.transformToParent.columns.0
                 let angle2 = atan2(xAxis2.y, xAxis2.x)
-                let tipCurl2 = linearInterpolate(min: config.minimumTipCurlDegrees2, max: config.maximumTipCurlDegrees2, t: angle2 / .pi * 180)
+                let tipCurl2 = linearInterpolate(lowerBound: config.minimumTipCurlDegrees2, upperBound: config.maximumTipCurlDegrees2, x: angle2 / .pi * 180)
                 
                 tipCurl = (tipCurl1 + tipCurl2)/2
                 print("tipCurl", angle1, angle1 / .pi * 180, angle2, angle2 / .pi * 180, tipCurl)
@@ -130,7 +131,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint1 = joints[.thumbTip]!
                 let joint2 = joints[finger.jointGroupNames.last!]!
                 let distance = simd_distance(joint1.position, joint2.position)
-                let pinch = linearInterpolate(min: config.minimumPinchDistance, max: config.maximumPinchDistance, t: distance)
+                let pinch = linearInterpolate(lowerBound: config.maximumPinchDistance, upperBound: config.minimumPinchDistance, x: distance)
                 
                 print("pinch", distance,pinch)
             } else {
@@ -144,7 +145,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let xAxis2 = joint2.transform.columns.0.xyz
                 
                 let angle = acos(simd_dot(simd_float3(xAxis1.x, 0, xAxis1.z), simd_float3(xAxis2.x, 0, xAxis2.z)))
-                let spread = linearInterpolate(min: config.minimumSpreadDegrees, max: config.maximumSpreadDegrees, t: angle / .pi * 180)
+                let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, x: angle / .pi * 180)
                 
                 print("spread", angle, angle / .pi * 180, spread)
             } else {
