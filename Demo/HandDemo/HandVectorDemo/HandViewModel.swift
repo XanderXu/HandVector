@@ -53,7 +53,7 @@ class HandViewModel: @unchecked Sendable {
         do {
             if HandTrackingProvider.isSupported {
                 print("ARKitSession starting.")
-                try await session.run([handTracking])
+                try await session.run([handTracking,WorldTrackingProvider()])
             }
         } catch {
             print("ARKitSession error:", error)
@@ -64,16 +64,16 @@ class HandViewModel: @unchecked Sendable {
     func publishHandTrackingUpdates() async {
         for await update in handTracking.anchorUpdates {
             switch update.event {
-            case .added, .updated:
+            case .added:
                 let anchor = update.anchor
                 guard anchor.isTracked else { continue }
+                await latestHandTracking.addHand(from: anchor, to: rootEntity)
+            case .updated:
+                let anchor = update.anchor
+                guard anchor.isTracked else {
+                    continue
+                }
                 await latestHandTracking.updateHand(from: anchor)
-                if let left = latestHandTracking.left {
-                    await rootEntity?.addChild(left)
-                }
-                if let right = latestHandTracking.right {
-                    await rootEntity?.addChild(right)
-                }
             case .removed:
                 let anchor = update.anchor
                 latestHandTracking.removeHand(from: anchor)

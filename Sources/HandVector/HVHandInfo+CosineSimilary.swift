@@ -19,10 +19,7 @@ public extension HVHandInfo {
         similarity /= Float(joints.count)
         return similarity
     }
-    /// Fingers and wrist and forearm
-    func similarity(to vector: HVHandInfo) -> Float {
-        return similarity(of: .all, to: vector)
-    }
+    
     /// Finger your selected
     func similarity(of finger: HVJointOfFinger, to vector: HVHandInfo) -> Float {
         return similarity(of: [finger], to: vector)
@@ -38,6 +35,10 @@ public extension HVHandInfo {
         
         similarity /= Float(jointNames.count)
         return similarity
+    }
+    /// Fingers and wrist and forearm
+    func similarity(to vector: HVHandInfo) -> Float {
+        return similarity(of: .all, to: vector)
     }
     /// all
     func similarities(to vector: HVHandInfo) -> (average: Float, each: [HVJointOfFinger: Float]) {

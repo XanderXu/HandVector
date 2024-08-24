@@ -8,7 +8,7 @@
 import ARKit
 
 public struct HVFingerShape: Sendable, Equatable {
-    public enum FingerShapeType: Int {
+    public enum FingerShapeType: Int, Sendable, Equatable, CaseIterable {
         case baseCurl = 1
         case tipCurl = 2
         case fullCurl = 4
@@ -28,15 +28,7 @@ public struct HVFingerShape: Sendable, Equatable {
     /// not avalible on littleFinger
     let spread: Float?
     
-    //    init(finger: HVJointOfFinger, fingerShapeTypes: Set<HVFingerShape.FingerShapeType>, fullCurl: Float, baseCurl: Float, tipCurl: Float, pinch: Float?, spread: Float?) {
-    //        self.finger = finger
-    //        self.fingerShapeTypes = fingerShapeTypes
-    //        self.fullCurl = fullCurl
-    //        self.baseCurl = baseCurl
-    //        self.tipCurl = tipCurl
-    //        self.pinch = pinch
-    //        self.spread = spread
-    //    }
+    
     init(finger: HVJointOfFinger, fingerShapeType: HVFingerShape.FingerShapeType, joints: [HandSkeleton.JointName: HVJointInfo]) {
         self.init(finger: finger, fingerShapeTypes: [fingerShapeType], joints: joints)
     }

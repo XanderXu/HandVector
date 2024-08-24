@@ -64,7 +64,7 @@ public struct HVHandInfo: Sendable, Equatable {
     }
 }
 
-extension HVHandInfo {
+private extension HVHandInfo {
     private static func genetateJoints(from handSkeleton: HandSkeleton) -> [HandSkeleton.JointName: HVJointInfo] {
         var joints: [HandSkeleton.JointName: HVJointInfo] = [:]
         HandSkeleton.JointName.allCases.forEach { jointName in

@@ -45,7 +45,6 @@ public struct HVHandJsonModel:Sendable, Equatable {
     public let joints: [HVJointJsonModel]
 
     public static func loadHandJsonModel(fileName: String, bundle: Bundle = Bundle.main) -> HVHandJsonModel? {
-//        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
         guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
@@ -56,7 +55,6 @@ public struct HVHandJsonModel:Sendable, Equatable {
         return nil
     }
     public static func loadHandJsonModelDict(fileName: String, bundle: Bundle = Bundle.main) -> [String: HVHandJsonModel]? {
-//        guard let path = handAssetsBundle.path(forResource: "BuiltinHand", ofType: "json") else {return nil}
         guard let path = bundle.path(forResource: fileName, ofType: "json") else {return nil}
         do {
             let jsonStr = try String(contentsOfFile: path, encoding: .utf8)
