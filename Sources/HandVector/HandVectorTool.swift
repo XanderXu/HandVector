@@ -8,7 +8,6 @@
 import RealityKit
 import ARKit
 
-//手部关节模型
 public class HandVectorTool {
     public var left: Entity?
     public var right: Entity?
@@ -97,7 +96,6 @@ public class HandVectorTool {
             } else {
                 left?.isEnabled = true
                 updateHandEntity(from: leftHandVector, to: left!)
-//                debugPrint(leftHandVector.transform.columns.3.xyz)
             }
         } else {
             left?.isEnabled = false
@@ -155,7 +153,6 @@ public class HandVectorTool {
             collisionEntity?.transform.matrix = positionInfo.transform
             collisionEntity?.isEnabled = isCollisionEnable
         }
-        
     }
 }
 

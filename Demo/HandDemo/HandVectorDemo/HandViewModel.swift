@@ -26,8 +26,9 @@ class HandViewModel: @unchecked Sendable {
     var rightScore: Int = 0
     
     private let session = ARKitSession()
-    private var handTracking = HandTrackingProvider()
-    private var simHandProvider = SimulatorHandTrackingProvider()
+    private let worldTracking = WorldTrackingProvider()
+    private let handTracking = HandTrackingProvider()
+    private let simHandProvider = SimulatorHandTrackingProvider()
 
     init() {
         self.handGestureDict = HVHandInfo.builtinHandInfo
@@ -53,7 +54,7 @@ class HandViewModel: @unchecked Sendable {
         do {
             if HandTrackingProvider.isSupported {
                 print("ARKitSession starting.")
-                try await session.run([handTracking,WorldTrackingProvider()])
+                try await session.run([handTracking, worldTracking])
             }
         } catch {
             print("ARKitSession error:", error)
