@@ -8,51 +8,65 @@
 import ARKit
 
 
-public struct HVJointGroupOptions: OptionSet, Hashable {
-    public let rawValue: Int
-    public init(rawValue: Int) {
-        self.rawValue = rawValue
+public enum HVJointOfFinger:Sendable, Equatable {
+    case thump
+    case indexFinger
+    case middleFinger
+    case ringFinger
+    case littleFinger
+    case wristMetacarpal
+    case foreArm
+    
+    public var jointGroupNames: [HandSkeleton.JointName] {
+        switch self {
+        case .thump:
+            [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
+        case .indexFinger:
+            [.indexFingerKnuckle, .indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
+        case .middleFinger:
+            [.middleFingerKnuckle, .middleFingerIntermediateBase, .middleFingerIntermediateTip, .middleFingerTip]
+        case .ringFinger:
+            [.ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
+        case .littleFinger:
+            [.littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
+        case .wristMetacarpal:
+            [.wrist, .indexFingerMetacarpal, .middleFingerMetacarpal, .ringFingerMetacarpal, .littleFingerMetacarpal]
+        case .foreArm:
+            [.forearmWrist, .forearmArm]
+        }
     }
+}
+public extension Set<HVJointOfFinger> {
+    public static let fiveFingers: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+    public static let fiveFingersAndForeArm: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
+    public static let fiveFingersAndWrist: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
+    public static let all: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
     
-    public static let thump    = HVJointGroupOptions(rawValue: 1 << 0)
-    public static let indexFinger  = HVJointGroupOptions(rawValue: 1 << 1)
-    public static let middleFinger   = HVJointGroupOptions(rawValue: 1 << 2)
-    public static let ringFinger   = HVJointGroupOptions(rawValue: 1 << 3)
-    public static let littleFinger   = HVJointGroupOptions(rawValue: 1 << 4)
-    public static let wristMetacarpal   = HVJointGroupOptions(rawValue: 1 << 5)
-    public static let foreArm   = HVJointGroupOptions(rawValue: 1 << 6)
-    
-    
-    public static let fiveFingers: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-    public static let fiveFingersAndForeArm: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
-    public static let fiveFingersAndWrist: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
-    public static let all: HVJointGroupOptions = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
-    
-    public var fingerGroups: [HVJointGroupOptions] {
-        var baseGroup: [HVJointGroupOptions] = []
-        if contains(.thump) {
-            baseGroup.append(.thump)
-        }
-        if contains(.indexFinger) {
-            baseGroup.append(.indexFinger)
-        }
-        if contains(.middleFinger) {
-            baseGroup.append(.middleFinger)
-        }
-        if contains(.ringFinger) {
-            baseGroup.append(.ringFinger)
-        }
-        if contains(.littleFinger) {
-            baseGroup.append(.littleFinger)
-        }
-        if contains(.wristMetacarpal) {
-            baseGroup.append(.wristMetacarpal)
-        }
-        if contains(.foreArm) {
-            baseGroup.append(.foreArm)
-        }
-        return baseGroup
-    }
+//    public var fingers: [HVJointOfFinger] {
+//        var baseGroup: [HVJointOfFinger] = []
+//        if contains(.thump) {
+//            baseGroup.append(.thump)
+//        }
+//        if contains(.indexFinger) {
+//            baseGroup.append(.indexFinger)
+//        }
+//        if contains(.middleFinger) {
+//            baseGroup.append(.middleFinger)
+//        }
+//        if contains(.ringFinger) {
+//            baseGroup.append(.ringFinger)
+//        }
+//        if contains(.littleFinger) {
+//            baseGroup.append(.littleFinger)
+//        }
+//        if contains(.wristMetacarpal) {
+//            baseGroup.append(.wristMetacarpal)
+//        }
+//        if contains(.foreArm) {
+//            baseGroup.append(.foreArm)
+//        }
+//        return baseGroup
+//    }
     public var jointGroupNames: [HandSkeleton.JointName] {
         var jointNames: [HandSkeleton.JointName] = []
         if contains(.thump) {
@@ -78,5 +92,4 @@ public struct HVJointGroupOptions: OptionSet, Hashable {
         }
         return jointNames
     }
-    
 }

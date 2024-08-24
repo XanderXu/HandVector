@@ -17,7 +17,7 @@ public struct HVFingerShape: Sendable, Equatable {
     }
     
     
-    let finger: HVJointGroupOptions
+    let finger: HVJointOfFinger
     let fingerShapeTypes: Set<HVFingerShape.FingerShapeType>
     
     let fullCurl: Float
@@ -28,16 +28,19 @@ public struct HVFingerShape: Sendable, Equatable {
     /// not avalible on littleFinger
     let spread: Float?
     
-//    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType>, fullCurl: Float, baseCurl: Float, tipCurl: Float, pinch: Float?, spread: Float?) {
-//        self.finger = finger
-//        self.fingerShapeTypes = fingerShapeTypes
-//        self.fullCurl = fullCurl
-//        self.baseCurl = baseCurl
-//        self.tipCurl = tipCurl
-//        self.pinch = pinch
-//        self.spread = spread
-//    }
-    init(finger: HVJointGroupOptions, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
+    //    init(finger: HVJointOfFinger, fingerShapeTypes: Set<HVFingerShape.FingerShapeType>, fullCurl: Float, baseCurl: Float, tipCurl: Float, pinch: Float?, spread: Float?) {
+    //        self.finger = finger
+    //        self.fingerShapeTypes = fingerShapeTypes
+    //        self.fullCurl = fullCurl
+    //        self.baseCurl = baseCurl
+    //        self.tipCurl = tipCurl
+    //        self.pinch = pinch
+    //        self.spread = spread
+    //    }
+    init(finger: HVJointOfFinger, fingerShapeType: HVFingerShape.FingerShapeType, joints: [HandSkeleton.JointName: HVJointInfo]) {
+        self.init(finger: finger, fingerShapeTypes: [fingerShapeType], joints: joints)
+    }
+    init(finger: HVJointOfFinger, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
         func linearInterpolate(lowerBound: Float, upperBound: Float, value: Float, clamp: Bool = true) -> Float {
             let p = (value-lowerBound)/(upperBound-lowerBound)
             if clamp {
@@ -91,7 +94,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let angle = -atan2(xAxis.z, xAxis.x) / .pi * 180
                 let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
                 
-                print("spread", angle, spread)
+//                print("spread", angle, spread)
             } else {
                 spread = nil
             }
@@ -163,7 +166,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let angle = angle2 - angle2
                 let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
                 
-                print("spread",angle1, angle2, angle, spread)
+//                print("spread",angle1, angle2, angle, spread)
             } else {
                 spread = nil
             }
@@ -210,7 +213,7 @@ fileprivate extension HVFingerShape {
         
     }
 }
-fileprivate extension HVJointGroupOptions {
+fileprivate extension HVJointOfFinger {
     fileprivate var fingerShapeConfiguration: HVFingerShape.FingerShapeConfiguration {
         switch self {
         case .thump:
@@ -228,7 +231,7 @@ fileprivate extension HVJointGroupOptions {
         }
     }
     
-    fileprivate var nextNeighbourFinger: HVJointGroupOptions? {
+    fileprivate var nextNeighbourFinger: HVJointOfFinger? {
         switch self {
         case .thump:
             return .indexFinger

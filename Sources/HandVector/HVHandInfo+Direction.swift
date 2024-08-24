@@ -21,7 +21,7 @@ public extension HVHandInfo {
     
     //in world space
     //direction: from knukle to tip of a finger
-    public func fingerPositionDirection(of finger: HVJointGroupOptions) -> (position: SIMD3<Float>, direction: SIMD3<Float>) {
+    public func fingerPositionDirection(of finger: HVJointOfFinger) -> (position: SIMD3<Float>, direction: SIMD3<Float>) {
         let tip = finger.jointGroupNames.last!
         let tipLocal = allJoints[tip]?.position ?? .zero
         let tipWorld = transform * SIMD4(tipLocal, 1)

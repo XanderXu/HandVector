@@ -49,13 +49,15 @@ public class HandVectorTool {
     public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
         if let handInfo = HVHandInfo(handAnchor: handAnchor) {
             if handInfo.chirality == .left {
+                leftHandVector = handInfo
                 if left == nil {
                     left = generateHandEntity(from: handInfo, filter: filter)
                 } else {
                     updateHandEntity(from: handInfo, to: left!)
                 }
-                let shape = handInfo.calculateFingerShape(finger: .thump)
+//                let shape = handInfo.calculateFingerShape(finger: .thump)
             } else if handInfo.chirality == .right { // Update right hand info.
+                rightHandVector = handInfo
                 if right == nil {
                     right = generateHandEntity(from: handInfo, filter: filter)
                 } else {
