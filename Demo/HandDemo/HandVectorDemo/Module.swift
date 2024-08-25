@@ -11,13 +11,13 @@ import SwiftUI
 
 /// A description of the modules that the app can present.
 enum Module: String, Identifiable, CaseIterable, Equatable {
-    case matchBuildin
+    case matchAllBuiltin
     case recordAndMatch
     
     var id: Self { self }
     var name: LocalizedStringKey {
         switch self {
-        case .matchBuildin:
+        case .matchAllBuiltin:
             LocalizedStringKey(rawValue)
         case .recordAndMatch:
             LocalizedStringKey(rawValue)

@@ -23,7 +23,8 @@ struct MatchBuildinImmersiveView: View {
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 updateCount += 1
-                if updateCount % 10 == 0 {
+                // low down the update rate
+                if updateCount % 15 == 0 {
                     updateCount = 0
                     model.matchAllBuiltinHands()
                 }

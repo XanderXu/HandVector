@@ -8,7 +8,7 @@
 import RealityKit
 import ARKit
 
-public class HandVectorTool {
+public class HandVectorManager {
     public var left: Entity?
     public var right: Entity?
     

@@ -20,7 +20,7 @@ struct HandVectorApp: App {
         .windowResizability(.contentSize)
         .defaultSize(width: 1, height: 0.6, depth: 0.1, in: .meters)
 
-        ImmersiveSpace(id: Module.matchBuildin.immersiveId) {
+        ImmersiveSpace(id: Module.matchAllBuiltin.immersiveId) {
             MatchBuildinImmersiveView()
                 .environment(model)
         }

@@ -18,8 +18,7 @@ class HandViewModel: @unchecked Sendable {
     
     var rootEntity: Entity?
     
-    var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
-//    var handGestureDict: [String: HVHandInfo] = [:]
+    var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
     var recordHand: HVHandInfo?
     
     var leftScores: [String: Float] = [:]
@@ -31,7 +30,6 @@ class HandViewModel: @unchecked Sendable {
     private let simHandProvider = SimulatorHandTrackingProvider()
 
     init() {
-//        self.handGestureDict = HVHandInfo.builtinHandInfo
         latestHandTracking.isCollisionEnable = true
     }
     func clear() {

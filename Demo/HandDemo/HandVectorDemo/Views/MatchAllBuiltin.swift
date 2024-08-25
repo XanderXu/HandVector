@@ -21,9 +21,8 @@ struct TextProgressView: View {
         .padding(.horizontal)
     }
 }
-struct MatchBuildin: View {
+struct MatchAllBuiltin: View {
     @Environment(HandViewModel.self) private var model
-    
     
     var body: some View {
         @Bindable var model = model
@@ -85,7 +84,7 @@ struct MatchBuildin: View {
 }
 
 #Preview {
-    MatchBuildin()
+    MatchAllBuiltin()
         .environment(HandViewModel())
         .glassBackgroundEffect(
             in: RoundedRectangle(
