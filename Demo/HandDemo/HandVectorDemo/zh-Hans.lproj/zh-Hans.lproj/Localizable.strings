@@ -11,8 +11,8 @@
 "Start hand tracking and matching" = "开启手势追踪与匹配";
 "Show hand skeleton" = "显示手部关节";
 "Try to make the same gesture,\nyou can use left or right hand" = "试着做出相同的手势\n左手或右手都可以";
-"left score:%lld" = "左手得分:%lld";
-"right score:%lld" = "右手得分:%lld";
+"left score:%@" = "左手得分:%@";
+"right score:%@" = "右手得分:%@";
 
 "Start hand tracking" = "开启手势追踪";
 "Choose Left or Right hand to recrod" = "选择录制左手或右手";

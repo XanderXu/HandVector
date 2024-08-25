@@ -71,14 +71,20 @@ class HandViewModel: @unchecked Sendable {
             switch update.event {
             case .added:
                 let anchor = update.anchor
-                guard anchor.isTracked else { continue }
-                await latestHandTracking.addHand(from: anchor, to: rootEntity)
+//                guard anchor.isTracked else { continue }
+                let handInfo = latestHandTracking.generateHandInfo(from: anchor)
+                if let handInfo {
+                    await latestHandTracking.generateHandSkeletonEntity(from: handInfo, to: rootEntity)
+                }
             case .updated:
                 let anchor = update.anchor
                 guard anchor.isTracked else {
                     continue
                 }
-                await latestHandTracking.updateHand(from: anchor)
+                let handInfo = latestHandTracking.generateHandInfo(from: anchor)
+                if let handInfo {
+                    await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
+                }
             case .removed:
                 let anchor = update.anchor
                 latestHandTracking.removeHand(from: anchor)

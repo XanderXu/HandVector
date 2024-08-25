@@ -44,32 +44,37 @@ public class HandVectorManager {
             }
         }
     }
-    @MainActor
-    public func addHand(from handAnchor: HandAnchor, to: Entity?, filter: CollisionFilter = .default) async {
-        if let handInfo = HVHandInfo(handAnchor: handAnchor) {
-            if handInfo.chirality == .left {
-                leftHandVector = handInfo
-                let left = generateHandEntity(from: handInfo, filter: filter)
-                to?.addChild(left)
-                self.left = left
-            } else if handInfo.chirality == .right {
-                rightHandVector = handInfo
-                let right = generateHandEntity(from: handInfo, filter: filter)
-                to?.addChild(right)
-                self.right = right
-            }
+    
+    @discardableResult
+    public func generateHandInfo(from handAnchor: HandAnchor) -> HVHandInfo? {
+        let handInfo = HVHandInfo(handAnchor: handAnchor)
+        if handAnchor.chirality == .left {
+            leftHandVector = handInfo
+        } else {
+            rightHandVector = handInfo
         }
+        return handInfo
     }
+    
     @MainActor
-    public func updateHand(from handAnchor: HandAnchor, filter: CollisionFilter = .default) async {
-        if let handInfo = HVHandInfo(handAnchor: handAnchor) {
-            if handInfo.chirality == .left {
-                leftHandVector = handInfo
-                updateHandEntity(from: handInfo, to: left!)
-            } else if handInfo.chirality == .right { // Update right hand info.
-                rightHandVector = handInfo
-                updateHandEntity(from: handInfo, to: right!)
-            }
+    @discardableResult
+    public func generateHandSkeletonEntity(from handInfo: HVHandInfo, to: Entity?, filter: CollisionFilter = .default) async -> Entity {
+        let entity = generateHandEntity(from: handInfo, filter: filter)
+        to?.addChild(entity)
+        if handInfo.chirality == .left {
+            self.left = entity
+        } else if handInfo.chirality == .right {
+            self.right = entity
+        }
+        return entity
+    }
+    
+    @MainActor
+    public func updateHandSkeletonEntity(from handInfo: HVHandInfo) async {
+        if handInfo.chirality == .left {
+            updateHandEntity(from: handInfo, to: left!)
+        } else if handInfo.chirality == .right {
+            updateHandEntity(from: handInfo, to: right!)
         }
     }
     public func removeHand(from handAnchor: HandAnchor) {
@@ -114,6 +119,7 @@ public class HandVectorManager {
         }
     }
     
+    @MainActor
     private func generateHandEntity(from handVector: HVHandInfo, filter: CollisionFilter = .default) -> Entity {
         let hand = Entity()
         hand.name = handVector.chirality == .left ? "leftHand" : "rightHand"
