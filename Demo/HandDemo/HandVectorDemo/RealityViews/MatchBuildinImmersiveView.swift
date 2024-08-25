@@ -12,6 +12,7 @@ import HandVector
 struct MatchBuildinImmersiveView: View {
     @Environment(HandViewModel.self) private var model
     @State private var subscriptions = [EventSubscription]()
+    @State private var updateCount: Int = 0
     var body: some View {
         RealityView { content in
             
@@ -20,15 +21,14 @@ struct MatchBuildinImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            
-            guard let leftOKVector = model.handGestureDict["👌"] else { return }
-            
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
-                let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: leftOKVector) ?? 0
-                model.leftScore = Int((leftScore) * 100)
-                let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: leftOKVector) ?? 0
-                model.rightScore = Int((rightScore) * 100)
+                updateCount += 1
+                if updateCount % 10 == 0 {
+                    updateCount = 0
+                    model.matchAllBuiltinHands()
+                }
             }))
+            
 
         } update: { content in
             

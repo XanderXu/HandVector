@@ -7,59 +7,79 @@
 
 import SwiftUI
 
+struct TextProgressView: View {
+    var text: String
+    var value: Float
+    var body: some View {
+        HStack {
+            Text(text).font(.system(size: 50))
+            
+            ProgressView(value: abs(value), total: 1, label: {
+                Text(value.formatted())
+            })
+        }
+        .padding(.horizontal)
+    }
+}
 struct MatchBuildin: View {
     @Environment(HandViewModel.self) private var model
     
+    
     var body: some View {
         @Bindable var model = model
-        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
-            Toggle("Start hand tracking and matching", isOn: $model.turnOnImmersiveSpace)
-                .toggleStyle(ButtonToggleStyle())
-                .font(.system(size: 16, weight: .bold))
-                .padding(.bottom, 20)
-            
-            Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
-                .toggleStyle(ButtonToggleStyle())
-                .font(.system(size: 16, weight: .bold))
-                .disabled(!model.turnOnImmersiveSpace)
+        HStack {
             VStack {
-                Text("👌")
-                    .font(.system(size: 100))
-                    .frame(width: 480)
-                Text("Try to make the same gesture,\nyou can use left or right hand")
-                    .multilineTextAlignment(.center)
-                    .font(.system(size: 20, weight: .bold))
-                    .frame(width: 480)
-            }
-            
-            
-            Group {
-                HStack {
-                    Text("👌")
-                        .scaleEffect(x: -1, y: 1, anchor: .center)
-                        .font(.system(size: 150))
-                        .frame(width: 200, height: 200)
+                TextProgressView(text: "👆", value: model.leftScores["👆"] ?? 0)
+                TextProgressView(text: "✌️", value: model.leftScores["✌️"] ?? 0)
+                TextProgressView(text: "✋", value: model.leftScores["✋"] ?? 0)
+                TextProgressView(text: "👌", value: model.leftScores["👌"] ?? 0)
                     
-                    Text("👌")
-                        .font(.system(size: 150))
-                        .frame(width: 200, height: 200)
-                        
-                }
-                HStack {
-                    Text("left score:\(model.leftScore)")
-                        .frame(width: 200)
-                        .accessibilityHidden(true)
-                    Text("right score:\(model.rightScore)")
-                        .frame(width: 200)
-                        .accessibilityHidden(true)
-                }
+                TextProgressView(text: "✊", value: model.leftScores["✊"] ?? 0)
+                TextProgressView(text: "🤘", value: model.leftScores["🤘"] ?? 0)
+                TextProgressView(text: "🤙", value: model.leftScores["🤙"] ?? 0)
+                TextProgressView(text: "🫱🏿‍🫲🏻", value: model.leftScores["🫱🏿‍🫲🏻"] ?? 0)
+            }
+            .frame(width: 300)
+            
+            
+            VStack(alignment: .center, spacing: 10) {
+                Toggle("Start hand tracking and matching", isOn: $model.turnOnImmersiveSpace)
+                    .toggleStyle(ButtonToggleStyle())
+                    .font(.system(size: 16, weight: .bold))
+                    .padding(.bottom, 40)
                 
+                Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
+                    .toggleStyle(ButtonToggleStyle())
+                    .font(.system(size: 16, weight: .bold))
+                    .disabled(!model.turnOnImmersiveSpace)
+                    .padding(.bottom, 40)
+                
+                VStack {
+                    Text("👆✌️✋👌\n✊🤘🤙🫱🏿‍🫲🏻")
+                        .font(.system(size: 60))
+                        .padding(.bottom, 20)
+                    
+                    Text("Try to make the same gesture,\nyou can use left or right hand")
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: 20, weight: .bold))
+                }
                 
             }
-            .font(.system(size: 16, weight: .bold))
-            .frame(width: 280)
+//            .border(.red, width: 1.0)
+            
+            VStack {
+                TextProgressView(text: "👆", value: model.rightScores["👆"] ?? 0)
+                TextProgressView(text: "✌️", value: model.rightScores["✌️"] ?? 0)
+                TextProgressView(text: "✋", value: model.rightScores["✋"] ?? 0)
+                TextProgressView(text: "👌", value: model.rightScores["👌"] ?? 0)
+                
+                TextProgressView(text: "✊", value: model.rightScores["✊"] ?? 0)
+                TextProgressView(text: "🤘", value: model.rightScores["🤘"] ?? 0)
+                TextProgressView(text: "🤙", value: model.rightScores["🤙"] ?? 0)
+                TextProgressView(text: "🫱🏿‍🫲🏻", value: model.rightScores["🫱🏿‍🫲🏻"] ?? 0)
+            }
+            .frame(width: 300)
         }
-        .frame(width: 400)
     }
     
 }

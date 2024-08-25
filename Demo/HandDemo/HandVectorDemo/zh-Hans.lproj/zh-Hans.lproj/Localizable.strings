@@ -5,7 +5,7 @@
   Created by 许同学 on 2024/3/17.
   
 */
-"matchBuildin" = "匹配预置的 OK 手势";
+"matchBuildin" = "匹配预置的手势";
 "recordAndMatch" = "录制并匹配新的手势";
 
 "Start hand tracking and matching" = "开启手势追踪与匹配";

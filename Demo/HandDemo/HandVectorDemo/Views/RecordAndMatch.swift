@@ -62,10 +62,10 @@ struct RecordAndMatch: View {
             
             Group {
                 HStack {
-                    Text("left score:\(model.leftScore)")
+                    Text("left score:\(model.leftScores.values.first?.formatted() ?? "0")")
                         .frame(width: 200)
                         .accessibilityHidden(true)
-                    Text("right score:\(model.rightScore)")
+                    Text("right score:\(model.rightScores.values.first?.formatted() ?? "0")")
                         .frame(width: 200)
                         .accessibilityHidden(true)
                 }

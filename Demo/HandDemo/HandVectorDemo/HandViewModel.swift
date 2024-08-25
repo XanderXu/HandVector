@@ -19,11 +19,11 @@ class HandViewModel: @unchecked Sendable {
     var rootEntity: Entity?
     
     var latestHandTracking: HandVectorTool = .init(left: nil, right: nil)
-    var handGestureDict: [String: HVHandInfo] = [:]
+//    var handGestureDict: [String: HVHandInfo] = [:]
     var recordHand: HVHandInfo?
     
-    var leftScore: Int = 0
-    var rightScore: Int = 0
+    var leftScores: [String: Float] = [:]
+    var rightScores: [String: Float] = [:]
     
     private let session = ARKitSession()
     private let worldTracking = WorldTrackingProvider()
@@ -31,7 +31,7 @@ class HandViewModel: @unchecked Sendable {
     private let simHandProvider = SimulatorHandTrackingProvider()
 
     init() {
-        self.handGestureDict = HVHandInfo.builtinHandInfo
+//        self.handGestureDict = HVHandInfo.builtinHandInfo
         latestHandTracking.isCollisionEnable = true
     }
     func clear() {
@@ -44,17 +44,23 @@ class HandViewModel: @unchecked Sendable {
     func reset() {
         debugPrint(#function)
         
-        leftScore = 0
-        rightScore = 0
+        leftScores = [:]
+        rightScores = [:]
         
         clear()
     }
-    
+    func matchAllBuiltinHands() {
+        let builtinHands = HVHandInfo.builtinHandInfo
+        builtinHands.forEach { (key, value) in
+            leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
+            rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
+        }
+    }
     func startHandTracking() async {
         do {
             if HandTrackingProvider.isSupported {
                 print("ARKitSession starting.")
-                try await session.run([handTracking, worldTracking])
+                try await session.run([handTracking])
             }
         } catch {
             print("ARKitSession error:", error)
