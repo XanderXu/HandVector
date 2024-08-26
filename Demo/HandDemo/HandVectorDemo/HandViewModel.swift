@@ -20,6 +20,8 @@ class HandViewModel: @unchecked Sendable {
     
     var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
     var recordHand: HVHandInfo?
+    var averageAndEachLeftScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?
+    var averageAndEachRightScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?
     
     var leftScores: [String: Float] = [:]
     var rightScores: [String: Float] = [:]
@@ -45,15 +47,18 @@ class HandViewModel: @unchecked Sendable {
         leftScores = [:]
         rightScores = [:]
         
+        averageAndEachLeftScores = nil
+        averageAndEachRightScores = nil
+        
         clear()
     }
-    func matchAllBuiltinHands() {
-        let builtinHands = HVHandInfo.builtinHandInfo
-        builtinHands.forEach { (key, value) in
-            leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
-            rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
-        }
-    }
+//    func matchAllBuiltinHands() {
+//        let builtinHands = HVHandInfo.builtinHandInfo
+//        builtinHands.forEach { (key, value) in
+//            leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
+//            rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
+//        }
+//    }
     func startHandTracking() async {
         do {
             if HandTrackingProvider.isSupported {

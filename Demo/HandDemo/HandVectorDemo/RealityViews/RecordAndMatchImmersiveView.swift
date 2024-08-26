@@ -12,6 +12,7 @@ import HandVector
 struct RecordAndMatchImmersiveView: View {
     @Environment(HandViewModel.self) private var model
     @State private var subscriptions = [EventSubscription]()
+    @State private var updateCount: Int = 0
     var body: some View {
         RealityView { content in
             
@@ -22,9 +23,13 @@ struct RecordAndMatchImmersiveView: View {
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 guard let targetVector = model.recordHand else { return }
-                
-                model.leftScores["left"] = model.latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: targetVector)
-                model.rightScores["right"] = model.latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: targetVector)
+                updateCount += 1
+                // low down the update rate
+                if updateCount % 15 == 0 {
+                    updateCount = 0
+                    model.averageAndEachLeftScores = model.latestHandTracking.leftHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: targetVector)
+                    model.averageAndEachRightScores = model.latestHandTracking.rightHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: targetVector)
+                }
             }))
 
         } update: { content in

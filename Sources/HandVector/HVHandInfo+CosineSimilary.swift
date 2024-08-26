@@ -41,10 +41,10 @@ public extension HVHandInfo {
         return similarity(of: .all, to: vector)
     }
     /// all
-    func similarities(to vector: HVHandInfo) -> (average: Float, each: [HVJointOfFinger: Float]) {
+    func similarities(to vector: HVHandInfo) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
         return averageAndEachSimilarities(of: .all, to: vector)
     }
-    func averageAndEachSimilarities(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo) -> (average: Float, each: [HVJointOfFinger: Float]) {
+    func averageAndEachSimilarities(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
         
         let fingerTotal = fingers.reduce(into: [HVJointOfFinger: Float]()) { partialResult, finger in
             let fingerResult = finger.jointGroupNames.reduce(into: Float.zero) { partialResult, name in
@@ -61,6 +61,6 @@ public extension HVHandInfo {
             partialResult += element.value
         }
         let jointCount = fingers.jointGroupNames.count
-        return (average: jointTotal / Float(jointCount), each: fingerScore)
+        return (average: jointTotal / Float(jointCount), eachFinger: fingerScore)
     }
 }

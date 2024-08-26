@@ -7,21 +7,22 @@
 
 import SwiftUI
 
-struct TextProgressView: View {
-    var text: String
-    var value: Float
-    var body: some View {
-        HStack {
-            Text(text).font(.system(size: 50))
-            
-            ProgressView(value: abs(value), total: 1, label: {
-                Text(value.formatted())
-            })
-        }
-        .padding(.horizontal)
-    }
-}
+
 struct MatchAllBuiltin: View {
+    struct TextProgressView: View {
+        var text: String
+        var value: Float
+        var body: some View {
+            HStack {
+                Text(text).font(.system(size: 50))
+                
+                ProgressView(value: abs(value), total: 1, label: {
+                    Text(value.formatted())
+                })
+            }
+            .padding(.horizontal)
+        }
+    }
     @Environment(HandViewModel.self) private var model
     
     var body: some View {

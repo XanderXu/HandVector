@@ -9,7 +9,7 @@ import ARKit
 
 
 public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
-    case thump
+    case thumb
     case indexFinger
     case middleFinger
     case ringFinger
@@ -19,7 +19,7 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
     
     public var jointGroupNames: [HandSkeleton.JointName] {
         switch self {
-        case .thump:
+        case .thumb:
             [.thumbKnuckle, .thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
         case .indexFinger:
             [.indexFingerKnuckle, .indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
@@ -38,10 +38,10 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
 }
 public extension Set<HVJointOfFinger> {
     
-    public static let fiveFingers: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-    public static let fiveFingersAndForeArm: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
-    public static let fiveFingersAndWrist: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
-    public static let all: Set<HVJointOfFinger> = [.thump, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
+    public static let fiveFingers: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
+    public static let fiveFingersAndForeArm: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
+    public static let fiveFingersAndWrist: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
+    public static let all: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
     
     public var jointGroupNames: [HandSkeleton.JointName] {
         var jointNames: [HandSkeleton.JointName] = []

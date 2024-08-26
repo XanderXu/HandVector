@@ -52,7 +52,7 @@ public struct HVFingerShape: Sendable, Equatable {
         var spread: Float? = nil
         let config = finger.fingerShapeConfiguration
         
-        if finger == .thump {
+        if finger == .thumb {
             if fingerShapeTypes.contains(.baseCurl) {
                 let joint = joints[finger.jointGroupNames[1]]!
                 let xAxis = joint.transformToParent.columns.0
@@ -208,7 +208,7 @@ fileprivate extension HVFingerShape {
 fileprivate extension HVJointOfFinger {
     fileprivate var fingerShapeConfiguration: HVFingerShape.FingerShapeConfiguration {
         switch self {
-        case .thump:
+        case .thumb:
             return .thumb
         case .indexFinger:
             return .indexFinger
@@ -225,7 +225,7 @@ fileprivate extension HVJointOfFinger {
     
     fileprivate var nextNeighbourFinger: HVJointOfFinger? {
         switch self {
-        case .thump:
+        case .thumb:
             return .indexFinger
         case .indexFinger:
             return .middleFinger
