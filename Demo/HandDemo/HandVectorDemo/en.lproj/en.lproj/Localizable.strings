@@ -5,5 +5,6 @@
   Created by 许同学 on 2024/3/17.
   
 */
-"matchAllBuiltin" = "Match all builtin Hand gestures";
-"recordAndMatch" = "Record new gesture and match it";
+"matchAllBuiltinHands" = "Match all builtin Hand gestures";
+"recordAndMatchHand" = "Record new gesture and match it";
+"calculateFingerShape" = "Calculate Curl and Spread of finger";

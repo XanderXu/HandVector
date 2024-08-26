@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6C25F8DB2BB01C4B00D54551 /* HandVector in Frameworks */ = {isa = PBXBuildFile; productRef = 6C25F8DA2BB01C4B00D54551 /* HandVector */; };
 		6C3336342C7B4373007B74B3 /* MatchAllBuiltin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3336332C7B4373007B74B3 /* MatchAllBuiltin.swift */; };
+		6C3336362C7CB6B4007B74B3 /* FingerShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3336352C7CB6B4007B74B3 /* FingerShape.swift */; };
+		6C3336382C7CBA0F007B74B3 /* FingerShapeImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3336372C7CBA0F007B74B3 /* FingerShapeImmersiveView.swift */; };
 		6C36A3F52AB7417F00B7B026 /* HandVectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */; };
 		6C36A3FD2AB7418000B7B026 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FC2AB7418000B7B026 /* Assets.xcassets */; };
 		6C36A4002AB7418000B7B026 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C36A3FF2AB7418000B7B026 /* Preview Assets.xcassets */; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		6C3336332C7B4373007B74B3 /* MatchAllBuiltin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchAllBuiltin.swift; sourceTree = "<group>"; };
+		6C3336352C7CB6B4007B74B3 /* FingerShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerShape.swift; sourceTree = "<group>"; };
+		6C3336372C7CBA0F007B74B3 /* FingerShapeImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerShapeImmersiveView.swift; sourceTree = "<group>"; };
 		6C36A3ED2AB7417F00B7B026 /* HandVectorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HandVectorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C36A3F42AB7417F00B7B026 /* HandVectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandVectorApp.swift; sourceTree = "<group>"; };
 		6C36A3FC2AB7418000B7B026 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -136,6 +140,7 @@
 			children = (
 				6C3336332C7B4373007B74B3 /* MatchAllBuiltin.swift */,
 				6CB144DB2BCBBDEB00CEB043 /* RecordAndMatch.swift */,
+				6C3336352C7CB6B4007B74B3 /* FingerShape.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 			children = (
 				6CB144D12BCBB30800CEB043 /* MatchBuildinImmersiveView.swift */,
 				6CB144D52BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift */,
+				6C3336372C7CBA0F007B74B3 /* FingerShapeImmersiveView.swift */,
 			);
 			path = RealityViews;
 			sourceTree = "<group>";
@@ -229,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6CB144DC2BCBBDEB00CEB043 /* RecordAndMatch.swift in Sources */,
+				6C3336362C7CB6B4007B74B3 /* FingerShape.swift in Sources */,
 				6CB144D62BCBB40200CEB043 /* RecordAndMatchImmersiveView.swift in Sources */,
 				6C69C4CF2BEFB7BF000BE896 /* Entity+Extensions.swift in Sources */,
 				6C3336342C7B4373007B74B3 /* MatchAllBuiltin.swift in Sources */,
@@ -236,6 +243,7 @@
 				6CB144D22BCBB30800CEB043 /* MatchBuildinImmersiveView.swift in Sources */,
 				6CB144D02BCBADC400CEB043 /* Module.swift in Sources */,
 				6CB144CA2BCB807400CEB043 /* HandVectorView.swift in Sources */,
+				6C3336382C7CBA0F007B74B3 /* FingerShapeImmersiveView.swift in Sources */,
 				6CB144CC2BCB887400CEB043 /* HandViewModel.swift in Sources */,
 				6C69C4CE2BEFB7BF000BE896 /* Codable+Extensions.swift in Sources */,
 			);

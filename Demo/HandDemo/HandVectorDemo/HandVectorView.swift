@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HandVectorView: View {
-    @State private var selectedModule: Module = .matchAllBuiltin
+    @State private var selectedModule: Module = .matchAllBuiltinHands
     
     @Environment(HandViewModel.self) private var model
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
@@ -32,11 +32,14 @@ struct HandVectorView: View {
             .navigationTitle("Hand Vector Demo")
         } detail: {
             switch selectedModule {
-            case .matchAllBuiltin:
+            case .matchAllBuiltinHands:
                 MatchAllBuiltin()
                     .navigationTitle(selectedModule.name)
-            case .recordAndMatch:
+            case .recordAndMatchHand:
                 RecordAndMatch()
+                    .navigationTitle(selectedModule.name)
+            case .calculateFingerShape:
+                FingerShape()
                     .navigationTitle(selectedModule.name)
             }
             

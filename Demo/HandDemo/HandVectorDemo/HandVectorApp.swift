@@ -20,18 +20,22 @@ struct HandVectorApp: App {
         .windowResizability(.contentSize)
         .defaultSize(width: 1, height: 0.6, depth: 0.1, in: .meters)
 
-        ImmersiveSpace(id: Module.matchAllBuiltin.immersiveId) {
+        ImmersiveSpace(id: Module.matchAllBuiltinHands.immersiveId) {
             MatchBuildinImmersiveView()
                 .environment(model)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
         
-        ImmersiveSpace(id: Module.recordAndMatch.immersiveId) {
+        ImmersiveSpace(id: Module.recordAndMatchHand.immersiveId) {
             RecordAndMatchImmersiveView()
                 .environment(model)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
         
-        
+        ImmersiveSpace(id: Module.calculateFingerShape.immersiveId) {
+            FingerShapeImmersiveView()
+                .environment(model)
+        }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
     }
 }
