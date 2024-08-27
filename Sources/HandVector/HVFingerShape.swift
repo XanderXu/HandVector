@@ -17,22 +17,22 @@ public struct HVFingerShape: Sendable, Equatable {
     }
     
     
-    let finger: HVJointOfFinger
-    let fingerShapeTypes: Set<HVFingerShape.FingerShapeType>
+    public let finger: HVJointOfFinger
+    public let fingerShapeTypes: Set<HVFingerShape.FingerShapeType>
     
-    let fullCurl: Float
-    let baseCurl: Float
-    let tipCurl: Float
+    public let fullCurl: Float
+    public let baseCurl: Float
+    public let tipCurl: Float
     /// not avalible on thumb
-    let pinch: Float?
+    public let pinch: Float?
     /// not avalible on littleFinger
-    let spread: Float?
+    public let spread: Float?
     
     
-    init(finger: HVJointOfFinger, fingerShapeType: HVFingerShape.FingerShapeType, joints: [HandSkeleton.JointName: HVJointInfo]) {
+    public init(finger: HVJointOfFinger, fingerShapeType: HVFingerShape.FingerShapeType, joints: [HandSkeleton.JointName: HVJointInfo]) {
         self.init(finger: finger, fingerShapeTypes: [fingerShapeType], joints: joints)
     }
-    init(finger: HVJointOfFinger, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
+    public init(finger: HVJointOfFinger, fingerShapeTypes: Set<HVFingerShape.FingerShapeType> = .all, joints: [HandSkeleton.JointName: HVJointInfo]) {
         func linearInterpolate(lowerBound: Float, upperBound: Float, value: Float, clamp: Bool = true) -> Float {
             let p = (value-lowerBound)/(upperBound-lowerBound)
             if clamp {

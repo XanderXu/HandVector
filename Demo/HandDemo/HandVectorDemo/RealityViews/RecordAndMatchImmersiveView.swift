@@ -27,8 +27,7 @@ struct RecordAndMatchImmersiveView: View {
                 // low down the update rate
                 if updateCount % 15 == 0 {
                     updateCount = 0
-                    model.averageAndEachLeftScores = model.latestHandTracking.leftHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: targetVector)
-                    model.averageAndEachRightScores = model.latestHandTracking.rightHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: targetVector)
+                    model.matchRecordHandAndFingers()
                 }
             }))
 

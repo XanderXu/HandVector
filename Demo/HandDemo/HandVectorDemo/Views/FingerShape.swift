@@ -14,28 +14,90 @@ struct FingerShape: View {
         var body: some View {
             HStack {
                 Text(text)
-                    .font(.system(size: 20))
-                    .frame(width: 120)
+                    .font(.system(size: 16))
+                    .frame(width: 80)
+//                    .border(.yellow, width: 1)
                 
                 ProgressView(value: abs(value), total: 1, label: {
                     Text(value.formatted())
+                        .font(.system(size: 10))
                 })
             }
-            .padding()
+//            .border(.black, width: 1)
         }
     }
     @Environment(HandViewModel.self) private var model
     
     var body: some View {
         @Bindable var model = model
-        HStack {
+        HStack(spacing: 10) {
             VStack {
-                let leftScores = model.averageAndEachLeftScores
-                TextProgressView(text: "thumb", value: leftScores?.eachFinger[.thumb] ?? 0)
-                TextProgressView(text: "indexFinger", value: leftScores?.eachFinger[.indexFinger] ?? 0)
-                TextProgressView(text: "middleFinger", value: leftScores?.eachFinger[.middleFinger] ?? 0)
-                TextProgressView(text: "ringFinger", value: leftScores?.eachFinger[.ringFinger] ?? 0)
-                TextProgressView(text: "littleFinger", value: leftScores?.eachFinger[.littleFinger] ?? 0)
+                let fingerShapes = model.leftFingerShapes
+                Spacer()
+                HStack {
+                    Text("thumb").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.thumb]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.thumb]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.thumb]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.thumb]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.thumb]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("index").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.indexFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.indexFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.indexFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.indexFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.indexFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("middle").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.middleFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.middleFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.middleFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.middleFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.middleFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("ring").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.ringFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.ringFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.ringFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.ringFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.ringFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("little").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.littleFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.littleFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.littleFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.littleFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.littleFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
             }
             .frame(width: 350)
             
@@ -58,12 +120,72 @@ struct FingerShape: View {
             
             
             VStack {
-                let rightScores = model.averageAndEachRightScores
-                TextProgressView(text: "thumb", value: rightScores?.eachFinger[.thumb] ?? 0)
-                TextProgressView(text: "indexFinger", value: rightScores?.eachFinger[.indexFinger] ?? 0)
-                TextProgressView(text: "middleFinger", value: rightScores?.eachFinger[.middleFinger] ?? 0)
-                TextProgressView(text: "ringFinger", value: rightScores?.eachFinger[.ringFinger] ?? 0)
-                TextProgressView(text: "littleFinger", value: rightScores?.eachFinger[.littleFinger] ?? 0)
+                let fingerShapes = model.rightFingerShapes
+                Spacer()
+                HStack {
+                    Text("thumb").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.thumb]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.thumb]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.thumb]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.thumb]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.thumb]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("index").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.indexFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.indexFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.indexFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.indexFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.indexFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("middle").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.middleFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.middleFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.middleFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.middleFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.middleFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("ring").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.ringFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.ringFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.ringFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.ringFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.ringFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
+                
+                HStack {
+                    Text("little").frame(width: 65)
+                    VStack {
+                        TextProgressView(text: "fullCurl", value: fingerShapes[.littleFinger]?.fullCurl ?? 0)
+                        TextProgressView(text: "baseCurl", value: fingerShapes[.littleFinger]?.baseCurl ?? 0)
+                        TextProgressView(text: "tipCurl", value: fingerShapes[.littleFinger]?.tipCurl ?? 0)
+                        TextProgressView(text: "pinch", value: fingerShapes[.littleFinger]?.pinch ?? 0)
+                        TextProgressView(text: "spread", value: fingerShapes[.littleFinger]?.spread ?? 0)
+                    }
+                }
+                .background()
+                Spacer()
             }
             .frame(width: 350)
         }

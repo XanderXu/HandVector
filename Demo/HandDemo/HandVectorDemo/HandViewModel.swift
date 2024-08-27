@@ -26,6 +26,9 @@ class HandViewModel: @unchecked Sendable {
     var leftScores: [String: Float] = [:]
     var rightScores: [String: Float] = [:]
     
+    var leftFingerShapes: [HVJointOfFinger: HVFingerShape] = [:]
+    var rightFingerShapes: [HVJointOfFinger: HVFingerShape] = [:]
+    
     private let session = ARKitSession()
     private let worldTracking = WorldTrackingProvider()
     private let handTracking = HandTrackingProvider()
@@ -50,15 +53,37 @@ class HandViewModel: @unchecked Sendable {
         averageAndEachLeftScores = nil
         averageAndEachRightScores = nil
         
+        leftFingerShapes = [:]
+        rightFingerShapes = [:]
+        
         clear()
     }
-//    func matchAllBuiltinHands() {
-//        let builtinHands = HVHandInfo.builtinHandInfo
-//        builtinHands.forEach { (key, value) in
-//            leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
-//            rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
-//        }
-//    }
+    func matchAllBuiltinHands() {
+        let builtinHands = HVHandInfo.builtinHandInfo
+        builtinHands.forEach { (key, value) in
+            leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
+            rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
+        }
+    }
+    func matchRecordHandAndFingers() {
+        if let recordHand {
+            averageAndEachLeftScores = latestHandTracking.leftHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+            averageAndEachRightScores = latestHandTracking.rightHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+        }
+    }
+    func calculateFingerShapes() {
+        leftFingerShapes[.thumb] = latestHandTracking.leftHandVector?.calculateFingerShape(finger: .thumb)
+        leftFingerShapes[.indexFinger] = latestHandTracking.leftHandVector?.calculateFingerShape(finger: .indexFinger)
+        leftFingerShapes[.middleFinger] = latestHandTracking.leftHandVector?.calculateFingerShape(finger: .middleFinger)
+        leftFingerShapes[.ringFinger] = latestHandTracking.leftHandVector?.calculateFingerShape(finger: .ringFinger)
+        leftFingerShapes[.littleFinger] = latestHandTracking.leftHandVector?.calculateFingerShape(finger: .littleFinger)
+        
+        rightFingerShapes[.thumb] = latestHandTracking.rightHandVector?.calculateFingerShape(finger: .thumb)
+        rightFingerShapes[.indexFinger] = latestHandTracking.rightHandVector?.calculateFingerShape(finger: .indexFinger)
+        rightFingerShapes[.middleFinger] = latestHandTracking.rightHandVector?.calculateFingerShape(finger: .middleFinger)
+        rightFingerShapes[.ringFinger] = latestHandTracking.rightHandVector?.calculateFingerShape(finger: .ringFinger)
+        rightFingerShapes[.littleFinger] = latestHandTracking.rightHandVector?.calculateFingerShape(finger: .littleFinger)
+    }
     func startHandTracking() async {
         do {
             if HandTrackingProvider.isSupported {

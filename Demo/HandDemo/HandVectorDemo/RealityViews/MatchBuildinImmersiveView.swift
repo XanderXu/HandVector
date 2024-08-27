@@ -21,16 +21,12 @@ struct MatchBuildinImmersiveView: View {
             model.rootEntity = entity
             content.add(entity)
             
-            let builtinHands = HVHandInfo.builtinHandInfo
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
                 updateCount += 1
                 // low down the update rate
                 if updateCount % 15 == 0 {
                     updateCount = 0
-                    builtinHands.forEach { (key, value) in
-                        model.leftScores[key] = model.latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
-                        model.rightScores[key] = model.latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
-                    }
+                    model.matchAllBuiltinHands()
                 }
             }))
             
