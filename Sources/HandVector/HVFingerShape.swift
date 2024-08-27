@@ -68,7 +68,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint = joints[finger.jointGroupNames[2]]!
                 let xAxis = joint.transformToParent.columns.0
                 let angle = atan2(xAxis.y, xAxis.x) / .pi * 180
-                let tipCurl = linearInterpolate(lowerBound: config.minimumTipCurlDegrees1, upperBound: config.maximumTipCurlDegrees1, value: angle)
+                tipCurl = linearInterpolate(lowerBound: config.minimumTipCurlDegrees1, upperBound: config.maximumTipCurlDegrees1, value: angle)
                 
 //                print("tipCurl", angle, tipCurl)
             } else {
@@ -84,7 +84,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let xAxis = joint.transform.columns.0
                 
                 let angle = -atan2(xAxis.z, xAxis.x) / .pi * 180
-                let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
+                spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
                 
 //                print("spread", angle, spread)
             } else {
@@ -127,7 +127,7 @@ public struct HVFingerShape: Sendable, Equatable {
                 let joint1 = joints[.thumbTip]!
                 let joint2 = joints[finger.jointGroupNames.last!]!
                 let distance = simd_distance(joint1.position, joint2.position)
-                let pinch = linearInterpolate(lowerBound: config.maximumPinchDistance, upperBound: config.minimumPinchDistance, value: distance)
+                pinch = linearInterpolate(lowerBound: config.maximumPinchDistance, upperBound: config.minimumPinchDistance, value: distance)
                 
 //                print("pinch", distance,pinch)
             } else {
@@ -155,8 +155,8 @@ public struct HVFingerShape: Sendable, Equatable {
                 let angle1 = atan2(xAxis1H.z, xAxis1H.x) / .pi * 180
                 let angle2 = atan2(xAxis2H.z, xAxis2H.x) / .pi * 180
                 
-                let angle = angle2 - angle2
-                let spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
+                let angle = angle2 - angle1
+                spread = linearInterpolate(lowerBound: config.minimumSpreadDegrees, upperBound: config.maximumSpreadDegrees, value: angle)
                 
 //                print("spread",angle1, angle2, angle, spread)
             } else {

@@ -64,13 +64,13 @@ public class HandVectorManager {
             if let left {
                 updateHandEntity(from: handInfo, inEntiy: left)
             } else {
-                generateHandEntity(from: handInfo, filter: filter)
+                left = generateHandEntity(from: handInfo, filter: filter)
             }
         } else if handInfo.chirality == .right {
             if let right {
                 updateHandEntity(from: handInfo, inEntiy: right)
             } else {
-                generateHandEntity(from: handInfo, filter: filter)
+                right = generateHandEntity(from: handInfo, filter: filter)
             }
         }
     }

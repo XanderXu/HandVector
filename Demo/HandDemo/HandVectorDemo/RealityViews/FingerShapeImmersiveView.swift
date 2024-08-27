@@ -26,7 +26,7 @@ struct FingerShapeImmersiveView: View {
                 // low down the update rate
                 if updateCount % 15 == 0 {
                     updateCount = 0
-                    model.latestHandTracking.leftHandVector?.calculateFingerShape(finger: .thumb, fingerShapeTypes: .all)
+                    model.calculateFingerShapes()
                 }
             }))
             
