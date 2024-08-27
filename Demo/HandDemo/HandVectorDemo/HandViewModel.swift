@@ -74,14 +74,7 @@ class HandViewModel: @unchecked Sendable {
     func publishHandTrackingUpdates() async {
         for await update in handTracking.anchorUpdates {
             switch update.event {
-            case .added:
-                let anchor = update.anchor
-//                guard anchor.isTracked else { continue }
-                let handInfo = latestHandTracking.generateHandInfo(from: anchor)
-                if let handInfo {
-                    await latestHandTracking.generateHandSkeletonEntity(from: handInfo, to: rootEntity)
-                }
-            case .updated:
+            case .added, .updated:
                 let anchor = update.anchor
                 guard anchor.isTracked else {
                     continue
@@ -89,6 +82,12 @@ class HandViewModel: @unchecked Sendable {
                 let handInfo = latestHandTracking.generateHandInfo(from: anchor)
                 if let handInfo {
                     await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
+                    if let left = latestHandTracking.left {
+                        await rootEntity?.addChild(left)
+                    }
+                    if let right = latestHandTracking.right {
+                        await rootEntity?.addChild(right)
+                    }
                 }
             case .removed:
                 let anchor = update.anchor

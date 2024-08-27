@@ -96,9 +96,10 @@ struct RecordAndMatch: View {
                 
                 Group {
                     HStack {
-                        Text("left score:\(model.averageAndEachLeftScores?.average.formatted() ?? "0")")
+                        
+                        Text("left score:\(model.averageAndEachLeftScores?.average.formatted(.number.precision(.fractionLength(4))) ?? "0")")
                             .frame(width: 150)
-                        Text("right score:\(model.averageAndEachRightScores?.average.formatted() ?? "0")")
+                        Text("right score:\(model.averageAndEachRightScores?.average.formatted(.number.precision(.fractionLength(4))) ?? "0")")
                             .frame(width: 150)
                     }
                     .padding(.bottom, 30)

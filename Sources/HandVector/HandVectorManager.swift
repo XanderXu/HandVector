@@ -56,25 +56,22 @@ public class HandVectorManager {
         return handInfo
     }
     
-    @MainActor
-    @discardableResult
-    public func generateHandSkeletonEntity(from handInfo: HVHandInfo, to: Entity?, filter: CollisionFilter = .default) async -> Entity {
-        let entity = generateHandEntity(from: handInfo, filter: filter)
-        to?.addChild(entity)
-        if handInfo.chirality == .left {
-            self.left = entity
-        } else if handInfo.chirality == .right {
-            self.right = entity
-        }
-        return entity
-    }
+    
     
     @MainActor
-    public func updateHandSkeletonEntity(from handInfo: HVHandInfo) async {
+    public func updateHandSkeletonEntity(from handInfo: HVHandInfo, filter: CollisionFilter = .default) async {
         if handInfo.chirality == .left {
-            updateHandEntity(from: handInfo, to: left!)
+            if let left {
+                updateHandEntity(from: handInfo, inEntiy: left)
+            } else {
+                generateHandEntity(from: handInfo, filter: filter)
+            }
         } else if handInfo.chirality == .right {
-            updateHandEntity(from: handInfo, to: right!)
+            if let right {
+                updateHandEntity(from: handInfo, inEntiy: right)
+            } else {
+                generateHandEntity(from: handInfo, filter: filter)
+            }
         }
     }
     public func removeHand(from handAnchor: HandAnchor) {
@@ -100,7 +97,7 @@ public class HandVectorManager {
                 left = generateHandEntity(from: leftHandVector, filter: filter)
             } else {
                 left?.isEnabled = true
-                updateHandEntity(from: leftHandVector, to: left!)
+                updateHandEntity(from: leftHandVector, inEntiy: left!)
             }
         } else {
             left?.isEnabled = false
@@ -112,7 +109,7 @@ public class HandVectorManager {
                 right = generateHandEntity(from: rightHandVector, filter: filter)
             } else {
                 right?.isEnabled = true
-                updateHandEntity(from: rightHandVector, to: right!)
+                updateHandEntity(from: rightHandVector, inEntiy: right!)
             }
         } else {
             right?.isEnabled = false
@@ -148,14 +145,14 @@ public class HandVectorManager {
         }
         return hand
     }
-    private func updateHandEntity(from handVector: HVHandInfo, to: Entity) {
-        to.transform.matrix = handVector.transform
+    private func updateHandEntity(from handVector: HVHandInfo, inEntiy: Entity) {
+        inEntiy.transform.matrix = handVector.transform
         for positionInfo in handVector.allJoints.values {
-            let modelEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-model")
+            let modelEntity = inEntiy.findEntity(named: positionInfo.name.codableName.rawValue + "-model")
             modelEntity?.transform.matrix = positionInfo.transform
             modelEntity?.isEnabled = isSkeletonVisible
             
-            let collisionEntity = to.findEntity(named: positionInfo.name.codableName.rawValue + "-collision")
+            let collisionEntity = inEntiy.findEntity(named: positionInfo.name.codableName.rawValue + "-collision")
             collisionEntity?.transform.matrix = positionInfo.transform
             collisionEntity?.isEnabled = isCollisionEnable
         }
