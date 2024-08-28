@@ -6,8 +6,9 @@
   <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9" />
   <img src="https://img.shields.io/badge/Platforms-visionOS-brightgreen?style=flat-square" alt="Swift 5.9" />
 </p>
-
 [English](./README.md)
+
+[旧版本](./READMEv1/README_CN.md)
 
 **HandVector** 在 visionOS 上计算不同静态手势之间的相似度，并且带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
 
