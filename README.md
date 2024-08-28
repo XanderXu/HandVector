@@ -6,7 +6,9 @@
   <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9" />
   <img src="https://img.shields.io/badge/Platforms-visionOS-brightgreen?style=flat-square" alt="Swift 5.9" />
 </p>
+
 [中文版](./README_CN.md)
+
 
 **HandVector** calculates the similarity between different static gestures on visionOS and comes with a macOS utility class that allows you to use gesture tracking in the visionOS simulator as well.
 
