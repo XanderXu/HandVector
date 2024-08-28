@@ -304,7 +304,7 @@ public struct SimHand: Codable {
                     allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
-                leftVector = HVHandJsonModel(name: "SimLeft", chirality: .left, transform: transform, joints: allJoints).convertToHandVectorMatcher()
+                leftVector = HVHandJsonModel(name: "SimLeft", chirality: .left, transform: transform, joints: allJoints).convertToHVHandInfo()
                 //HandVectorMatcher(chirality: .left, allJoints: allPositions, transform: transform)
             } else if handednesses.first?.categoryName == "Left" {
                 let xAxis = -normalize(middleFingerKnuckle.position - wrist.position)
@@ -319,7 +319,7 @@ public struct SimHand: Codable {
                     allJoints.append(jsonJoint)
                 }
                 let transform = simd_float4x4([matrix.columns.0, matrix.columns.1, matrix.columns.2, matrix.columns.3 + simd_float4(offset, 0)])
-                rightVector = HVHandJsonModel(name: "SimRight", chirality: .right, transform: transform, joints: allJoints).convertToHandVectorMatcher()
+                rightVector = HVHandJsonModel(name: "SimRight", chirality: .right, transform: transform, joints: allJoints).convertToHVHandInfo()
             }
         }
         return (left: leftVector, right: rightVector)

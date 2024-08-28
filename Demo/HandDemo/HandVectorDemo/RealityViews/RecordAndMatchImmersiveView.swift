@@ -22,7 +22,6 @@ struct RecordAndMatchImmersiveView: View {
             content.add(entity)
             
             subscriptions.append(content.subscribe(to: SceneEvents.Update.self, on: nil, { event in
-                guard let targetVector = model.recordHand else { return }
                 updateCount += 1
                 // low down the update rate
                 if updateCount % 15 == 0 {

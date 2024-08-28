@@ -20,7 +20,7 @@ public struct HVHandInfo: Sendable, Equatable {
     }
     public static var builtinHandInfo: [String : HVHandInfo] {
         let dict = HVHandJsonModel.loadHandJsonModelDict(fileName: "BuiltinHand", bundle: handAssetsBundle)!.reduce(into: [String: HVHandInfo](), {
-            $0[$1.key] = $1.value.convertToHandVectorMatcher()
+            $0[$1.key] = $1.value.convertToHVHandInfo()
         })
         return dict
     }

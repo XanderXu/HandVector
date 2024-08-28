@@ -65,7 +65,7 @@ public struct HVHandJsonModel:Sendable, Equatable {
         return nil
     }
     
-    public func convertToHandVectorMatcher() -> HVHandInfo? {
+    public func convertToHVHandInfo() -> HVHandInfo? {
         let jsonDict = joints.reduce(into: [HandSkeleton.JointName: HVJointJsonModel]()) {
             $0[$1.name.jointName!] = $1
         }

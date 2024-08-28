@@ -9,7 +9,11 @@
 
 [English](./README.md)
 
-**HandVector** 使用**余弦相似度**算法，在 vsionOS 上计算不同手势之间的相似度，还带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
+**HandVector** 在 vsionOS 上计算不同静态手势之间的相似度，并且带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
+
+HandVector 2.0 版本是一个大更新，带来更好的 **余弦相似度Cosine Similarity** 匹配效果和 **手指形状参数FingerShape** 功能，更方便自定义使用。
+
+> 注意：HandVector 2.0 有重大 API 改动，与旧版本不兼容。
 
 <p align="center">
     <a href="#requirements">环境要求</a> • <a href="#usage">用法</a> • <a href="#installation">安装</a> • <a href="#contribution">贡献</a> • <a href="#contact">联系方式</a> • <a href="#license-mit">许可证</a>
@@ -24,81 +28,111 @@
 
 ## 用法
 
-你可以下载运行软件包中的 demo 工程来查看如何使用，也可以从 App Store 中下载使用了 **HandVector** 的 App 来查看功能演示：
+`HandVector 2.0` 支持两种手势匹配方法，它们计算理念不同，适用不同情况，也可一起混合使用：
 
-1. [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901) : FingerEmoji 让你的手指与 Emoji 共舞，你可以做出相同的手势并撞击 Emoji 卡片得分。
-
-   ![960x540mv](./Resources/960x540mv.webp)
-
-2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** 使用 Vision Pro 上的手势来控制大疆 DJI Tello 无人机，并且目前它已经 [开源](https://github.com/zlinoliver/SkyGestures) 了！
-
-   ![](./Resources/skygestures_demo1.gif)
+* **余弦相似度Cosine Similarity**：完全匹配指定手指的每个关节，使用每个关节点相对于父关节的矩阵信息，精准度高。优点：精度高，可适用手指与手腕；缺点：可解释性差，难以调整范围。
+* **手指形状参数FingerShape**：参考 Unity 的 [XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) 框架，将手指形状化简为： `指根卷曲度 baseCurl`、 `指尖卷曲度 tipCurl`、 `整体卷曲度 fullCurl`、 `（与拇指）捏合度 pinch`、 `（与外侧相邻手指）分离度 spread` 5 个参数。优点：数值方便理解，方便控制与调整；缺点：未充分利用关节位姿信息，精度不够高，且只适用 5 根手指。
 
 
 
-### 1.匹配内置的 OK 手势
+### 1.余弦相似度手势匹配
 
-![](./Resources/handVectorDemoMatchOK.gif)
+`HandVector` 支持匹配内置的手势，也支持自行录制保存自定义手势。目前内置的手势有 8 种：👆✌️✋👌✊🤘🤙🫱🏿‍🫲🏻
 
-`HandVector` 可以让你追踪双手关节的姿态，并与先前记录下的手势相比较，得出它们的相似度:
+> 🫱🏿‍🫲🏻：握、抓住
+
+#### a.匹配内置的手势
+
+
+
+追踪双手关节的姿态，并与内置的手势相比较，得出它们的相似度。
 
 ```swift
 import HandVector
 
-//从 json 文件中加载先前记录下的手势
-model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
-guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
-
-//从 HandTrackingProvider 中获取当前手势，并更新
+//从 HandTrackingProvider 中获取当前手部信息，并转换为 `HVHandInfo`
 for await update in handTracking.anchorUpdates {
     switch update.event {
     case .added, .updated:
         let anchor = update.anchor
         guard anchor.isTracked else { continue }
-        await latestHandTracking.updateHand(from: anchor)
+        let handInfo = latestHandTracking.generateHandInfo(from: anchor)
     case .removed:
         ...
     }
 }
 
-
-//计算相似度
-let leftScore = model.latestHandTracking.leftHandVector?.similarity(to: leftOKVector) ?? 0
-model.leftScore = Int(abs(leftScore) * 100)
-let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOKVector) ?? 0
-model.rightScore = Int(abs(rightScore) * 100)
+//从 json 文件中加载内置的手势
+let builtinHands = HVHandInfo.builtinHandInfo
+//计算与内置手势的相似度,`.fiveFingers`表示只匹配 5 根手指，忽略手腕和手掌
+builtinHands.forEach { (key, value) in
+    leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
+    rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
+}
 ```
 
 相似度得分在 `[-1.0,1.0]` 之间， `1.0` 含义为手势完全匹配并且左右手也匹配， `-1.0 ` 含义为手势完全匹配但一个是左手一个是右手， `0` 含义为完全不匹配。
 
-### 2. 录制自定义的新手势并匹配它
+#### b. 录制自定义的新手势并匹配它
 
-![](./Resources/handVectorDemoRecordMatch.gif)
-
-`HandVector` 允许你录制你的自定义手势，并保存为 JSON 字符串:
+录制自定义手势，并利用 `HVHandJsonModel` 保存为 JSON 字符串:
 
 ```swift
-let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
-model.recordHand = para
-
-jsonString = para?.toJson()
+if let left = model.latestHandTracking.leftHandVector {
+    let para = HVHandJsonModel.generateJsonModel(name: "YourHand", handVector: left)
+    jsonString = para.toJson()
+    //保存 jsonString 到磁盘或网络
+    ...
+}
 ```
 
-然后，你还可以将 JSON 字符串转换为 `HandVectorMatcher` 类型，这样就可以进行手势匹配了：
+然后，将保存的 JSON 字符串转换为 `HVHandInfo` 类型进行手势匹配：
 
 ```swift
-guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
+//从 JSON 字符串转换
+let handInfo = jsonStr.toModel(HVHandJsonModel.self)!.convertToHVHandInfo()
+//从磁盘加载 JSON 并转换
+let handInfo = HVHandJsonModel.loadHandJsonModel(fileName: "YourJsonFileName")!.convertToHVHandInfo()
 
-let targetLeft = targetVector.left ?? targetVector.right
-let targetRight = targetVector.right ?? targetVector.left
+//用 `HVHandInfo` 类型进行手势匹配，可以将每根手指单独计算相似度
+if let handInfo {
+    averageAndEachLeftScores = latestHandTracking.leftHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+    averageAndEachRightScores = latestHandTracking.rightHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+}
 
-let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
-model.leftScore = Int(abs(leftScore) * 100)
-let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
-model.rightScore = Int(abs(rightScore) * 100)
 ```
 
+### 2.手指形状参数FingerShape
 
+![XRHandsCoverImage](./Resources//UntityXRHandsCoverImage.png)
+
+该方法重点参考了 Unity 中知名 XR 手势框架：[XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) 。
+
+相关参数的定义也类似：
+
+*  **指根卷曲度 baseCurl**：手指根部关节的卷曲度，大拇指为 `IntermediateBase` 关节，其余手指为 `Knuckle` 关节，范围 0～1
+
+![FingerShapeBaseCurl](./Resources/FingerShapeBaseCurl.png)
+
+*  **指尖卷曲度 tipCurl**：手指上部关节的卷曲度，大拇指为 `IntermediateTip` 关节，其余手指为 `IntermediateBase` 和 `IntermediateTip` 两个关节的平均值，范围 0～1
+
+![FingerShapeTipCurl](./Resources/FingerShapeTipCurl.png)
+
+* **整体卷曲度 fullCurl**：baseCurl 与 tipCurl 的平均值，范围 0～1
+
+![FingerShapFullCurl](./Resources/FingerShapFullCurl.png)
+
+* **（与拇指）捏合度 pinch**：计算与拇指指尖的距离，范围 0～1，拇指该参数为 `nil`
+
+![FingerShapePinch](./Resources/FingerShapePinch.png)
+
+* **（与外侧相邻手指）分离度 spread**：只计算水平方向上的夹角，范围 0～1，小拇指该参数为 `nil`
+
+![FingerShapeSpread](./Resources/FingerShapeSpread.png)
+
+关于三个不同的卷曲度有什么区别，可以参考下图：
+
+![FingerShapeDifferenceCurl](./Resources/FingerShapeDifferenceCurl.png)
 
 ### 3. 在模拟器上测试
 
@@ -107,7 +141,7 @@ model.rightScore = Int(abs(rightScore) * 100)
 它分为 2 部分:
 
 1. 一个 macOS 工具 app, 带有 bonjour 网络服务
-2. 一个 Swift 类，用来在你的项目中连接到 bonjour 服务（本 package 中已自带，并自动接收转换为对应手势)
+2. 一个 Swift 类，用来在你的项目中连接到 bonjour 服务（本 package 中已自带，并自动接收转换为对应手势，HandVector 2.0 版本中更新了大量数学“黑魔法”来实现新的匹配算法)
 
 #### macOS Helper App
 
@@ -132,7 +166,7 @@ model.rightScore = Int(abs(rightScore) * 100)
 要使用苹果的 Swift Package Manager 集成，将以下内容作为依赖添加到你的 `Package.swift`：
 
 ```
-.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.3.0"))
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "2.0.0"))
 ```
 
 #### 手动
