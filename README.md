@@ -6,10 +6,13 @@
   <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9" />
   <img src="https://img.shields.io/badge/Platforms-visionOS-brightgreen?style=flat-square" alt="Swift 5.9" />
 </p>
-
 [中文版](./README_CN.md)
 
-**HandVector** uses **Cosine Similarity** Algorithm to calculate the similarity of hand gestures in visionOS, and with a macOS tool to test hand tracking in visionOS simulator.
+**HandVector** calculates the similarity between different static gestures on visionOS and comes with a macOS utility class that allows you to use gesture tracking in the visionOS simulator as well.
+
+HandVector version 2.0 is a major update, bringing the improved **Cosine Similarity**  and the **FingerShape** feature for easier customization.
+
+> Note: HandVector 2.0 has significant API changes and is not compatible with older versions.
 
 <p align="center">
     <a href="#requirements">Requirements</a> • <a href="#usage">Usage</a> • <a href="#installation">Installation</a> • <a href="#contribution">Contribution</a> • <a href="#contact">Contact</a> • <a href="#license-mit">License</a>
@@ -23,81 +26,169 @@
 
 ## Usage
 
-Your can run demo in package to see how to use it, and also can try an Vision Pro App. And also can see the App  in App Store whitch uses `HandVector` to match gesture: 
+`HandVector 2.0` supports two kinds of gesture matching methods, which differ in their calculation principles and are suitable for different scenarios. They can also be mixed used together in a project:
 
-1. [FingerEmoji](https://apps.apple.com/us/app/fingeremoji/id6476075901) : FingerEmoji Let your finger dance with Emoji, you can Hit the emoji card by hand with the same gesture.
+* **Cosine Similarity**: This method matches each joint of the specified fingers precisely, using the matrix information of each joint relative to its parent joint, resulting in high accuracy. Advantages: High precision, applicable to fingers and wrists; Disadvantages: Poor interpretability, difficult to adjust the range.
+* **FingerShape**: Referencing Unity's [XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) framework, this method simplifies the finger shape into five parameters: `baseCurl` (curl at the base of the finger), `tipCurl` (curl at the tip of the finger), `fullCurl` (overall curl of the finger), `pinch` (distance of pinching with the thumb), and `spread` (degree of separation from the adjacent outer finger). Advantages: The values are easy to understand and convenient to control and adjust; Disadvantages: Does not fully utilize joint pose information, thus not as precise, and is only applicable to five fingers.
 
-   ![960x540mv](./Resources/960x540mv.webp)
-
-2. [SkyGestures](https://apps.apple.com/us/app/skygestures/id6499123392): **[SkyGestures](https://github.com/zlinoliver/SkyGestures)** is an innovative app that uses hand gestures to control DJI Tello drones via the Vision Pro platform. It's [Open Source](https://github.com/zlinoliver/SkyGestures) now.
-
-   ![](./Resources/skygestures_demo1.gif)
-
-
-
-### 1. Match builtin hand gesture: OK
-
-![](./Resources/handVectorDemoMatchOK.gif)
-
-`HandVector` allows you to track your hands, and calculate the similarity between your current hand to another recorded hand gesture:
+### 1. Cosine Similarity Gesture Matching
+`HandVector` supports matching built-in gestures as well as recording and saving custom gestures for later use. Currently, there are 8 built-in gestures: 👆✌️✋👌✊🤘🤙🫱🏿‍🫲🏻
+> 🫱🏿‍🫲🏻: Grab, grasp
+#### a. Matching Built-in Gestures
+![MatchAllBuiltin](./Resources/MatchAllBuiltin.gif)
 
 ```swift
+
 import HandVector
 
-//load recorded hand gesture from json file
-model.handEmojiDict = HandEmojiParameter.generateParametersDict(fileName: "HandEmojiTotalJson")!
-guard let okVector = model.handEmojiDict["👌"]?.convertToHandVectorMatcher(), let leftOKVector = okVector.left else { return }
 
-//update current handTracking from HandTrackingProvider
+
+//Get current Hand info from `HandTrackingProvider` , and convert to `HVHandInfo`
+
 for await update in handTracking.anchorUpdates {
-    switch update.event {
-    case .added, .updated:
-        let anchor = update.anchor
-        guard anchor.isTracked else { continue }
-        await latestHandTracking.updateHand(from: anchor)
-    case .removed:
-        ...
-    }
+
+  switch update.event {
+
+  case .added, .updated:
+
+    let anchor = update.anchor
+
+    guard anchor.isTracked else { continue }
+
+    let handInfo = latestHandTracking.generateHandInfo(from: anchor)
+
+  case .removed:
+
+    ...
+
+  }
+
 }
 
 
-//calculate the similarity
-let leftScore = model.latestHandTracking.leftHandVector?.similarity(to: leftOKVector) ?? 0
-model.leftScore = Int(abs(leftScore) * 100)
-let rightScore = model.latestHandTracking.rightHandVector?.similarity(to: leftOKVector) ?? 0
-model.rightScore = Int(abs(rightScore) * 100)
+
+//Load built-in gesture from json file
+
+let builtinHands = HVHandInfo.builtinHandInfo
+
+//Calculate the similarity with the built-in gestures, `.fiveFingers` indicates matching only the 5 fingers, ignoring the wrist and palm.
+
+builtinHands.forEach { (key, value) in
+
+  leftScores[key] = latestHandTracking.leftHandVector?.similarity(of: .fiveFingers, to: value)
+
+  rightScores[key] = latestHandTracking.rightHandVector?.similarity(of: .fiveFingers, to: value)
+
+}
+
 ```
 
 the score should be in `[-1.0,1.0]`, `1.0` means fully matched and both are left or right hands, `-1.0 `means fully matched but one is left hand, another is right hand, and `0` means not matched.
 
-### 2. Record a new gesture and match
+#### b. Record custom gesture and match it
 
-![](./Resources/handVectorDemoRecordMatch.gif)
 
-`HandVector` allows you to record your custom hands gesture, and save as JSON string:
 
-```swift
-let para = HandEmojiParameter.generateParameters(name: "both", leftHandVector: model.latestHandTracking.leftHandVector, rightHandVector: model.latestHandTracking.rightHandVector)
-model.recordHand = para
+![RecordAndMatch](./Resources/RecordAndMatch.gif)
 
-jsonString = para?.toJson()
-```
 
-And then, you can turn this JSON string to `HandVectorMatcher`，so you can use it to match your gesture now:
+
+Record a custom gesture and save it as a JSON string using `HVHandJsonModel`:
+
+
 
 ```swift
-guard let targetVector = model.recordHand?.convertToHandVectorMatcher(), targetVector.left != nil || targetVector.right != nil else { return }
 
-let targetLeft = targetVector.left ?? targetVector.right
-let targetRight = targetVector.right ?? targetVector.left
+if let left = model.latestHandTracking.leftHandVector {
 
-let leftScore = model.latestHandTracking.leftHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetLeft!) ?? 0
-model.leftScore = Int(abs(leftScore) * 100)
-let rightScore = model.latestHandTracking.rightHandVector?.similarity(of: HandVectorMatcher.allFingers, to: targetRight!) ?? 0
-model.rightScore = Int(abs(rightScore) * 100)
+  let para = HVHandJsonModel.generateJsonModel(name: "YourHand", handVector: left)
+
+  jsonString = para.toJson()
+
+  //Save jsonString to disk or network
+
+  ...
+
+}
+
 ```
 
 
+
+Next, convert the saved JSON string into the `HVHandInfo` type for gesture matching:
+
+
+
+```swift
+
+//Convert from JSON string
+
+let handInfo = jsonStr.toModel(HVHandJsonModel.self)!.convertToHVHandInfo()
+
+//Load JSON file from disk, and convert
+
+let handInfo = HVHandJsonModel.loadHandJsonModel(fileName: "YourJsonFileName")!.convertToHVHandInfo()
+
+
+
+//Using the `HVHandInfo` type for gesture matching allows you to calculate the similarity for each finger individually.
+
+if let handInfo {
+
+  averageAndEachLeftScores = latestHandTracking.leftHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+
+  averageAndEachRightScores = latestHandTracking.rightHandVector?.averageAndEachSimilarities(of: .fiveFingers, to: recordHand)
+
+}
+
+
+
+```
+
+
+
+### 2.Finger Shape Parameter
+
+
+
+![XRHandsCoverImage](./Resources//UntityXRHandsCoverImage.png)
+
+
+
+This method draws significant reference from the well-known XR gesture framework in Unity: [XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html).
+
+
+
+![FingerShaper](./Resources/FingerShaper.gif)
+
+
+
+The definitions of the related parameters are similar:
+* **baseCurl**: The degree of curl at the root joint of the finger. For the thumb, it is the `IntermediateBase` joint, and for the other fingers, it is the `Knuckle` joint, with a range of 0 to 1.
+
+![FingerShapeBaseCurl](./Resources/FingerShapeBaseCurl.png)
+
+
+
+* **tipCurl**：The degree of curl at the upper joint of the finger. For the thumb, it is the `IntermediateTip` joint, and for the other fingers, it is the average value of the `IntermediateBase` and `IntermediateTip` joints, with a range of 0 to 1.
+
+![FingerShapeTipCurl](./Resources/FingerShapeTipCurl.png)
+
+* **fullCurl**：The average value of baseCurl and tipCurl, with a range of 0 to 1.
+
+![FingerShapFullCurl](./Resources/FingerShapFullCurl.png)
+
+* **pinch**：The distance from the tip of the thumb, with a range of 0 to 1. For the thumb, this parameter is `nil`.
+
+![FingerShapePinch](./Resources/FingerShapePinch.png)
+
+* **spread**：Only the horizontal spread angle is calculated, with a range of 0 to 1. For the little finger, this parameter is `nil`.
+
+![FingerShapeSpread](./Resources/FingerShapeSpread.png)
+
+Regarding the differences between the three types of curl degrees, you can refer to the following image:
+
+![FingerShapeDifferenceCurl](./Resources/FingerShapeDifferenceCurl.png)
 
 ### 3. Test hand gesture on Mac simulator
 
@@ -106,7 +197,7 @@ The test method of`HandVector`  is inspired by  [VisionOS Simulator hands](https
 It uses 2 things:
 
 1. A macOS helper app, with a bonjour service
-2. A Swift class for your VisionOS project which connects to the bonjour service (already in this package, and already turn JSON data to hand gestures)
+2. A Swift class for your VisionOS project which connects to the bonjour service (It comes with this package, and automatically receives and converts to the corresponding gesture; HandVector 2.0 version has updated  mathematical "black magic" to achieve the new matching algorithm.)
 
 #### macOS Helper App
 
@@ -131,7 +222,7 @@ To go further, take a look at the documentation and the demo project.
 To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
 ```
-.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "0.3.0"))
+.package(url: "https://github.com/XanderXu/HandVector.git", .upToNextMajor(from: "2.0.0"))
 ```
 
 #### Manually

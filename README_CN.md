@@ -9,7 +9,7 @@
 
 [English](./README.md)
 
-**HandVector** 在 vsionOS 上计算不同静态手势之间的相似度，并且带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
+**HandVector** 在 visionOS 上计算不同静态手势之间的相似度，并且带有一个 macOS 的工具类能让你在 visionOS 模拟器上也能使用手势追踪功能。
 
 HandVector 2.0 版本是一个大更新，带来更好的 **余弦相似度Cosine Similarity** 匹配效果和 **手指形状参数FingerShape** 功能，更方便自定义使用。
 
