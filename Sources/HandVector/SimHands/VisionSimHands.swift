@@ -166,25 +166,25 @@ public struct SimHand: Codable {
         let rootZ = rootTransform.columns.2.xyz
         
         // indexFingerMetacarpal
-        let indexMetaX = normalize(jointDict[.indexFingerMetacarpal]!.position - jointDict[.wrist]!.position) * (isLeft ? 1 : -1)
+        let indexMetaX = normalize(jointDict[.indexFingerKnuckle]!.position - jointDict[.indexFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
         let indexMetaY = cross(rootZ, indexMetaX)
         let indexMetaZ = cross(indexMetaX, indexMetaY)
         worldTransforms[.indexFingerMetacarpal] = simd_float4x4(SIMD4(indexMetaX, 0), SIMD4(indexMetaY, 0), SIMD4(indexMetaZ, 0), SIMD4(jointDict[.indexFingerMetacarpal]!.position, 1))
         
         // indexFingerKnuckle
-        let indexKnuckleX = normalize(jointDict[.indexFingerKnuckle]!.position - jointDict[.indexFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
+        let indexKnuckleX = normalize(jointDict[.indexFingerIntermediateBase]!.position - jointDict[.indexFingerKnuckle]!.position) * (isLeft ? 1 : -1)
         let indexKnuckleY = cross(indexMetaZ, indexKnuckleX)
         let indexKnuckleZ = cross(indexKnuckleX, indexKnuckleY)
         worldTransforms[.indexFingerKnuckle] = simd_float4x4(SIMD4(indexKnuckleX, 0), SIMD4(indexKnuckleY, 0), SIMD4(indexKnuckleZ, 0), SIMD4(jointDict[.indexFingerKnuckle]!.position, 1))
         
         // indexFingerIntermediateBase
-        let indexInterBaseX = normalize(jointDict[.indexFingerIntermediateBase]!.position - jointDict[.indexFingerKnuckle]!.position) * (isLeft ? 1 : -1)
+        let indexInterBaseX = normalize(jointDict[.indexFingerIntermediateTip]!.position - jointDict[.indexFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
         let indexInterBaseY = cross(indexKnuckleZ, indexInterBaseX)
         let indexInterBaseZ = cross(indexInterBaseX, indexInterBaseY)
-        worldTransforms[.indexFingerIntermediateBase] = simd_float4x4(SIMD4(indexKnuckleX, 0), SIMD4(indexKnuckleY, 0), SIMD4(indexKnuckleZ, 0), SIMD4(jointDict[.indexFingerIntermediateBase]!.position, 1))
+        worldTransforms[.indexFingerIntermediateBase] = simd_float4x4(SIMD4(indexInterBaseX, 0), SIMD4(indexInterBaseY, 0), SIMD4(indexInterBaseZ, 0), SIMD4(jointDict[.indexFingerIntermediateBase]!.position, 1))
         
         // indexFingerIntermediateTip
-        let indexInterTipX = normalize(jointDict[.indexFingerIntermediateTip]!.position - jointDict[.indexFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
+        let indexInterTipX = normalize(jointDict[.indexFingerTip]!.position - jointDict[.indexFingerIntermediateTip]!.position) * (isLeft ? 1 : -1)
         let indexInterTipY = cross(indexInterBaseZ, indexInterTipX)
         let indexInterTipZ = cross(indexInterTipX, indexInterTipY)
         worldTransforms[.indexFingerIntermediateTip] = simd_float4x4(SIMD4(indexInterTipX, 0), SIMD4(indexInterTipY, 0), SIMD4(indexInterTipZ, 0), SIMD4(jointDict[.indexFingerIntermediateTip]!.position, 1))
@@ -193,25 +193,25 @@ public struct SimHand: Codable {
         worldTransforms[.indexFingerTip] = simd_float4x4(SIMD4(indexInterTipX, 0), SIMD4(indexInterTipY, 0), SIMD4(indexInterTipZ, 0), SIMD4(jointDict[.indexFingerTip]!.position, 1))
         
         // middleFingerMetacarpal
-        let middleMetaX = normalize(jointDict[.middleFingerMetacarpal]!.position - jointDict[.wrist]!.position) * (isLeft ? 1 : -1)
+        let middleMetaX = normalize(jointDict[.middleFingerKnuckle]!.position - jointDict[.middleFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
         let middleMetaY = cross(rootZ, middleMetaX)
         let middleMetaZ = cross(middleMetaX, middleMetaY)
         worldTransforms[.middleFingerMetacarpal] = simd_float4x4(SIMD4(middleMetaX, 0), SIMD4(middleMetaY, 0), SIMD4(middleMetaZ, 0), SIMD4(jointDict[.middleFingerMetacarpal]!.position, 1))
         
         // middleFingerKnuckle
-        let middleKnuckleX = normalize(jointDict[.middleFingerKnuckle]!.position - jointDict[.middleFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
+        let middleKnuckleX = normalize(jointDict[.middleFingerIntermediateBase]!.position - jointDict[.middleFingerKnuckle]!.position) * (isLeft ? 1 : -1)
         let middleKnuckleY = cross(middleMetaZ, middleKnuckleX)
         let middleKnuckleZ = cross(middleKnuckleX, middleKnuckleY)
         worldTransforms[.middleFingerKnuckle] = simd_float4x4(SIMD4(middleKnuckleX, 0), SIMD4(middleKnuckleY, 0), SIMD4(middleKnuckleZ, 0), SIMD4(jointDict[.middleFingerKnuckle]!.position, 1))
         
         // middleFingerIntermediateBase
-        let middleInterBaseX = normalize(jointDict[.middleFingerIntermediateBase]!.position - jointDict[.middleFingerKnuckle]!.position) * (isLeft ? 1 : -1)
+        let middleInterBaseX = normalize(jointDict[.middleFingerIntermediateTip]!.position - jointDict[.middleFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
         let middleInterBaseY = cross(middleKnuckleZ, middleInterBaseX)
         let middleInterBaseZ = cross(middleInterBaseX, middleInterBaseY)
-        worldTransforms[.middleFingerIntermediateBase] = simd_float4x4(SIMD4(middleKnuckleX, 0), SIMD4(middleKnuckleY, 0), SIMD4(middleKnuckleZ, 0), SIMD4(jointDict[.middleFingerIntermediateBase]!.position, 1))
+        worldTransforms[.middleFingerIntermediateBase] = simd_float4x4(SIMD4(middleInterBaseX, 0), SIMD4(middleInterBaseY, 0), SIMD4(middleInterBaseZ, 0), SIMD4(jointDict[.middleFingerIntermediateBase]!.position, 1))
         
         // middleFingerIntermediateTip
-        let middleInterTipX = normalize(jointDict[.middleFingerIntermediateTip]!.position - jointDict[.middleFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
+        let middleInterTipX = normalize(jointDict[.middleFingerTip]!.position - jointDict[.middleFingerIntermediateTip]!.position) * (isLeft ? 1 : -1)
         let middleInterTipY = cross(middleInterBaseZ, middleInterTipX)
         let middleInterTipZ = cross(middleInterTipX, middleInterTipY)
         worldTransforms[.middleFingerIntermediateTip] = simd_float4x4(SIMD4(middleInterTipX, 0), SIMD4(middleInterTipY, 0), SIMD4(middleInterTipZ, 0), SIMD4(jointDict[.middleFingerIntermediateTip]!.position, 1))
@@ -221,25 +221,25 @@ public struct SimHand: Codable {
         
         
         // ringFingerMetacarpal
-        let ringMetaX = normalize(jointDict[.ringFingerMetacarpal]!.position - jointDict[.wrist]!.position) * (isLeft ? 1 : -1)
+        let ringMetaX = normalize(jointDict[.ringFingerKnuckle]!.position - jointDict[.ringFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
         let ringMetaY = cross(rootZ, ringMetaX)
         let ringMetaZ = cross(ringMetaX, ringMetaY)
         worldTransforms[.ringFingerMetacarpal] = simd_float4x4(SIMD4(ringMetaX, 0), SIMD4(ringMetaY, 0), SIMD4(ringMetaZ, 0), SIMD4(jointDict[.ringFingerMetacarpal]!.position, 1))
         
         // ringFingerKnuckle
-        let ringKnuckleX = normalize(jointDict[.ringFingerKnuckle]!.position - jointDict[.ringFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
+        let ringKnuckleX = normalize(jointDict[.ringFingerIntermediateBase]!.position - jointDict[.ringFingerKnuckle]!.position) * (isLeft ? 1 : -1)
         let ringKnuckleY = cross(ringMetaZ, ringKnuckleX)
         let ringKnuckleZ = cross(ringKnuckleX, ringKnuckleY)
         worldTransforms[.ringFingerKnuckle] = simd_float4x4(SIMD4(ringKnuckleX, 0), SIMD4(ringKnuckleY, 0), SIMD4(ringKnuckleZ, 0), SIMD4(jointDict[.ringFingerKnuckle]!.position, 1))
         
         // ringFingerIntermediateBase
-        let ringInterBaseX = normalize(jointDict[.ringFingerIntermediateBase]!.position - jointDict[.ringFingerKnuckle]!.position) * (isLeft ? 1 : -1)
+        let ringInterBaseX = normalize(jointDict[.ringFingerIntermediateTip]!.position - jointDict[.ringFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
         let ringInterBaseY = cross(ringKnuckleZ, ringInterBaseX)
         let ringInterBaseZ = cross(ringInterBaseX, ringInterBaseY)
-        worldTransforms[.ringFingerIntermediateBase] = simd_float4x4(SIMD4(ringKnuckleX, 0), SIMD4(ringKnuckleY, 0), SIMD4(ringKnuckleZ, 0), SIMD4(jointDict[.ringFingerIntermediateBase]!.position, 1))
+        worldTransforms[.ringFingerIntermediateBase] = simd_float4x4(SIMD4(ringInterBaseX, 0), SIMD4(ringInterBaseY, 0), SIMD4(ringInterBaseZ, 0), SIMD4(jointDict[.ringFingerIntermediateBase]!.position, 1))
         
         // ringFingerIntermediateTip
-        let ringInterTipX = normalize(jointDict[.ringFingerIntermediateTip]!.position - jointDict[.ringFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
+        let ringInterTipX = normalize(jointDict[.ringFingerTip]!.position - jointDict[.ringFingerIntermediateTip]!.position) * (isLeft ? 1 : -1)
         let ringInterTipY = cross(ringInterBaseZ, ringInterTipX)
         let ringInterTipZ = cross(ringInterTipX, ringInterTipY)
         worldTransforms[.ringFingerIntermediateTip] = simd_float4x4(SIMD4(ringInterTipX, 0), SIMD4(ringInterTipY, 0), SIMD4(ringInterTipZ, 0), SIMD4(jointDict[.ringFingerIntermediateTip]!.position, 1))
@@ -248,25 +248,25 @@ public struct SimHand: Codable {
         worldTransforms[.ringFingerTip] = simd_float4x4(SIMD4(ringInterTipX, 0), SIMD4(ringInterTipY, 0), SIMD4(ringInterTipZ, 0), SIMD4(jointDict[.ringFingerTip]!.position, 1))
         
         // littleFingerMetacarpal
-        let littleMetaX = normalize(jointDict[.littleFingerMetacarpal]!.position - jointDict[.wrist]!.position) * (isLeft ? 1 : -1)
+        let littleMetaX = normalize(jointDict[.littleFingerKnuckle]!.position - jointDict[.littleFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
         let littleMetaY = cross(rootZ, littleMetaX)
         let littleMetaZ = cross(littleMetaX, littleMetaY)
         worldTransforms[.littleFingerMetacarpal] = simd_float4x4(SIMD4(littleMetaX, 0), SIMD4(littleMetaY, 0), SIMD4(littleMetaZ, 0), SIMD4(jointDict[.littleFingerMetacarpal]!.position, 1))
         
         // littleFingerKnuckle
-        let littleKnuckleX = normalize(jointDict[.littleFingerKnuckle]!.position - jointDict[.littleFingerMetacarpal]!.position) * (isLeft ? 1 : -1)
+        let littleKnuckleX = normalize(jointDict[.littleFingerIntermediateBase]!.position - jointDict[.littleFingerKnuckle]!.position) * (isLeft ? 1 : -1)
         let littleKnuckleY = cross(littleMetaZ, littleKnuckleX)
         let littleKnuckleZ = cross(littleKnuckleX, littleKnuckleY)
         worldTransforms[.littleFingerKnuckle] = simd_float4x4(SIMD4(littleKnuckleX, 0), SIMD4(littleKnuckleY, 0), SIMD4(littleKnuckleZ, 0), SIMD4(jointDict[.littleFingerKnuckle]!.position, 1))
         
         // littleFingerIntermediateBase
-        let littleInterBaseX = normalize(jointDict[.littleFingerIntermediateBase]!.position - jointDict[.littleFingerKnuckle]!.position) * (isLeft ? 1 : -1)
+        let littleInterBaseX = normalize(jointDict[.littleFingerIntermediateTip]!.position - jointDict[.littleFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
         let littleInterBaseY = cross(littleKnuckleZ, littleInterBaseX)
         let littleInterBaseZ = cross(littleInterBaseX, littleInterBaseY)
-        worldTransforms[.littleFingerIntermediateBase] = simd_float4x4(SIMD4(littleKnuckleX, 0), SIMD4(littleKnuckleY, 0), SIMD4(littleKnuckleZ, 0), SIMD4(jointDict[.littleFingerIntermediateBase]!.position, 1))
+        worldTransforms[.littleFingerIntermediateBase] = simd_float4x4(SIMD4(littleInterBaseX, 0), SIMD4(littleInterBaseY, 0), SIMD4(littleInterBaseZ, 0), SIMD4(jointDict[.littleFingerIntermediateBase]!.position, 1))
         
         // littleFingerIntermediateTip
-        let littleInterTipX = normalize(jointDict[.littleFingerIntermediateTip]!.position - jointDict[.littleFingerIntermediateBase]!.position) * (isLeft ? 1 : -1)
+        let littleInterTipX = normalize(jointDict[.littleFingerTip]!.position - jointDict[.littleFingerIntermediateTip]!.position) * (isLeft ? 1 : -1)
         let littleInterTipY = cross(littleInterBaseZ, littleInterTipX)
         let littleInterTipZ = cross(littleInterTipX, littleInterTipY)
         worldTransforms[.littleFingerIntermediateTip] = simd_float4x4(SIMD4(littleInterTipX, 0), SIMD4(littleInterTipY, 0), SIMD4(littleInterTipZ, 0), SIMD4(jointDict[.littleFingerIntermediateTip]!.position, 1))
