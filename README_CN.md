@@ -43,7 +43,7 @@ HandVector 2.0 版本是一个大更新，带来更好的 **余弦相似度Cosin
 
 #### a.匹配内置的手势
 
-
+![MatchAllBuiltin](./Resources/MatchAllBuiltin.gif)
 
 追踪双手关节的姿态，并与内置的手势相比较，得出它们的相似度。
 
@@ -74,6 +74,8 @@ builtinHands.forEach { (key, value) in
 相似度得分在 `[-1.0,1.0]` 之间， `1.0` 含义为手势完全匹配并且左右手也匹配， `-1.0 ` 含义为手势完全匹配但一个是左手一个是右手， `0` 含义为完全不匹配。
 
 #### b. 录制自定义的新手势并匹配它
+
+![RecordAndMatch](./Resources/RecordAndMatch.gif)
 
 录制自定义手势，并利用 `HVHandJsonModel` 保存为 JSON 字符串:
 
@@ -107,6 +109,8 @@ if let handInfo {
 ![XRHandsCoverImage](./Resources//UntityXRHandsCoverImage.png)
 
 该方法重点参考了 Unity 中知名 XR 手势框架：[XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) 。
+
+![FingerShaper](./Resources/FingerShaper.gif)
 
 相关参数的定义也类似：
 
