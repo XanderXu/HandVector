@@ -34,7 +34,8 @@ HandVector 2.0 版本是一个大更新，带来更好的 **余弦相似度Cosin
 * **余弦相似度Cosine Similarity**：完全匹配指定手指的每个关节，使用每个关节点相对于父关节的矩阵信息，精准度高。优点：精度高，可适用手指与手腕；缺点：可解释性差，难以调整范围。
 * **手指形状参数FingerShape**：参考 Unity 的 [XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) 框架，将手指形状化简为： `指根卷曲度 baseCurl`、 `指尖卷曲度 tipCurl`、 `整体卷曲度 fullCurl`、 `（与拇指）捏合度 pinch`、 `（与外侧相邻手指）分离度 spread` 5 个参数。优点：数值方便理解，方便控制与调整；缺点：未充分利用关节位姿信息，精度不够高，且只适用 5 根手指。
 
-
+本次升级也同时整理了文件结构，重命名了部分类和结构体，作用更清晰，所以与之间大版本 API 不兼容。
+![HandVectorFileStructure](./Resources/HandVectorFileStructure.png)
 
 ### 1.余弦相似度手势匹配
 

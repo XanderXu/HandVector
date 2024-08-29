@@ -35,6 +35,10 @@ HandVector version 2.0 is a major update, bringing the improved **Cosine Similar
 * **Cosine Similarity**: This method matches each joint of the specified fingers precisely, using the matrix information of each joint relative to its parent joint, resulting in high accuracy. Advantages: High precision, applicable to fingers and wrists; Disadvantages: Poor interpretability, difficult to adjust the range.
 * **FingerShape**: Referencing Unity's [XRHands](https://docs.unity3d.com/Packages/com.unity.xr.hands@1.5/manual/index.html) framework, this method simplifies the finger shape into five parameters: `baseCurl` (curl at the base of the finger), `tipCurl` (curl at the tip of the finger), `fullCurl` (overall curl of the finger), `pinch` (distance of pinching with the thumb), and `spread` (degree of separation from the adjacent outer finger). Advantages: The values are easy to understand and convenient to control and adjust; Disadvantages: Does not fully utilize joint pose information, thus not as precise, and is only applicable to five fingers.
 
+
+This upgrade also includes a reorganization of the file structure, with some classes and structures being renamed for clearer functionality. Therefore, it is not compatible with the previous major version API.
+![HandVectorFileStructure](./Resources/HandVectorFileStructure.png)
+
 ### 1. Cosine Similarity Gesture Matching
 `HandVector` supports matching built-in gestures as well as recording and saving custom gestures for later use. Currently, there are 8 built-in gestures: 👆✌️✋👌✊🤘🤙🫱🏿‍🫲🏻
 > 🫱🏿‍🫲🏻: Grab, grasp
