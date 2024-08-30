@@ -1,6 +1,7 @@
 {
     "👆": {
         "name": "👆",
+        "description": "point: straighten the thumb and index fingers, while the middle, ring and little fingers are curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -256,6 +257,7 @@
     },
     "✌️": {
         "name": "✌️",
+        "description": "peace: straighten and spread the index and middle fingers, while the thumb, ring and little fingers are curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -510,6 +512,7 @@
     },
     "✋": {
         "name": "✋",
+        "description": "palm: all fingers are straight",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -764,6 +767,7 @@
     },
     "👌": {
         "name": "👌",
+        "description": "ok: pinch the thumb and index fingers, while the middle, ring and little fingers are almost straight",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -1019,6 +1023,7 @@
     
     "✊": {
         "name": "✊",
+        "description": "fist: all fingers are fully curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -1273,6 +1278,7 @@
     },
     "🤘": {
         "name": "🤘",
+        "description": "rock: straighten the index and little fingers, while the thumb, middle and ring fingers are curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -1527,6 +1533,7 @@
     },
     "🤙": {
         "name": "🤙",
+        "description": "call me: extending the thumb and little fingers, while the index, middle and ring fingers are curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
@@ -1781,6 +1788,7 @@
     },
     "🫱🏿‍🫲🏻": {
         "name": "🫱🏿‍🫲🏻",
+        "description": "grab: all fingers are half curled down",
         "chirality": "left",
         "transform": [
             [1, 0, 0, 0],
