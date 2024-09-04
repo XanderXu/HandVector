@@ -33,6 +33,7 @@ struct RecordAndMatch: View {
     
     @State private var jsonString: String?
     @State private var showJsonSheet: Bool = false
+    @State private var showPasteAlert: Bool = false
     
     var progressValue: Float {
         min(1, max(0, Float(countDown) / 3.0 + 0.001))
@@ -128,10 +129,22 @@ struct RecordAndMatch: View {
                                 
                                 Button(action: {
                                     UIPasteboard.general.string = jsonString
+                                    showPasteAlert = true
                                 }) {
                                     Text("Copy")
                                     Image(systemName: "doc.on.doc")
                                 }
+                                .alert(
+                                    "Copied to clipboard",
+                                    isPresented: $showPasteAlert
+                                ) {
+                                    Button("OK") {
+                                        // Handle the acknowledgement.
+                                    }
+                                } message: {
+//                                    Text("Please paste to anywhere you want.")
+                                }
+                                
                             }
                             .padding(.vertical)
                         }

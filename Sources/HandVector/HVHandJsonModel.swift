@@ -88,12 +88,12 @@ public struct HVHandJsonModel:Sendable, Equatable {
         return vector
     }
     
-    public static func generateJsonModel(name: String, handVector: HVHandInfo) -> HVHandJsonModel {
+    public static func generateJsonModel(name: String, handVector: HVHandInfo, description: String? = nil) -> HVHandJsonModel {
         let joints = HandSkeleton.JointName.allCases.map { jointName in
             let joint = handVector.allJoints[jointName]!
             return HVJointJsonModel(name: joint.name.codableName, isTracked: joint.isTracked, transform: joint.transform)
         }
-        return HVHandJsonModel(name: name, chirality: handVector.chirality.codableName, transform: handVector.transform, joints: joints)
+        return HVHandJsonModel(name: name, chirality: handVector.chirality.codableName, transform: handVector.transform, joints: joints, description: description)
     }
     
 }
