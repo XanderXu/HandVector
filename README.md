@@ -6,12 +6,11 @@
   <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9" />
   <img src="https://img.shields.io/badge/Platforms-visionOS-brightgreen?style=flat-square" alt="Swift 5.9" />
 </p>
-
 [中文版本](./README_CN.md)
 
 [old version](./READMEv1/README.md)
 
-[中文版](./README_CN.md)
+
 
 
 **HandVector** calculates the similarity between different static gestures on visionOS and comes with a macOS utility class that allows you to use gesture tracking in the visionOS simulator as well.
@@ -39,6 +38,7 @@ HandVector version 2.0 is a major update, bringing the improved **Cosine Similar
 
 
 This upgrade also includes a reorganization of the file structure, with some classes and structures being renamed for clearer functionality. Therefore, it is not compatible with the previous major version API.
+
 ![HandVectorFileStructure](./Resources/HandVectorFileStructure.png)
 
 ### 1. Cosine Similarity Gesture Matching
