@@ -14,8 +14,8 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
     case middleFinger
     case ringFinger
     case littleFinger
-    case wristMetacarpal
-    case foreArm
+    case metacarpal
+    case forearm
     
     public var jointGroupNames: [HandSkeleton.JointName] {
         switch self {
@@ -29,9 +29,9 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
             [.ringFingerKnuckle, .ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
         case .littleFinger:
             [.littleFingerKnuckle, .littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
-        case .wristMetacarpal:
-            [.wrist, .indexFingerMetacarpal, .middleFingerMetacarpal, .ringFingerMetacarpal, .littleFingerMetacarpal]
-        case .foreArm:
+        case .metacarpal:
+            [.indexFingerMetacarpal, .middleFingerMetacarpal, .ringFingerMetacarpal, .littleFingerMetacarpal]
+        case .forearm:
             [.forearmWrist, .forearmArm]
         }
     }
@@ -39,9 +39,9 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
 public extension Set<HVJointOfFinger> {
     
     public static let fiveFingers: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger]
-    public static let fiveFingersAndForeArm: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .foreArm]
-    public static let fiveFingersAndWrist: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal]
-    public static let all: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .wristMetacarpal, .foreArm]
+    public static let fiveFingersAndForeArm: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .forearm]
+    public static let fiveFingersAndWrist: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .metacarpal]
+    public static let all: Set<HVJointOfFinger> = [.thumb, .indexFinger, .middleFinger, .ringFinger, .littleFinger, .metacarpal, .forearm]
     
     public var jointGroupNames: [HandSkeleton.JointName] {
         var jointNames: [HandSkeleton.JointName] = []
