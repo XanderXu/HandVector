@@ -5,7 +5,7 @@
 //  Created by 许同学 on 2024/8/5.
 //
 
-import RealityFoundation
+import RealityKit
 import ARKit
 
 public struct HVJointJsonModel: Sendable, Equatable {
