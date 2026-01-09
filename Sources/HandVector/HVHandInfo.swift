@@ -14,10 +14,11 @@ public struct HVHandInfo: Sendable, Equatable {
     public let allJoints: [HandSkeleton.JointName: HVJointInfo]
     public let transform: simd_float4x4
     
-    internal let internalVectors: [HandSkeleton.JointName: InternalVectorInfo]
-    internal func vectorEndTo(_ named: HandSkeleton.JointName) -> InternalVectorInfo {
-        return internalVectors[named]!
+    internal let internalVectors: [simd_float3]
+    internal func vectorEndTo(_ named: HandSkeleton.JointName) -> simd_float3 {
+        return internalVectors[named.jointIndex]
     }
+    
     public static var builtinHandInfo: [String : HVHandInfo] = {
         let dict = HVHandJsonModel.loadHandJsonModelDict(fileName: "BuiltinHand", bundle: handAssetsBundle)!.reduce(into: [String: HVHandInfo](), {
             $0[$1.key] = $1.value.convertToHVHandInfo()
@@ -72,114 +73,73 @@ private extension HVHandInfo {
         }
         return joints
     }
-    private static func genetateVectors(from positions: [HandSkeleton.JointName: HVJointInfo]) -> [HandSkeleton.JointName: InternalVectorInfo] {
-        var vectors: [HandSkeleton.JointName: InternalVectorInfo] = [:]
-        
-        let wrist = positions[.wrist]!
-        let forearmWrist = positions[.forearmWrist]!
-        let forearmArm = positions[.forearmArm]!
-        vectors[.forearmWrist] = InternalVectorInfo(from: forearmArm, to: forearmWrist)
-        vectors[.forearmArm] = InternalVectorInfo(from: forearmWrist, to: forearmArm)
-        vectors[.wrist] = InternalVectorInfo(from: forearmArm, to: wrist)
-        
-        let thumbKnuckle = positions[.thumbKnuckle]!
-        let thumbIntermediateBase = positions[.thumbIntermediateBase]!
-        let thumbIntermediateTip = positions[.thumbIntermediateTip]!
-        let thumbTip = positions[.thumbTip]!
-        vectors[.thumbKnuckle] = InternalVectorInfo(from: wrist, to: thumbKnuckle)
-        vectors[.thumbIntermediateBase] = InternalVectorInfo(from: thumbKnuckle, to: thumbIntermediateBase)
-        vectors[.thumbIntermediateTip] = InternalVectorInfo(from: thumbIntermediateBase, to: thumbIntermediateTip)
-        vectors[.thumbTip] = InternalVectorInfo(from: thumbIntermediateTip, to: thumbTip)
-        
-        let indexFingerMetacarpal = positions[.indexFingerMetacarpal]!
-        let indexFingerKnuckle = positions[.indexFingerKnuckle]!
-        let indexFingerIntermediateBase = positions[.indexFingerIntermediateBase]!
-        let indexFingerIntermediateTip = positions[.indexFingerIntermediateTip]!
-        let indexFingerTip = positions[.indexFingerTip]!
-        
-        vectors[.indexFingerMetacarpal] = InternalVectorInfo(from: wrist, to: indexFingerMetacarpal)
-        vectors[.indexFingerKnuckle] = InternalVectorInfo(from: indexFingerMetacarpal, to: indexFingerKnuckle)
-        vectors[.indexFingerIntermediateBase] = InternalVectorInfo(from: indexFingerKnuckle, to: indexFingerIntermediateBase)
-        vectors[.indexFingerIntermediateTip] = InternalVectorInfo(from: indexFingerIntermediateBase, to: indexFingerIntermediateTip)
-        vectors[.indexFingerTip] = InternalVectorInfo(from: indexFingerIntermediateTip, to: indexFingerTip)
-                                              
-        let middleFingerMetacarpal = positions[.middleFingerMetacarpal]!
-        let middleFingerKnuckle = positions[.middleFingerKnuckle]!
-        let middleFingerIntermediateBase = positions[.middleFingerIntermediateBase]!
-        let middleFingerIntermediateTip = positions[.middleFingerIntermediateTip]!
-        let middleFingerTip = positions[.middleFingerTip]!
-        
-        vectors[.middleFingerMetacarpal] = InternalVectorInfo(from: wrist, to: middleFingerMetacarpal)
-        vectors[.middleFingerKnuckle] = InternalVectorInfo(from: middleFingerMetacarpal, to: middleFingerKnuckle)
-        vectors[.middleFingerIntermediateBase] = InternalVectorInfo(from: middleFingerKnuckle, to: middleFingerIntermediateBase)
-        vectors[.middleFingerIntermediateTip] = InternalVectorInfo(from: middleFingerIntermediateBase, to: middleFingerIntermediateTip)
-        vectors[.middleFingerTip] = InternalVectorInfo(from: middleFingerIntermediateTip, to: middleFingerTip)
-        
-        
-        let ringFingerMetacarpal = positions[.ringFingerMetacarpal]!
-        let ringFingerKnuckle = positions[.ringFingerKnuckle]!
-        let ringFingerIntermediateBase = positions[.ringFingerIntermediateBase]!
-        let ringFingerIntermediateTip = positions[.ringFingerIntermediateTip]!
-        let ringFingerTip = positions[.ringFingerTip]!
-        
-        vectors[.ringFingerMetacarpal] = InternalVectorInfo(from: wrist, to: ringFingerMetacarpal)
-        vectors[.ringFingerKnuckle] = InternalVectorInfo(from: ringFingerMetacarpal, to: ringFingerKnuckle)
-        vectors[.ringFingerIntermediateBase] = InternalVectorInfo(from: ringFingerKnuckle, to: ringFingerIntermediateBase)
-        vectors[.ringFingerIntermediateTip] = InternalVectorInfo(from: ringFingerIntermediateBase, to: ringFingerIntermediateTip)
-        vectors[.ringFingerTip] = InternalVectorInfo(from: ringFingerIntermediateTip, to: ringFingerTip)
-        
-        
-        let littleFingerMetacarpal = positions[.littleFingerMetacarpal]!
-        let littleFingerKnuckle = positions[.littleFingerKnuckle]!
-        let littleFingerIntermediateBase = positions[.littleFingerIntermediateBase]!
-        let littleFingerIntermediateTip = positions[.littleFingerIntermediateTip]!
-        let littleFingerTip = positions[.littleFingerTip]!
-        
-        vectors[.littleFingerMetacarpal] = InternalVectorInfo(from: wrist, to: littleFingerMetacarpal)
-        vectors[.littleFingerKnuckle] = InternalVectorInfo(from: littleFingerMetacarpal, to: littleFingerKnuckle)
-        vectors[.littleFingerIntermediateBase] = InternalVectorInfo(from: littleFingerKnuckle, to: littleFingerIntermediateBase)
-        vectors[.littleFingerIntermediateTip] = InternalVectorInfo(from: littleFingerIntermediateBase, to: littleFingerIntermediateTip)
-        vectors[.littleFingerTip] = InternalVectorInfo(from: littleFingerIntermediateTip, to: littleFingerTip)
-        return vectors
-    }
-}
 
-extension HVHandInfo {
-    struct InternalVectorInfo: Hashable, Sendable, CustomStringConvertible {
-        public let from: HandSkeleton.JointName
-        public let to: HandSkeleton.JointName
-        // relative to 'from' joint
-        public let vector: simd_float3
-        public let normalizedVector: simd_float3
+    
+    /// Optimized vector generation using simd operations
+    private static func genetateVectors(from positions: [HandSkeleton.JointName: HVJointInfo]) -> [simd_float3] {
+        // Pre-allocate array with known size (27 vectors)
+        var vectors = [simd_float3]()
+        vectors.reserveCapacity(27)
         
-        public func reversedChirality() -> InternalVectorInfo {
-            return InternalVectorInfo(from: from, to: to, vector: -vector)
-        }
-        
-        public init(from: HVJointInfo, to: HVJointInfo) {
-            self.from = from.name
-            self.to = to.name
-            let position4 = SIMD4(to.position, 0)
-            self.vector = (from.transformToParent * position4).xyz
-            if vector == .zero {
-                self.normalizedVector = .zero
-            } else {
-                self.normalizedVector = normalize(self.vector)
-            }
-        }
-        private init(from: HandSkeleton.JointName, to: HandSkeleton.JointName, vector: simd_float3) {
-            self.from = from
-            self.to = to
-            self.vector = vector
-            if vector == .zero {
-                self.normalizedVector = .zero
-            } else {
-                self.normalizedVector = normalize(vector)
-            }
+        // Helper function to calculate and normalize vector
+        @inline(__always)
+        func addVector(from: HVJointInfo, to: HVJointInfo) {
+            let position4 = SIMD4(to.positionToParent, 0)
+            let vector = (from.transformToParent * position4).xyz
+            vectors.append(simd_normalize(vector))
         }
         
-        public var description: String {
-            return "from: \(from),\nto: \(to),\nvector: \(vector), normalizedVector:\(normalizedVector)"
-        }
+        // Cache frequently used joints
+        let wrist = positions[.wrist]!
+        let forearmArm = positions[.forearmArm]!
+        let forearmWrist = positions[.forearmWrist]!
+        
+        // Forearm and wrist
+        addVector(from: forearmArm, to: wrist)
+        
+        // Thumb
+        let thumbKnuckle = positions[.thumbKnuckle]!
+        addVector(from: wrist, to: thumbKnuckle)
+        addVector(from: thumbKnuckle, to: positions[.thumbIntermediateBase]!)
+        addVector(from: positions[.thumbIntermediateBase]!, to: positions[.thumbIntermediateTip]!)
+        addVector(from: positions[.thumbIntermediateTip]!, to: positions[.thumbTip]!)
+        
+        // Index finger
+        let indexMetacarpal = positions[.indexFingerMetacarpal]!
+        addVector(from: wrist, to: indexMetacarpal)
+        addVector(from: indexMetacarpal, to: positions[.indexFingerKnuckle]!)
+        addVector(from: positions[.indexFingerKnuckle]!, to: positions[.indexFingerIntermediateBase]!)
+        addVector(from: positions[.indexFingerIntermediateBase]!, to: positions[.indexFingerIntermediateTip]!)
+        addVector(from: positions[.indexFingerIntermediateTip]!, to: positions[.indexFingerTip]!)
+        
+        // Middle finger
+        let middleMetacarpal = positions[.middleFingerMetacarpal]!
+        addVector(from: wrist, to: middleMetacarpal)
+        addVector(from: middleMetacarpal, to: positions[.middleFingerKnuckle]!)
+        addVector(from: positions[.middleFingerKnuckle]!, to: positions[.middleFingerIntermediateBase]!)
+        addVector(from: positions[.middleFingerIntermediateBase]!, to: positions[.middleFingerIntermediateTip]!)
+        addVector(from: positions[.middleFingerIntermediateTip]!, to: positions[.middleFingerTip]!)
+        
+        // Ring finger
+        let ringMetacarpal = positions[.ringFingerMetacarpal]!
+        addVector(from: wrist, to: ringMetacarpal)
+        addVector(from: ringMetacarpal, to: positions[.ringFingerKnuckle]!)
+        addVector(from: positions[.ringFingerKnuckle]!, to: positions[.ringFingerIntermediateBase]!)
+        addVector(from: positions[.ringFingerIntermediateBase]!, to: positions[.ringFingerIntermediateTip]!)
+        addVector(from: positions[.ringFingerIntermediateTip]!, to: positions[.ringFingerTip]!)
+        
+        // Little finger
+        let littleMetacarpal = positions[.littleFingerMetacarpal]!
+        addVector(from: wrist, to: littleMetacarpal)
+        addVector(from: littleMetacarpal, to: positions[.littleFingerKnuckle]!)
+        addVector(from: positions[.littleFingerKnuckle]!, to: positions[.littleFingerIntermediateBase]!)
+        addVector(from: positions[.littleFingerIntermediateBase]!, to: positions[.littleFingerIntermediateTip]!)
+        addVector(from: positions[.littleFingerIntermediateTip]!, to: positions[.littleFingerTip]!)
+        
+        // Forearm vectors
+        addVector(from: forearmArm, to: forearmWrist)
+        addVector(from: forearmWrist, to: forearmArm)
+        
+        return vectors
     }
 }

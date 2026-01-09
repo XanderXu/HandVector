@@ -37,6 +37,10 @@ public struct HVJointInfo: Sendable, Equatable {
     public var position: SIMD3<Float> {
         return transform.columns.3.xyz
     }
+    
+    public var positionToParent: SIMD3<Float> {
+        return transformToParent.columns.3.xyz
+    }
 
     public var description: String {
         return "name: \(name), isTracked: \(isTracked), position: \(transform.columns.0.xyz)"

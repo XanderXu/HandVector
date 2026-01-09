@@ -104,14 +104,16 @@ class HandViewModel: @unchecked Sendable {
                 guard anchor.isTracked else {
                     continue
                 }
-                let handInfo = latestHandTracking.generateHandInfo(from: anchor)
-                if let handInfo {
-                    await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
-                    if let left = latestHandTracking.left {
-                        await rootEntity?.addChild(left)
-                    }
-                    if let right = latestHandTracking.right {
-                        await rootEntity?.addChild(right)
+                Task {@MainActor in
+                    let handInfo = latestHandTracking.generateHandInfo(from: anchor)
+                    if let handInfo {
+                        await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
+                        if let left = latestHandTracking.left {
+                            rootEntity?.addChild(left)
+                        }
+                        if let right = latestHandTracking.right {
+                            rootEntity?.addChild(right)
+                        }
                     }
                 }
             case .removed:
