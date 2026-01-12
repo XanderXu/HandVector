@@ -18,7 +18,19 @@ class HandViewModel: @unchecked Sendable {
     
     var rootEntity: Entity?
     
-    var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
+    private var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
+    var leftHandVector: HVHandInfo? {
+        latestHandTracking.leftHandVector
+    }
+    var rightHandVector: HVHandInfo? {
+        latestHandTracking.rightHandVector
+    }
+    var isSkeletonVisible: Bool = false {
+        didSet {
+            latestHandTracking.isSkeletonVisible = isSkeletonVisible
+        }
+    }
+    
     var recordHand: HVHandInfo?
     var averageAndEachLeftScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?
     var averageAndEachRightScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?

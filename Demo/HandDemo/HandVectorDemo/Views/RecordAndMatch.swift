@@ -15,7 +15,7 @@ struct RecordAndMatch: View {
         var body: some View {
             HStack {
                 Text(text)
-                    .font(.system(size: 20))
+                    .font(.system(size: 18))
                     .frame(width: 120)
                 
                 ProgressView(value: abs(value), total: 1, label: {
@@ -50,7 +50,6 @@ struct RecordAndMatch: View {
                 TextProgressView(text: "ringFinger", value: leftScores?.eachFinger[.ringFinger] ?? 0)
                 TextProgressView(text: "littleFinger", value: leftScores?.eachFinger[.littleFinger] ?? 0)
             }
-            .frame(width: 350)
             
             
             VStack(alignment: .center, spacing: 10) {
@@ -59,7 +58,7 @@ struct RecordAndMatch: View {
                     .font(.system(size: 16, weight: .bold))
                     .padding(.bottom, 40)
                 
-                Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
+                Toggle("Show hand skeleton", isOn: $model.isSkeletonVisible)
                     .toggleStyle(ButtonToggleStyle())
                     .font(.system(size: 16, weight: .bold))
                     .disabled(!model.turnOnImmersiveSpace)
@@ -166,7 +165,6 @@ struct RecordAndMatch: View {
                 TextProgressView(text: "ringFinger", value: rightScores?.eachFinger[.ringFinger] ?? 0)
                 TextProgressView(text: "littleFinger", value: rightScores?.eachFinger[.littleFinger] ?? 0)
             }
-            .frame(width: 350)
         }
         .onReceive(timer) { _ in
             if !model.turnOnImmersiveSpace {
@@ -178,13 +176,13 @@ struct RecordAndMatch: View {
                 countDown = -1
                 switch recordIndex {
                 case 0:
-                    if let left = model.latestHandTracking.leftHandVector {
+                    if let left = model.leftHandVector {
                         let para = HVHandJsonModel.generateJsonModel(name: "left", handVector: left)
                         model.recordHand = left
                         jsonString = para.toJson()
                     }
                 case 1:
-                    if let right = model.latestHandTracking.rightHandVector {
+                    if let right = model.rightHandVector {
                         let para = HVHandJsonModel.generateJsonModel(name: "right", handVector: right)
                         model.recordHand = right
                         jsonString = para.toJson()

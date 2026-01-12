@@ -35,7 +35,7 @@ struct MatchBuildinImmersiveView: View {
             
             
         }
-        .upperLimbVisibility(model.latestHandTracking.isSkeletonVisible ? .hidden : .automatic)
+        .upperLimbVisibility(model.isSkeletonVisible ? .hidden : .automatic)
         
         .task {
             await model.startHandTracking()
