@@ -92,7 +92,7 @@ public struct HVFingerShape: Sendable, Equatable {
             }
         } else {
             if fingerShapeTypes.contains(.baseCurl) {
-                let joint = joints[finger.jointGroupNames.first!]!
+                let joint = joints[finger.jointGroupNames[0]]!
                 let xAxis = joint.transformToParent.columns.0
                 let angle = atan2(xAxis.y, xAxis.x) / .pi * 180
                 baseCurl = linearInterpolate(lowerBound: config.minimumBaseCurlDegrees, upperBound: config.maximumBaseCurlDegrees, value: angle)
