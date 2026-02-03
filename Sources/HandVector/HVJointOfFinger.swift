@@ -35,6 +35,24 @@ public enum HVJointOfFinger:Sendable, Equatable, CaseIterable {
             [.forearmWrist, .forearmArm]
         }
     }
+    public var flexibleJointGroupNames: [HandSkeleton.JointName] {
+        switch self {
+        case .thumb:
+            [.thumbIntermediateBase, .thumbIntermediateTip, .thumbTip]
+        case .indexFinger:
+            [.indexFingerIntermediateBase, .indexFingerIntermediateTip, .indexFingerTip]
+        case .middleFinger:
+            [.middleFingerIntermediateBase, .middleFingerIntermediateTip, .middleFingerTip]
+        case .ringFinger:
+            [.ringFingerIntermediateBase, .ringFingerIntermediateTip, .ringFingerTip]
+        case .littleFinger:
+            [.littleFingerIntermediateBase, .littleFingerIntermediateTip, .littleFingerTip]
+        case .metacarpal:
+            []
+        case .forearm:
+            [.forearmArm]
+        }
+    }
 }
 public extension Set<HVJointOfFinger> {
     
@@ -48,6 +66,15 @@ public extension Set<HVJointOfFinger> {
         for finger in HVJointOfFinger.allCases {
             if contains(finger) {
                 jointNames.append(contentsOf: finger.jointGroupNames)
+            }
+        }
+        return jointNames
+    }
+    public var flexibleJointGroupNames: [HandSkeleton.JointName] {
+        var jointNames: [HandSkeleton.JointName] = []
+        for finger in HVJointOfFinger.allCases {
+            if contains(finger) {
+                jointNames.append(contentsOf: finger.flexibleJointGroupNames)
             }
         }
         return jointNames

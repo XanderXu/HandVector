@@ -18,7 +18,19 @@ class HandViewModel: @unchecked Sendable {
     
     var rootEntity: Entity?
     
-    var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
+    private var latestHandTracking: HandVectorManager = .init(left: nil, right: nil)
+    var leftHandVector: HVHandInfo? {
+        latestHandTracking.leftHandVector
+    }
+    var rightHandVector: HVHandInfo? {
+        latestHandTracking.rightHandVector
+    }
+    var isSkeletonVisible: Bool = false {
+        didSet {
+            latestHandTracking.isSkeletonVisible = isSkeletonVisible
+        }
+    }
+    
     var recordHand: HVHandInfo?
     var averageAndEachLeftScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?
     var averageAndEachRightScores: (average: Float, eachFinger: [HVJointOfFinger: Float])?
@@ -104,14 +116,16 @@ class HandViewModel: @unchecked Sendable {
                 guard anchor.isTracked else {
                     continue
                 }
-                let handInfo = latestHandTracking.generateHandInfo(from: anchor)
-                if let handInfo {
-                    await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
-                    if let left = latestHandTracking.left {
-                        await rootEntity?.addChild(left)
-                    }
-                    if let right = latestHandTracking.right {
-                        await rootEntity?.addChild(right)
+                Task {@MainActor in
+                    let handInfo = latestHandTracking.generateHandInfo(from: anchor)
+                    if let handInfo {
+                        await latestHandTracking.updateHandSkeletonEntity(from: handInfo)
+                        if let left = latestHandTracking.left {
+                            rootEntity?.addChild(left)
+                        }
+                        if let right = latestHandTracking.right {
+                            rootEntity?.addChild(right)
+                        }
                     }
                 }
             case .removed:

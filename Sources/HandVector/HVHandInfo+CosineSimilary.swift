@@ -12,7 +12,7 @@ public extension HVHandInfo {
     func similarity(of joints: Set<HandSkeleton.JointName>, to vector: HVHandInfo) -> Float {
         var similarity: Float = 0
         similarity = joints.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
+            let dv = dot(vector.vectorEndTo(name), self.vectorEndTo(name))
             return dv
         }.reduce(0) { $0 + $1 }
         
@@ -21,15 +21,15 @@ public extension HVHandInfo {
     }
     
     /// Finger your selected
-    func similarity(of finger: HVJointOfFinger, to vector: HVHandInfo) -> Float {
-        return similarity(of: [finger], to: vector)
+    func similarity(of finger: HVJointOfFinger, to vector: HVHandInfo, flexibleJointOnly: Bool = true) -> Float {
+        return similarity(of: [finger], to: vector, flexibleJointOnly: flexibleJointOnly)
     }
     /// Fingers your selected
-    func similarity(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo) -> Float {
+    func similarity(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo, flexibleJointOnly: Bool = true) -> Float {
         var similarity: Float = 0
-        let jointNames = fingers.jointGroupNames
+        let jointNames = flexibleJointOnly ? fingers.flexibleJointGroupNames : fingers.jointGroupNames
         similarity = jointNames.map { name in
-            let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
+            let dv = dot(vector.vectorEndTo(name), self.vectorEndTo(name))
             return dv
         }.reduce(0) { $0 + $1 }
         
@@ -37,30 +37,33 @@ public extension HVHandInfo {
         return similarity
     }
     /// Fingers and wrist and forearm
-    func similarity(to vector: HVHandInfo) -> Float {
-        return similarity(of: .all, to: vector)
+    func similarity(to vector: HVHandInfo, flexibleJointOnly: Bool = true) -> Float {
+        return similarity(of: .all, to: vector, flexibleJointOnly: flexibleJointOnly)
     }
     /// all
-    func similarities(to vector: HVHandInfo) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
-        return averageAndEachSimilarities(of: .all, to: vector)
+    func similarities(to vector: HVHandInfo, flexibleJointOnly: Bool = true) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
+        return averageAndEachSimilarities(of: .all, to: vector, flexibleJointOnly: flexibleJointOnly)
     }
-    func averageAndEachSimilarities(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
-        
+    func averageAndEachSimilarities(of fingers: Set<HVJointOfFinger>, to vector: HVHandInfo, flexibleJointOnly: Bool = true) -> (average: Float, eachFinger: [HVJointOfFinger: Float]) {
         let fingerTotal = fingers.reduce(into: [HVJointOfFinger: Float]()) { partialResult, finger in
-            let fingerResult = finger.jointGroupNames.reduce(into: Float.zero) { partialResult, name in
-                let dv = dot(vector.vectorEndTo(name).normalizedVector, self.vectorEndTo(name).normalizedVector)
+            let jointNames = flexibleJointOnly ? finger.flexibleJointGroupNames : finger.jointGroupNames
+            let fingerResult = jointNames.reduce(into: Float.zero) { partialResult, name in
+                let dv = dot(vector.vectorEndTo(name), self.vectorEndTo(name))
                 partialResult += dv
             }
             partialResult[finger] = fingerResult
         }
         let fingerScore = fingerTotal.reduce(into: [HVJointOfFinger: Float]()) { partialResult, ele in
-            partialResult[ele.key]  = ele.value / Float(ele.key.jointGroupNames.count)
+            let jointNames = flexibleJointOnly ? ele.key.flexibleJointGroupNames : ele.key.jointGroupNames
+            partialResult[ele.key]  = ele.value / Float(jointNames.count)
         }
         
         let jointTotal = fingerTotal.reduce(into: Float.zero) { partialResult, element in
             partialResult += element.value
         }
-        let jointCount = fingers.jointGroupNames.count
+        let jointCount = flexibleJointOnly ? fingers.flexibleJointGroupNames.count : fingers.jointGroupNames.count
         return (average: jointTotal / Float(jointCount), eachFinger: fingerScore)
     }
+    
 }
+

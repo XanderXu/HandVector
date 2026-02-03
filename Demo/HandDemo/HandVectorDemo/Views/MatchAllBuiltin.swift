@@ -14,7 +14,7 @@ struct MatchAllBuiltin: View {
         var value: Float
         var body: some View {
             HStack {
-                Text(text).font(.system(size: 50))
+                Text(text).font(.system(size: 40))
                 
                 ProgressView(value: abs(value), total: 1, label: {
                     Text(value.formatted())
@@ -48,7 +48,7 @@ struct MatchAllBuiltin: View {
                     .font(.system(size: 16, weight: .bold))
                     .padding(.bottom, 40)
                 
-                Toggle("Show hand skeleton", isOn: $model.latestHandTracking.isSkeletonVisible)
+                Toggle("Show hand skeleton", isOn: $model.isSkeletonVisible)
                     .toggleStyle(ButtonToggleStyle())
                     .font(.system(size: 16, weight: .bold))
                     .disabled(!model.turnOnImmersiveSpace)

@@ -307,5 +307,65 @@ public extension HandSkeleton.JointName {
             return nil
         }
     }
+    public var jointIndex: Int {
+        switch self {
+        case .wrist:
+            return 0
+        case .thumbKnuckle:
+            return 1
+        case .thumbIntermediateBase:
+            return 2
+        case .thumbIntermediateTip:
+            return 3
+        case .thumbTip:
+            return 4
+        case .indexFingerMetacarpal:
+            return 5
+        case .indexFingerKnuckle:
+            return 6
+        case .indexFingerIntermediateBase:
+            return 7
+        case .indexFingerIntermediateTip:
+            return 8
+        case .indexFingerTip:
+            return 9
+        case .middleFingerMetacarpal:
+            return 10
+        case .middleFingerKnuckle:
+            return 11
+        case .middleFingerIntermediateBase:
+            return 12
+        case .middleFingerIntermediateTip:
+            return 13
+        case .middleFingerTip:
+            return 14
+        case .ringFingerMetacarpal:
+            return 15
+        case .ringFingerKnuckle:
+            return 16
+        case .ringFingerIntermediateBase:
+            return 17
+        case .ringFingerIntermediateTip:
+            return 18
+        case .ringFingerTip:
+            return 19
+        case .littleFingerMetacarpal:
+            return 20
+        case .littleFingerKnuckle:
+            return 21
+        case .littleFingerIntermediateBase:
+            return 22
+        case .littleFingerIntermediateTip:
+            return 23
+        case .littleFingerTip:
+            return 24
+        case .forearmWrist:
+            return 25
+        case .forearmArm:
+            return 26
+        @unknown default:
+            return 0
+        }
+    }
 }
 
